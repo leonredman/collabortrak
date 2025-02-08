@@ -3,6 +3,7 @@ package com.collabortrak.collabortrak.entities;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "customers")
@@ -41,6 +42,9 @@ public class Customer {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "register_date", nullable = false, updatable = false)
     private Date registerDate = new Date();
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Ticket> tickets;
 
     public Customer() {}
 
@@ -134,6 +138,22 @@ public class Customer {
 
     public Date getRegister_date() {
         return registerDate;
+    }
+
+    public Date getRegisterDate() {
+        return registerDate;
+    }
+
+    public void setRegisterDate(Date registerDate) {
+        this.registerDate = registerDate;
+    }
+
+    public List<Ticket> getTickets() {
+        return tickets;
+    }
+
+    public void setTickets(List<Ticket> tickets) {
+        this.tickets = tickets;
     }
 
     // Register Date should not be changed after its made

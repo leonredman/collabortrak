@@ -1,6 +1,7 @@
 package com.collabortrak.collabortrak.entities;
 
 public enum StatusType {
+    OPEN,
     READY,
     BUILD_IN_PROGRESS,
     BUILD_COMPLETE,

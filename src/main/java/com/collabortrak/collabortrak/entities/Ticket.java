@@ -20,7 +20,7 @@ public class Ticket {
     @Column(name = "title", nullable = false, length = 255)  // ✅ Title for all tickets (including Epics & Stories)
     private String title;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "customer_id", nullable = false)  // FK reference to Customer
     private Customer customer;
 
@@ -50,6 +50,10 @@ public class Ticket {
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "epic_id", nullable = true)  // Allow NULL values
+    private Epic epic;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "last_update")
@@ -158,5 +162,13 @@ public class Ticket {
 
     public void setLastUpdate(Date lastUpdate) {
         this.lastUpdate = lastUpdate;
+    }
+
+    public Epic getEpic() {
+        return epic;
+    }
+
+    public void setEpic(Epic epic) {
+        this.epic = epic;
     }
 }
