@@ -12,12 +12,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // ✅ Disable CSRF (needed for Postman)
+                .csrf(csrf -> csrf.disable()) //  Disable CSRF (needed for Postman)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/**").permitAll() // ✅ Allow all API endpoints
-                        .anyRequest().permitAll() // ✅ Allow all other requests too
+                        .requestMatchers("/api/**").permitAll() //  Allow all API endpoints
+                        .anyRequest().permitAll() //  Allow all other requests too
                 )
-                .httpBasic(httpBasic -> httpBasic.disable()); // ✅ Disable Basic Auth
+                .httpBasic(httpBasic -> httpBasic.disable()); //  Disable Basic Auth
         return http.build();
     }
 }

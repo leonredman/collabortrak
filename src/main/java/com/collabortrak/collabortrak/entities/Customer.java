@@ -1,5 +1,6 @@
 package com.collabortrak.collabortrak.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -44,6 +45,7 @@ public class Customer {
     private Date registerDate = new Date();
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonBackReference // prevents infinite loop recursion
     private List<Ticket> tickets;
 
     public Customer() {}
@@ -136,9 +138,6 @@ public class Customer {
         this.country = country;
     }
 
-    public Date getRegister_date() {
-        return registerDate;
-    }
 
     public Date getRegisterDate() {
         return registerDate;

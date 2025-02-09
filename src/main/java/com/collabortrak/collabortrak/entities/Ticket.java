@@ -1,5 +1,9 @@
 package com.collabortrak.collabortrak.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
 import java.util.Date;
 import java.util.UUID;
@@ -8,7 +12,16 @@ import java.util.UUID;
 @Table(name = "tickets")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE) // Allows Epic & Story to be in the same table
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
-public class Ticket {
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")  // Tells Jackson to look at "ticketType" to determine the class, JSON uses 'type' field for polymorphism
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Epic.class, name = "EPIC"),
+        @JsonSubTypes.Type(value = Story.class, name = "STORY"),
+        @JsonSubTypes.Type(value = Task.class, name = "TASK"),
+        @JsonSubTypes.Type(value = Bug.class, name = "BUG")
+})
+
+// using @Inheritance(strategy = InheritanceType.SINGLE_TABLE), only the subclasses (Epic, Story, Task, Bug) should be instantiated
+public abstract class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,20 +30,17 @@ public class Ticket {
     @Column(name = "ticket_tracking_number", nullable = false, unique = true, updatable = false)
     private String ticketTrackingNumber;   // unique tracking number Auto-generated
 
-    @Column(name = "title", nullable = false, length = 255)  // ✅ Title for all tickets (including Epics & Stories)
+    @Column(name = "title", nullable = false, length = 255)  // Title for all tickets (including Epics & Stories)
     private String title;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)  // FK reference to Customer
+    @JsonManagedReference  // Prevents recursive loop
     private Customer customer;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_date", nullable = false, updatable = false)
     private Date createdDate = new Date();
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "ticket_type", nullable = false)
-    private TicketType ticketType;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -53,6 +63,7 @@ public class Ticket {
 
     @ManyToOne
     @JoinColumn(name = "epic_id", nullable = true)  // Allow NULL values
+    @JsonBackReference // Prevents infinite recursion
     private Epic epic;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -61,11 +72,13 @@ public class Ticket {
 
     public Ticket() {}  // No Arg Constructor
 
-    public Ticket(String title, Customer customer, TicketType ticketType) {  // Now includes title as a parameter
+    public Ticket(String title, Customer customer, StatusType status, PriorityType priority, CategoryType category) {
         this.ticketTrackingNumber = generateTicketTrackingNumber();
-        this.title = title;  // Corrected
+        this.title = title;
         this.customer = customer;
-        this.ticketType = ticketType;
+        this.status = status;
+        this.priority = priority;
+        this.category = category;
         this.createdDate = new Date();
     }
 
@@ -77,19 +90,24 @@ public class Ticket {
         return id;
     }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
-
     public void setId(Long id) {
         this.id = id;
     }
 
-    public String getTicketTrackingNumber() {
-        return ticketTrackingNumber;
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public void setTicketTrackingNumber(String ticketTrackingNumber) {
         this.ticketTrackingNumber = ticketTrackingNumber;
+    }
+
+    public String getTicketTrackingNumber() {
+        return ticketTrackingNumber;
     }
 
     public Customer getCustomer() {
@@ -108,13 +126,6 @@ public class Ticket {
         this.createdDate = createdDate;
     }
 
-    public TicketType getTicketType() {
-        return ticketType;
-    }
-
-    public void setTicketType(TicketType ticketType) {
-        this.ticketType = ticketType;
-    }
 
     public StatusType getStatus() {
         return status;
