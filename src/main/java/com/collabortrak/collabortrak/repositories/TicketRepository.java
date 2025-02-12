@@ -13,12 +13,16 @@ import java.util.Optional;
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     // Fetch single ticket with its customer
-//    @Query("SELECT t FROM Ticket t JOIN FETCH t.customer WHERE t.id = :id")
-//    Optional<Ticket> findByIdWithCustomer(@Param("id") Long id);
     @Query("SELECT t FROM Ticket t WHERE t.id = :id")
-    Optional<? extends Ticket> findByIdWithCustomer(@Param("id") Long id);
+    Optional<Ticket> findByIdWithCustomer(@Param("id") Long id);
 
     // Fetch all tickets with customer details
-    @Query("SELECT t FROM Ticket t JOIN FETCH t.customer")
+    @Query("SELECT t FROM Ticket t")
     List<Ticket> findAllWithCustomer();
+
+    // Check if a ticket tracking number already exists
+    boolean existsByTicketTrackingNumber(String ticketTrackingNumber);
+
+    // Fetch tickets by customer ID
+    List<Ticket> findByCustomerId(Long customerId);
 }

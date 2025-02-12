@@ -28,6 +28,7 @@ public class TicketService {
         return ticketRepository.save(ticket);
     }
 
+
     // Update a ticket
     public Optional<Ticket> updateTicket(Long id, Ticket newTicketData) {
         return ticketRepository.findById(id).map(ticket -> {

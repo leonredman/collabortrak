@@ -1,97 +1,80 @@
 package com.collabortrak.collabortrak.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
-import java.util.Date;
-import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tickets")
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE) // Allows Epic & Story to be in the same table
-@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")  // Tells Jackson to look at "ticketType" to determine the class, JSON uses 'type' field for polymorphism
-@JsonSubTypes({
-        @JsonSubTypes.Type(value = Epic.class, name = "EPIC"),
-        @JsonSubTypes.Type(value = Story.class, name = "STORY"),
-        @JsonSubTypes.Type(value = Task.class, name = "TASK"),
-        @JsonSubTypes.Type(value = Bug.class, name = "BUG")
-})
-
-// using @Inheritance(strategy = InheritanceType.SINGLE_TABLE), only the subclasses (Epic, Story, Task, Bug) should be instantiated
-public abstract class Ticket {
+public class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "ticket_tracking_number", nullable = false, unique = true, updatable = false)
-    private String ticketTrackingNumber;   // unique tracking number Auto-generated
+    @Column(unique = true, updatable = false)
+    private String ticketTrackingNumber;
 
-    @Column(name = "title", nullable = false, length = 255)  // Title for all tickets (including Epics & Stories)
+    @Column(nullable = false, length = 255)
     private String title;
 
-    @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)  // FK reference to Customer
-    @JsonManagedReference  // Prevents recursive loop
-    private Customer customer;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_date", nullable = false, updatable = false)
-    private Date createdDate = new Date();
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", nullable = false)
     private StatusType status;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "due_date")
-    private Date dueDate;
-
     @Enumerated(EnumType.STRING)
-    @Column(name = "priority", nullable = false)
     private PriorityType priority;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "category", nullable = false)
+    @Column(nullable = false)
     private CategoryType category;
 
-    @Column(name = "description", columnDefinition = "TEXT")
-    private String description;
-
     @ManyToOne
-    @JoinColumn(name = "epic_id", nullable = true)  // Allow NULL values
-    @JsonBackReference // Prevents infinite recursion
-    private Epic epic;
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "last_update")
-    private Date lastUpdate;
+    @Column(updatable = false)
+    private LocalDateTime createdDate = LocalDateTime.now();
 
-    public Ticket() {}  // No Arg Constructor
+    @Column
+    private LocalDateTime dueDate;
 
-    public Ticket(String title, Customer customer, StatusType status, PriorityType priority, CategoryType category) {
-        this.ticketTrackingNumber = generateTicketTrackingNumber();
+    @Column
+    private LocalDateTime lastUpdate;
+
+    @PrePersist
+    public void generateTrackingNumber() {
+        this.ticketTrackingNumber = "TCK-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+    }
+
+    // Constructors
+    public Ticket() {}
+
+    public Ticket(String title, String description, StatusType status, PriorityType priority, CategoryType category, Customer customer) {
         this.title = title;
-        this.customer = customer;
+        this.description = description;
         this.status = status;
         this.priority = priority;
         this.category = category;
-        this.createdDate = new Date();
+        this.customer = customer;
     }
 
-    private String generateTicketTrackingNumber() {
-        return "TCK-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-    }
-
+    // Getters & Setters
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getTicketTrackingNumber() {
+        return ticketTrackingNumber;
+    }
+
+    public void setTicketTrackingNumber(String ticketTrackingNumber) {
+        this.ticketTrackingNumber = ticketTrackingNumber;
     }
 
     public String getTitle() {
@@ -102,30 +85,13 @@ public abstract class Ticket {
         this.title = title;
     }
 
-    public void setTicketTrackingNumber(String ticketTrackingNumber) {
-        this.ticketTrackingNumber = ticketTrackingNumber;
+    public String getDescription() {
+        return description;
     }
 
-    public String getTicketTrackingNumber() {
-        return ticketTrackingNumber;
+    public void setDescription(String description) {
+        this.description = description;
     }
-
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
-
 
     public StatusType getStatus() {
         return status;
@@ -133,14 +99,6 @@ public abstract class Ticket {
 
     public void setStatus(StatusType status) {
         this.status = status;
-    }
-
-    public Date getDueDate() {
-        return dueDate;
-    }
-
-    public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
     }
 
     public PriorityType getPriority() {
@@ -159,27 +117,35 @@ public abstract class Ticket {
         this.category = category;
     }
 
-    public String getDescription() {
-        return description;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
-    public Date getLastUpdate() {
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public LocalDateTime getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDateTime dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public LocalDateTime getLastUpdate() {
         return lastUpdate;
     }
 
-    public void setLastUpdate(Date lastUpdate) {
+    public void setLastUpdate(LocalDateTime lastUpdate) {
         this.lastUpdate = lastUpdate;
-    }
-
-    public Epic getEpic() {
-        return epic;
-    }
-
-    public void setEpic(Epic epic) {
-        this.epic = epic;
     }
 }

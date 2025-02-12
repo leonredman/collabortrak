@@ -1,45 +1,96 @@
 package com.collabortrak.collabortrak.entities;
 
-//import com.fasterxml.jackson.annotation.JsonSubTypes;
-//import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-// import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import java.util.List;
+import java.time.LocalDateTime;
 
 @Entity
-@DiscriminatorValue("EPIC")  //  Ensures database differentiates Epics
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")  // Fix for reference issue
+@Table(name = "epics")
+public class Epic {
 
-// @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")  // Ensure Jackson recognizes "type" in JSON
-// @JsonSubTypes({
-//        @JsonSubTypes.Type(value = Story.class, name = "STORY")
-// })
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-public class Epic extends Ticket {
+    @Column(nullable = false, length = 255)
+    private String title;
 
-    @OneToMany(mappedBy = "epic", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  //  @JsonManagedReference // Prevents infinite loop
-    private List<Story> stories;
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
-    // Required No-Arg Constructor for JPA
-    public Epic() {
-        super();
+    @Enumerated(EnumType.STRING)
+    private StatusType status;
+
+    @Enumerated(EnumType.STRING)
+    private PriorityType priority;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
+
+    @Column(updatable = false)
+    private LocalDateTime createdDate = LocalDateTime.now();
+
+    // Constructors
+    public Epic() {}
+
+    public Epic(String title, String description, StatusType status, PriorityType priority, Customer customer) {
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.priority = priority;
+        this.customer = customer;
     }
 
-    public Epic(String title, Customer customer, StatusType status, PriorityType priority, CategoryType category) {
-        super(title, customer, status, priority, category);
+    // Getters & Setters
+    public Long getId() {
+        return id;
     }
 
-    public List<Story> getStories() {
-        return stories;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public void setStories(List<Story> stories) {
-        this.stories = stories;
+    public String getTitle() {
+        return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public StatusType getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusType status) {
+        this.status = status;
+    }
+
+    public PriorityType getPriority() {
+        return priority;
+    }
+
+    public void setPriority(PriorityType priority) {
+        this.priority = priority;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
 }

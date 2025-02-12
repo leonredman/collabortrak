@@ -1,54 +1,85 @@
 package com.collabortrak.collabortrak.controllers;
 
 import com.collabortrak.collabortrak.entities.Ticket;
-import com.collabortrak.collabortrak.services.TicketService;
+import com.collabortrak.collabortrak.entities.Customer;
+import com.collabortrak.collabortrak.repositories.CustomerRepository;
+import com.collabortrak.collabortrak.repositories.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/tickets")   // path for ticket APIs
+@RequestMapping("/api/tickets")
 public class TicketController {
 
     @Autowired
-    private TicketService ticketService;
+    private TicketRepository ticketRepository;
 
-    // get all tickets
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    private String generateUniqueTicketTrackingNumber() {
+        String trackingNumber;
+        do {
+            trackingNumber = "TCK-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        } while (ticketRepository.existsByTicketTrackingNumber(trackingNumber));
+
+        return trackingNumber;
+    }
+
+    // Create a ticket
+    @PostMapping
+    public ResponseEntity<Ticket> createTicket(@RequestBody Ticket ticket) {
+        ticket.setTicketTrackingNumber(generateUniqueTicketTrackingNumber());
+        Ticket savedTicket = ticketRepository.save(ticket);
+        return ResponseEntity.ok(savedTicket);
+    }
+
+    // Get all tickets
     @GetMapping
-    public List<Ticket> getAllTickets(){
-        return ticketService.getAllTickets();
+    public List<Ticket> getAllTickets() {
+        return ticketRepository.findAll();
     }
 
     // Get ticket by ID
     @GetMapping("/{id}")
     public ResponseEntity<Ticket> getTicketById(@PathVariable Long id) {
-        return ticketService.getTicketById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        Optional<Ticket> ticket = ticketRepository.findById(id);
+        return ticket.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    // Create a new ticket
-    @PostMapping
-    public ResponseEntity<Ticket> createTicket(@RequestBody Ticket ticket) {
-        Ticket savedTicket = ticketService.createTicket(ticket);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedTicket);
+    // Get tickets by customer ID
+    @GetMapping("/customer/{customerId}")
+    public List<Ticket> getTicketsByCustomer(@PathVariable Long customerId) {
+        return ticketRepository.findByCustomerId(customerId);
     }
 
     // Update a ticket
     @PutMapping("/{id}")
-    public ResponseEntity<Ticket> updateTicket(@PathVariable Long id, @RequestBody Ticket ticket) {
-        return ticketService.updateTicket(id, ticket)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<Ticket> updateTicket(@PathVariable Long id, @RequestBody Ticket updatedTicket) {
+        return ticketRepository.findById(id)
+                .map(ticket -> {
+                    ticket.setTitle(updatedTicket.getTitle());
+                    ticket.setDescription(updatedTicket.getDescription());
+                    ticket.setStatus(updatedTicket.getStatus());
+                    ticket.setPriority(updatedTicket.getPriority());
+                    ticket.setCategory(updatedTicket.getCategory());
+                    return ResponseEntity.ok(ticketRepository.save(ticket));
+                })
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // Delete a ticket
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTicket(@PathVariable Long id) {
-        boolean deleted = ticketService.deleteTicket(id);
-        return deleted ? ResponseEntity.noContent().build() : ResponseEntity.notFound().build();
+        if (!ticketRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        ticketRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

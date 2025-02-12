@@ -1,19 +1,96 @@
 package com.collabortrak.collabortrak.entities;
 
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-@DiscriminatorValue("TASK")  // This ensures "TASK" is stored in the "type" column in the database
-public class Task extends Ticket {
+@Table(name = "tasks")
+public class Task {
 
-    public Task() {
-        super();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 255)
+    private String title;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    @Enumerated(EnumType.STRING)
+    private StatusType status;
+
+    @Enumerated(EnumType.STRING)
+    private PriorityType priority;
+
+    @ManyToOne
+    @JoinColumn(name = "story_id", nullable = false)
+    private Story story;
+
+    @Column(updatable = false)
+    private LocalDateTime createdDate = LocalDateTime.now();
+
+    // Constructors
+    public Task() {}
+
+    public Task(String title, String description, StatusType status, PriorityType priority, Story story) {
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.priority = priority;
+        this.story = story;
     }
 
-    public Task(String title, Customer customer, StatusType status, PriorityType priority, CategoryType category, String description, Epic epic) {
-        super(title, customer, status,priority,category);
-        this.setDescription(description);
-        this.setEpic(epic); // Associates Task with an Epic if applicable
+    // Getters & Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public StatusType getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusType status) {
+        this.status = status;
+    }
+
+    public PriorityType getPriority() {
+        return priority;
+    }
+
+    public void setPriority(PriorityType priority) {
+        this.priority = priority;
+    }
+
+    public Story getStory() {
+        return story;
+    }
+
+    public void setStory(Story story) {
+        this.story = story;
+    }
+
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
     }
 }

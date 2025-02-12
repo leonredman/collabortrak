@@ -1,26 +1,85 @@
 package com.collabortrak.collabortrak.entities;
 
-//import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-@DiscriminatorValue("STORY")  // Ensures the database correctly differentiates Stories
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")  // Fix circular reference issue
-public class Story extends Ticket {
+@Table(name = "stories")
+public class Story {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 255)
+    private String title;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
+    @Enumerated(EnumType.STRING)
+    private StatusType status;
+
+    @Enumerated(EnumType.STRING)
+    private PriorityType priority;
 
     @ManyToOne
-    @JoinColumn(name = "epic_id", nullable = false)  // story must always be linked to epic
-    // @JsonBackReference // Prevents infinite recursion during JSON serialization
+    @JoinColumn(name = "epic_id", nullable = false)
     private Epic epic;
 
+    @Column(updatable = false)
+    private LocalDateTime createdDate = LocalDateTime.now();
+
+    // Constructors
     public Story() {}
 
-    public Story(String title, Customer customer, StatusType status, PriorityType priority, CategoryType category, Epic epic, String description) {
-        super(title, customer, status, priority, category);  //  Uses `title` and inherits `description`
-        this.setDescription(description);   // not set by the super must set explicitly here, everything else is inherited
-        this.epic = epic;                   // not set by the super must set explicitly here, everything else is inherited
+    public Story(String title, String description, StatusType status, PriorityType priority, Epic epic) {
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.priority = priority;
+        this.epic = epic;
+    }
+
+    // Getters & Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public StatusType getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusType status) {
+        this.status = status;
+    }
+
+    public PriorityType getPriority() {
+        return priority;
+    }
+
+    public void setPriority(PriorityType priority) {
+        this.priority = priority;
     }
 
     public Epic getEpic() {
@@ -31,4 +90,7 @@ public class Story extends Ticket {
         this.epic = epic;
     }
 
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
+    }
 }
