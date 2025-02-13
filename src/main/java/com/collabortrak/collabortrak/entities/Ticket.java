@@ -11,9 +11,6 @@ public class Ticket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, updatable = false)
-    private String ticketTrackingNumber;
-
     @Column(nullable = false, length = 255)
     private String title;
 
@@ -30,9 +27,16 @@ public class Ticket {
     @Column(nullable = false)
     private CategoryType category;
 
+    @Column(name = "ticket_tracking_number",unique = true, updatable = false)
+    private String ticketTrackingNumber;
+
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
+
+    @ManyToOne
+    @JoinColumn(name = "assigned_employee_id")
+    private Employee assignedEmployee;
 
     @Column(updatable = false)
     private LocalDateTime createdDate = LocalDateTime.now();
@@ -43,21 +47,17 @@ public class Ticket {
     @Column
     private LocalDateTime lastUpdate;
 
-    @PrePersist
-    public void generateTrackingNumber() {
-        this.ticketTrackingNumber = "TCK-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-    }
-
     // Constructors
     public Ticket() {}
 
-    public Ticket(String title, String description, StatusType status, PriorityType priority, CategoryType category, Customer customer) {
+    public Ticket(String title, String description, StatusType status, PriorityType priority, CategoryType category, Customer customer, Employee assignedEmployee) {
         this.title = title;
         this.description = description;
         this.status = status;
         this.priority = priority;
         this.category = category;
         this.customer = customer;
+        this.assignedEmployee = assignedEmployee;
     }
 
     // Getters & Setters
@@ -147,5 +147,17 @@ public class Ticket {
 
     public void setLastUpdate(LocalDateTime lastUpdate) {
         this.lastUpdate = lastUpdate;
+    }
+    public Employee getAssignedEmployee() {
+        return assignedEmployee;
+    }
+
+    public void setAssignedEmployee(Employee assignedEmployee) {
+        this.assignedEmployee = assignedEmployee;
+    }
+
+    @PrePersist
+    public void generateTrackingNumber() {
+        this.ticketTrackingNumber = "TCK-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
 }
