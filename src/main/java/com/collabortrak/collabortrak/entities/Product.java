@@ -1,32 +1,45 @@
 package com.collabortrak.collabortrak.entities;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
-import java.util.Date;
 @Entity
-@Table(name = "product")
+@Table(name = "products")
 public class Product {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "plan", nullable = false)
-    private PlanType category;
+    @Column(name = "date_purchased", nullable = false)
+    private LocalDateTime datePurchased;
 
-    @Column(name = "domain", length = 100)
+    @Column(name = "renewal_date")
+    private LocalDateTime renewalDate;
+
+    @Column(nullable = false, length = 255)
     private String domain;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "date_purchased", nullable = false, updatable = false)
-    private Date date_purchased= new Date();
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PlanType plan;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "renewal_date", nullable = false, updatable = false)
-    private Date renewal_date= new Date();
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 
+    // Constructors
     public Product() {}
 
+    public Product(LocalDateTime datePurchased, LocalDateTime renewalDate, String domain, PlanType plan, Customer customer) {
+        this.datePurchased = datePurchased;
+        this.renewalDate = renewalDate;
+        this.domain = domain;
+        this.plan = plan;
+        this.customer = customer;
+    }
+
+    // Getters & Setters
     public Long getId() {
         return id;
     }
@@ -35,12 +48,20 @@ public class Product {
         this.id = id;
     }
 
-    public PlanType getCategory() {
-        return category;
+    public LocalDateTime getDatePurchased() {
+        return datePurchased;
     }
 
-    public void setCategory(PlanType category) {
-        this.category = category;
+    public void setDatePurchased(LocalDateTime datePurchased) {
+        this.datePurchased = datePurchased;
+    }
+
+    public LocalDateTime getRenewalDate() {
+        return renewalDate;
+    }
+
+    public void setRenewalDate(LocalDateTime renewalDate) {
+        this.renewalDate = renewalDate;
     }
 
     public String getDomain() {
@@ -51,20 +72,19 @@ public class Product {
         this.domain = domain;
     }
 
-    public Date getDate_purchased() {
-        return date_purchased;
+    public PlanType getPlan() {
+        return plan;
     }
 
-    public void setDate_purchased(Date date_purchased) {
-        this.date_purchased = date_purchased;
+    public void setPlan(PlanType plan) {
+        this.plan = plan;
     }
 
-    public Date getRenewal_date() {
-        return renewal_date;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setRenewal_date(Date renewal_date) {
-        this.renewal_date = renewal_date;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 }
-
