@@ -38,9 +38,15 @@ public class EmployeeController {
     }
 
     // Get employees by role
+//    @GetMapping("/role/{role}")
+//    public List<Employee> getEmployeesByRole(@PathVariable String role) {
+//        return employeeRepository.findByRole(RoleType.valueOf(role.toUpperCase()));
+//    }
+
+    // Get employees by role
     @GetMapping("/role/{role}")
-    public List<Employee> getEmployeesByRole(@PathVariable String role) {
-        return employeeRepository.findByRole(RoleType.valueOf(role.toUpperCase()));
+    public ResponseEntity<List<Employee>> getEmployeesByRole(@PathVariable RoleType role) {
+        return ResponseEntity.ok(employeeRepository.findByRole(role));
     }
 
     // Update an employee

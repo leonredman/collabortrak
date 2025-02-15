@@ -1,5 +1,6 @@
 package com.collabortrak.collabortrak.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -36,6 +37,7 @@ public class Ticket {
 
     @ManyToOne
     @JoinColumn(name = "assigned_employee_id")
+    @JsonIgnore
     private Employee assignedEmployee;
 
     @Column(updatable = false)

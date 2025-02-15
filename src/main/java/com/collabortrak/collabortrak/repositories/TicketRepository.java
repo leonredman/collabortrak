@@ -1,6 +1,11 @@
 package com.collabortrak.collabortrak.repositories;
 
 import com.collabortrak.collabortrak.entities.Ticket;
+import com.collabortrak.collabortrak.entities.Customer;
+import com.collabortrak.collabortrak.entities.Employee;
+import com.collabortrak.collabortrak.entities.StatusType;
+import com.collabortrak.collabortrak.entities.PriorityType;
+import com.collabortrak.collabortrak.entities.CategoryType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,6 +16,12 @@ import java.util.Optional;
 
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
+
+    List<Ticket> findByCustomer(Customer customer);
+    List<Ticket> findByAssignedEmployee(Employee employee);
+    List<Ticket> findByStatus(StatusType status);
+    List<Ticket> findByPriority(PriorityType priority);
+    List<Ticket> findByCategory(CategoryType category);
 
     // Fetch single ticket with its customer
     @Query("SELECT t FROM Ticket t WHERE t.id = :id")

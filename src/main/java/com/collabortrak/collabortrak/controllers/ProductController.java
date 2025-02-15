@@ -35,10 +35,18 @@ public class ProductController {
     }
 
     // Get a product by ID
+//    @GetMapping("/{id}")
+//    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
+//        Optional<Product> product = productRepository.findById(id);
+//        return product.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+//    }
+
+    // Get a product by ID
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-        Optional<Product> product = productRepository.findById(id);
-        return product.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return productRepository.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     // Search products by domain
@@ -69,6 +77,7 @@ public class ProductController {
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
+
 
     // Delete a product
     @DeleteMapping("/{id}")

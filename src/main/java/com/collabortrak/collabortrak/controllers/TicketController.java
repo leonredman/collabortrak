@@ -2,8 +2,13 @@ package com.collabortrak.collabortrak.controllers;
 
 import com.collabortrak.collabortrak.entities.Ticket;
 import com.collabortrak.collabortrak.entities.Customer;
+import com.collabortrak.collabortrak.entities.Employee;
+import com.collabortrak.collabortrak.entities.StatusType;
+import com.collabortrak.collabortrak.entities.PriorityType;
+import com.collabortrak.collabortrak.entities.CategoryType;
 import com.collabortrak.collabortrak.repositories.CustomerRepository;
 import com.collabortrak.collabortrak.repositories.TicketRepository;
+import com.collabortrak.collabortrak.repositories.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +26,9 @@ public class TicketController {
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private EmployeeRepository employeeRepository;
 
     private String generateUniqueTicketTrackingNumber() {
         String trackingNumber;
@@ -53,10 +61,44 @@ public class TicketController {
     }
 
     // Get tickets by customer ID
+//    @GetMapping("/customer/{customerId}")
+//    public List<Ticket> getTicketsByCustomer(@PathVariable Long customerId) {
+//        return ticketRepository.findByCustomerId(customerId);
+//    }
+
+    // Get tickets by customer ID
     @GetMapping("/customer/{customerId}")
-    public List<Ticket> getTicketsByCustomer(@PathVariable Long customerId) {
-        return ticketRepository.findByCustomerId(customerId);
+    public ResponseEntity<List<Ticket>> getTicketsByCustomer(@PathVariable Long customerId) {
+        Optional<Customer> customer = customerRepository.findById(customerId);
+        return customer.map(value -> ResponseEntity.ok(ticketRepository.findByCustomer(value)))
+                .orElse(ResponseEntity.notFound().build());
     }
+
+    // Get tickets by assigned employee ID
+    @GetMapping("/employee/{employeeId}")
+    public ResponseEntity<List<Ticket>> getTicketsByEmployee(@PathVariable Long employeeId) {
+        Optional<Employee> employee = employeeRepository.findById(employeeId);
+        return employee.map(value -> ResponseEntity.ok(ticketRepository.findByAssignedEmployee(value)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // Get tickets filtered by status, priority, or category
+    @GetMapping("/filter")
+    public ResponseEntity<List<Ticket>> filterTickets(
+            @RequestParam(required = false) StatusType status,
+            @RequestParam(required = false) PriorityType priority,
+            @RequestParam(required = false) CategoryType category) {
+        if (status != null) {
+            return ResponseEntity.ok(ticketRepository.findByStatus(status));
+        } else if (priority != null) {
+            return ResponseEntity.ok(ticketRepository.findByPriority(priority));
+        } else if (category != null) {
+            return ResponseEntity.ok(ticketRepository.findByCategory(category));
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 
     // Update a ticket
     @PutMapping("/{id}")
