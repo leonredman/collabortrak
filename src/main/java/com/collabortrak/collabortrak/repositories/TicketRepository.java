@@ -23,17 +23,25 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     List<Ticket> findByPriority(PriorityType priority);
     List<Ticket> findByCategory(CategoryType category);
 
-    // Fetch single ticket with its customer
+    // Get single ticket with its customer
     @Query("SELECT t FROM Ticket t WHERE t.id = :id")
     Optional<Ticket> findByIdWithCustomer(@Param("id") Long id);
 
-    // Fetch all tickets with customer details
+    // Get all tickets with customer details
     @Query("SELECT t FROM Ticket t")
     List<Ticket> findAllWithCustomer();
+
+    // Get Ticket Counts by status
+    @Query("SELECT t.status AS status, COUNT(t) AS count FROM Ticket t GROUP BY t.status")
+    List<Object[]> countTicketsByStatus();
 
     // Check if a ticket tracking number already exists
     boolean existsByTicketTrackingNumber(String ticketTrackingNumber);
 
-    // Fetch tickets by customer ID
+    // Get Ticket  count By Employee
+    @Query("SELECT e.firstName, e.lastName, COUNT(t) FROM Ticket t JOIN t.assignedEmployee e GROUP BY e.id")
+    List<Object[]> countTicketsByEmployee();
+
+    // Get tickets by customer ID
     List<Ticket> findByCustomerId(Long customerId);
 }
