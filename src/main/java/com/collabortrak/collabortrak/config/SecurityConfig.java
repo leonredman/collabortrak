@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -36,13 +35,24 @@ public class SecurityConfig {
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/tickets/**").authenticated()
                         .requestMatchers("/api/employees/**").hasAnyRole("ADMIN", "MANAGER")
-                        .requestMatchers("/api/tickets/epic").hasRole("WEBSITE_SPECIALIST")  // Website Specialists create Epics & Stories
-                        .requestMatchers("/api/tickets/story").hasAnyRole("WEBSITE_SPECIALIST", "DEVELOPER")  // Specialists and Developers create Stories
-                        .requestMatchers("/api/tickets/task").hasRole("DEVELOPER")  // Only Developers create Tasks
-                        .requestMatchers("/api/tickets/bug").hasRole("QA_AGENT")  // Only QA Agents create Bugs
+                        .requestMatchers("/api/tickets/epic").hasRole("WEBSITE_SPECIALIST")
+                        .requestMatchers("/api/tickets/story").hasAnyRole("WEBSITE_SPECIALIST", "DEVELOPER")
+                        .requestMatchers("/api/tickets/task").hasRole("DEVELOPER")
+                        .requestMatchers("/api/tickets/bug").hasRole("QA_AGENT")
                         .anyRequest().permitAll()
                 )
-                .httpBasic(withDefaults()); // Use Basic Authentication
+                .httpBasic(withDefaults()) // Basic Authentication
+                .logout(logout -> logout  // 🔥 Corrected Placement
+                        .logoutUrl("/api/logout")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setStatus(200);
+                            response.getWriter().write("{\"message\": \"Logout successful\"}");
+                            response.getWriter().flush();
+                        })
+                );
+
         return http.build();
     }
 }
