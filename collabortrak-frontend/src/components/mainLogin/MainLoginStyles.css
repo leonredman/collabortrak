@@ -1,0 +1,10 @@
+#loginBackgroundImg {
+  background-image: url("/freeimg_2 .jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.ui-container-login {
+  height: 100vh;
+  margin-top: 0;
+}
