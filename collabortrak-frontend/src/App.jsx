@@ -5,6 +5,7 @@ import {
   BrowserRouter as Router,
   Routes,
 } from "react-router-dom";
+import Dashboard from "./pages/Dashboard";
 import LoginPage from "./pages/Login";
 import NotFound from "./pages/NotFound";
 
@@ -18,6 +19,7 @@ const App = () => {
       <Routes>
         {/* Public Routes */}
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/dashboard" element={<Dashboard />} />
 
         {/* Fallback for Undefined Routes */}
         <Route path="*" element={<NotFound />} />

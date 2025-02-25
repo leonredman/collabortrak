@@ -18,7 +18,8 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String email;
+//    private String email;
+    private String username;   // updated to username for simplicity
 
     @Column(nullable = false)
     private String password;
@@ -29,8 +30,10 @@ public class User implements UserDetails {
 
     public User() {}
 
-    public User(String email, String password, RoleType role) {
-        this.email = email;
+   // public User(String email, String password, RoleType role) {
+   public User(String username, String password, RoleType role) {
+        //this.email = email;
+        this.username = username;
         this.password = password;
         this.role = role;
     }
@@ -40,9 +43,33 @@ public class User implements UserDetails {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public RoleType getRole() {
+        return role;
+    }
+
+    public void setRole(RoleType role) {
+        this.role = role;
+    }
+
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
     @Override
