@@ -30,9 +30,33 @@ const LoginForm = () => {
 
       if (response.ok) {
         console.log("Login successful");
+        const data = await response.json();
+        const userRole = data.role;
+
+        // Store role in local storage
+        localStorage.setItem("userRole", userRole);
         localStorage.setItem("isAuthenticated", "true");
 
-        navigate("/dashboard");
+        // Redirect based on role
+        switch (userRole) {
+          case "[ROLE_ADMIN]":
+            navigate("/admin-dashboard");
+            break;
+          case "[ROLE_MANAGER]":
+            navigate("/manager-dashboard");
+            break;
+          case "[ROLE_DEVELOPER]":
+            navigate("/developer-dashboard");
+            break;
+          case "[ROLE_QA_AGENT]":
+            navigate("/qa-dashboard");
+            break;
+          case "[ROLE_WEBSITE_SPECIALIST]":
+            navigate("/website-specialist-dashboard");
+            break;
+          default:
+            navigate("/dashboard");
+        }
       } else {
         const errorData = await response.json();
         console.error("Login failed:", errorData.message);
