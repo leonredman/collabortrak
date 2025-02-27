@@ -7,7 +7,7 @@ const LoginHeader = () => {
         CollaborTrak
       </Link>
 
-      <Link to="/loginPage" className="item">
+      <Link to="/login" className="item">
         Login
       </Link>
       <Link to="/AccountRegister" className="item">

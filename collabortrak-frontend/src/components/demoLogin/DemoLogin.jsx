@@ -10,27 +10,27 @@ const DemoLogin = () => {
       <div className="ui grid">
         <div className="row">
           <div className="five wide column">
-            <Link to="/Dashboard" className="item">
+            <Link to="/AdminDashboard" className="item">
               <LogButton text="Site Admin" />
             </Link>
           </div>
 
           <div className="five wide column">
-            <Link to="/Ws1Dashboard" className="item">
-              <LogButton text="Ws Specialist" />
+            <Link to="/WebsiteSpecialistDashboard" className="item">
+              <LogButton text="WS Specialist" />
             </Link>
           </div>
         </div>
 
         <div className="row">
           <div className="five wide column">
-            <Link to="/DevDashboard" className="item">
+            <Link to="/DeveloperDashboard" className="item">
               <LogButton text="Developer" />
             </Link>
           </div>
 
           <div className="five wide column">
-            <Link to="/QaDashboard" className="item">
+            <Link to="/QADashboard" className="item">
               <LogButton text="QA Agent" />
             </Link>
           </div>
