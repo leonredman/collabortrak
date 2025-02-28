@@ -6,3 +6,7 @@
 .ui.menu {
   border-radius: 0;
 }
+
+.ui.secondary.button {
+  background-color: #2196f3;
+}

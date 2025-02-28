@@ -1,4 +1,3 @@
-import DemoLogin from "../components/demoLogin/DemoLogin";
 import LoginForm from "../components/loginForm/LoginForm";
 import LoginHeader from "../components/loginHeader/LoginHeader";
 import "../components/mainLogin/MainLoginStyles.css";
@@ -13,7 +12,6 @@ const Login = () => {
             <div className="row">
               <div className="four wide centered column">
                 <LoginForm />
-                <DemoLogin />
               </div>
             </div>
           </div>

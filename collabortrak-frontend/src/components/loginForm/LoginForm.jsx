@@ -2,6 +2,14 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./LoginForm.css";
 
+const demoCredentials = {
+  admin: { username: "admin", password: "admin123" },
+  manager: { username: "manager", password: "manager123" },
+  developer: { username: "dev", password: "dev123" },
+  qa: { username: "qa", password: "qa123" },
+  web: { username: "web", password: "web123" },
+};
+
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -68,13 +76,21 @@ const LoginForm = () => {
     }
   };
 
+  const handleDemoLogin = (role) => {
+    const { username, password } = demoCredentials[role];
+    setUsername(username);
+    setPassword(password);
+    // Automatically submit the form
+    document.getElementById("login-form").requestSubmit();
+  };
+
   return (
     <div
       className="loginContainer"
       style={{ marginLeft: "260px", marginTop: "150px", marginBottom: "50px" }}
     >
       <div className="ui grid">
-        <h1>LOGIN</h1>
+        <h1>Login</h1>
         <p>Welcome back. Please login to your account</p>
 
         {error && <p style={{ color: "red" }}>{error}</p>}
@@ -117,6 +133,20 @@ const LoginForm = () => {
             Submit
           </button>
         </form>
+
+        <h3>Demo Logins</h3>
+        <div className="demo-buttons">
+          {Object.keys(demoCredentials).map((role) => (
+            <button
+              key={role}
+              onClick={() => handleDemoLogin(role)}
+              className="ui secondary button"
+              style={{ margin: "5px" }}
+            >
+              {role.charAt(0).toUpperCase() + role.slice(1)} Demo
+            </button>
+          ))}
+        </div>
 
         <div style={{ marginTop: "20px" }}>
           <Link to="/AccountRegister" className="item">
