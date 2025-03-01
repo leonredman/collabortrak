@@ -1,14 +1,15 @@
-// WSDashboard.jsx
+// WebsiteSpecialistDashboard.jsx
+
 import React from "react";
-import LogoutButton from "../components/logoutButton/LogoutButton";
+import DashboardLayout from "../components/dashboardLayout/DashboardLayout";
 
 const WebsiteSpecialistDashboard = () => {
   return (
-    <div>
-      <h1>Welcome to the Website Specialist Dashboard!</h1>
+    <DashboardLayout>
+      <h1>Website Specialist Dashboard</h1>
+      <p>Welcome, Website Specialist! Manage website-related tasks.</p>
       <p>Confirming protected route.</p>
-      <LogoutButton />
-    </div>
+    </DashboardLayout>
   );
 };
 
