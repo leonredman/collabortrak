@@ -34,11 +34,7 @@ const Header = () => {
         Dashboard
       </Link>
 
-      <button
-        onClick={handleLogout}
-        className="ui primary button"
-        style={{ marginLeft: "auto", marginRight: "20px" }}
-      >
+      <button onClick={handleLogout} className="ui primary button">
         Logout
       </button>
 
