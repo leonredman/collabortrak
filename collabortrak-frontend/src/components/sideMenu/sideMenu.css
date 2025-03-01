@@ -23,3 +23,10 @@
 .ui.vertical.menu .item {
   color: white !important;
 }
+
+.ui.visible.sidebar.blue.inverted.vertical.menu {
+  width: 8rem;
+}
+.ui.visible.sidebar.blue.inverted.vertical.menu:hover {
+  width: 14rem; /* Expand on hover */
+}

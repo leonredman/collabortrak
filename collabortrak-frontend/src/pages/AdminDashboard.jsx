@@ -1,6 +1,5 @@
 import React from "react";
 import DashboardLayout from "../components/dashboardLayout/DashboardLayout";
-import LogoutButton from "../components/logoutButton/LogoutButton";
 
 const AdminDashboard = () => {
   return (
@@ -53,7 +52,7 @@ const AdminDashboard = () => {
           </div>
         </div>
       </div>
-      <LogoutButton />
+      {/* <LogoutButton /> */}
     </DashboardLayout>
   );
 };
