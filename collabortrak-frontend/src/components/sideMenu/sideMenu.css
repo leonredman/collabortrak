@@ -1,0 +1,25 @@
+#root > div > div > fragement > div.ui-container-dash {
+  margin-left: 140px;
+}
+
+#root
+  > div
+  > div
+  > fragement
+  > div.ui.visible.sidebar.blue.inverted.vertical.menu {
+  width: 90px;
+  margin-top: 39px !important;
+  position: fixed;
+}
+
+.ui.header img.ui.medium.circular.image {
+  margin-right: 10px;
+}
+
+.ui.vertical.menu .header {
+  color: white !important;
+}
+
+.ui.vertical.menu .item {
+  color: white !important;
+}

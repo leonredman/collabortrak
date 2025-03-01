@@ -1,0 +1,33 @@
+.ui.container {
+  /* margin-left: 0 !important; */
+}
+
+#root > div > div > fragement > div.ui-container-dash {
+  margin-left: 140px;
+}
+
+#root
+  > div
+  > div
+  > fragement
+  > div.ui.visible.sidebar.blue.inverted.vertical.menu {
+  width: 90px;
+}
+
+#root
+  > div
+  > div
+  > fragement
+  > div.ui.visible.sidebar.blue.inverted.vertical.menu
+  > div:nth-child(1) {
+  margin-top: 50px;
+}
+
+#root
+  > div
+  > div
+  > fragement
+  > div.ui.visible.sidebar.blue.inverted.vertical.menu {
+  margin-top: 39px !important;
+  position: fixed;
+}
