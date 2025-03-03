@@ -11,6 +11,8 @@ import com.collabortrak.collabortrak.repositories.TicketRepository;
 import com.collabortrak.collabortrak.repositories.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,7 +43,21 @@ public class TicketController {
 
     // Create a ticket
     @PostMapping
-    public ResponseEntity<Ticket> createTicket(@RequestBody Ticket ticket) {
+    @PreAuthorize("hasRole('ADMIN') or " +
+            "(hasRole('WEBSITE_SPECIALIST') and " +
+            "(#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).NEW_BUILD or " +
+            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).REVISIONS or " +
+            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).POST_PUBLISH) and " +
+            "(#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).EPIC or " +
+            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).STORY))) or " +
+            "(hasRole('DEVELOPER') and (#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).BUG and " +
+            "(#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).STORY or " +
+            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).TASK or " +
+            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).BUG))) or " +
+            "(hasRole('QA_AGENT') and (#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).BUG and " +
+            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).BUG))")
+
+    public ResponseEntity<Ticket> createTicket(@RequestBody Ticket ticket, Authentication authentication) {
         ticket.setTicketTrackingNumber(generateUniqueTicketTrackingNumber());
         Ticket savedTicket = ticketRepository.save(ticket);
         return ResponseEntity.ok(savedTicket);
@@ -102,6 +118,7 @@ public class TicketController {
 
     // Update a ticket
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER') or hasRole('DEVELOPER') or hasRole('QA_AGENT') or hasRole('WEBSITE_SPECIALIST')")
     public ResponseEntity<Ticket> updateTicket(@PathVariable Long id, @RequestBody Ticket updatedTicket) {
         return ticketRepository.findById(id)
                 .map(ticket -> {
@@ -115,8 +132,9 @@ public class TicketController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Delete a ticket
+    // Delete a ticket - only Admins delete
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteTicket(@PathVariable Long id) {
         if (!ticketRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
