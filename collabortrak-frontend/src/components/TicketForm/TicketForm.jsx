@@ -1,0 +1,232 @@
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+const TicketForm = () => {
+  console.log("TicketForm Rendered!"); // Confirm TicketForm is mounted
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [status, setStatus] = useState("OPEN");
+  const [priority, setPriority] = useState("MEDIUM");
+  const [category, setCategory] = useState("");
+  const [customerID, setCustomerID] = useState("");
+  const [assignedEmployee, setAssignedEmployee] = useState("");
+  const [customers, setCustomers] = useState([]);
+  const [employees, setEmployees] = useState([]);
+
+  const navigate = useNavigate();
+  const userRole = localStorage.getItem("userRole");
+
+  // **Role-Based Category Options**
+  const categoryOptions = () => {
+    console.log("Checking category options for userRole:", userRole); // Debug log
+
+    switch (userRole) {
+      case "[ROLE_ADMIN]":
+        return ["NEW_BUILD", "REVISIONS", "POST_PUBLISH", "BUG"]; // Admin accesses all categories
+      case "[ROLE_WEBSITE_SPECIALIST]":
+        return ["NEW_BUILD", "REVISIONS", "POST_PUBLISH"];
+      case "[ROLE_DEVELOPER]":
+        return ["BUG"];
+      case "[ROLE_QA_AGENT]":
+        return ["BUG"];
+      default:
+        return [];
+    }
+  };
+
+  useEffect(() => {
+    console.log(" useEffect in TicketForm triggered!"); // Logs when API calls start
+
+    fetch("http://localhost:8080/api/customers", {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Customers Fetched:", data);
+        setCustomers(data);
+      })
+      .catch((err) => console.error("Customer API failed:", err));
+
+    fetch("http://localhost:8080/api/employees", {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Employees Fetched:", data);
+        setEmployees(data);
+      })
+      .catch((err) => console.error("Employee API failed:", err));
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const ticketData = {
+      title,
+      description,
+      status,
+      priority,
+      category,
+      customer: { id: parseInt(customerID) },
+      assignedEmployee: assignedEmployee
+        ? { id: parseInt(assignedEmployee) }
+        : null,
+    };
+
+    try {
+      const response = await fetch("http://localhost:8080/api/tickets", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(ticketData),
+      });
+
+      if (response.ok) {
+        console.log("Ticket created successfully");
+        navigate("/dashboard");
+      } else {
+        const errorData = await response.json();
+        console.error("Error creating ticket:", errorData.message);
+      }
+    } catch (error) {
+      console.error("Network error:", error.message);
+    }
+  };
+
+  return (
+    <div className="newTicketContainer">
+      <div className="ui grid">
+        <div className="ui row">
+          <div className="six wide centered column">
+            <h1>Create A New Ticket</h1>
+          </div>
+        </div>
+
+        <div className="seven wide centered column">
+          <div className="ui raised segment">
+            <form className="ui form" onSubmit={handleSubmit}>
+              {/* Title */}
+              <div className="field">
+                <label>Title</label>
+                <input
+                  type="text"
+                  placeholder="Enter ticket title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  required
+                />
+              </div>
+
+              {/* Description */}
+              <div className="field">
+                <label>Description</label>
+                <textarea
+                  placeholder="Describe the issue"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  required
+                />
+              </div>
+
+              {/* Status */}
+              <div className="field">
+                <label>Status</label>
+                <select
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                >
+                  <option value="OPEN">Open</option>
+                  <option value="BUILD_IN_PROGRESS">Build In Progress</option>
+                  <option value="BUILD_COMPLETE">Build Complete</option>
+                  <option value="QA_IN_PROGRESS">QA In Progress</option>
+                  <option value="QA_COMPLETE">QA Complete</option>
+                </select>
+              </div>
+
+              {/* Priority */}
+              <div className="field">
+                <label>Priority</label>
+                <select
+                  value={priority}
+                  onChange={(e) => setPriority(e.target.value)}
+                >
+                  <option value="HIGH">High</option>
+                  <option value="MEDIUM">Medium</option>
+                  <option value="LOW">Low</option>
+                </select>
+              </div>
+
+              {/* Category (Role Restricted) */}
+              <div className="field">
+                <label>Category</label>
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  required
+                >
+                  <option value="">Select Category</option>
+                  {categoryOptions().map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Customer Selection */}
+              <div className="field">
+                <label>Customer</label>
+                <select
+                  value={customerID}
+                  onChange={(e) => setCustomerID(e.target.value)}
+                  required
+                >
+                  <option value="">Select Customer</option>
+                  {customers.map((cust) => (
+                    <option key={cust.id} value={cust.id}>
+                      {cust.firstName} {cust.lastName} (ID: {cust.id})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Assigned Employee Selection */}
+              <div className="field">
+                <label>Assign To (Optional)</label>
+                <select
+                  value={assignedEmployee}
+                  onChange={(e) => setAssignedEmployee(e.target.value)}
+                >
+                  <option value="">Unassigned</option>
+                  {employees.map((emp) => (
+                    <option key={emp.id} value={emp.id}>
+                      {emp.firstName} {emp.lastName} (ID: {emp.id})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Submit Button */}
+              <button className="ui primary button" type="submit">
+                Submit Ticket
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default TicketForm;

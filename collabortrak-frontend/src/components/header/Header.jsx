@@ -34,6 +34,10 @@ const Header = () => {
         Dashboard
       </Link>
 
+      <Link to="/create-ticket" className="item">
+        Create Ticket
+      </Link>
+
       <button onClick={handleLogout} className="ui primary button">
         Logout
       </button>

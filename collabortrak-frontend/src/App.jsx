@@ -8,6 +8,7 @@ import {
 
 import ProtectedRoute from "./components/protectedRoute/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
+import CreateTicketPage from "./pages/CreateTicketPage";
 import Dashboard from "./pages/Dashboard";
 import DeveloperDashboard from "./pages/DeveloperDashboard";
 import LoginPage from "./pages/Login";
@@ -25,8 +26,21 @@ const App = () => {
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
     const userRole = localStorage.getItem("userRole");
+    const currentPath = window.location.pathname; // Get current URL path
 
-    if (isAuthenticated) {
+    console.log(
+      "useEffect triggered: isAuthenticated =",
+      isAuthenticated,
+      "userRole =",
+      userRole
+    );
+
+    // Prevent navigation if already on /create-ticket
+    if (isAuthenticated && !["/create-ticket"].includes(currentPath)) {
+      console.log("Redirecting based on role...");
+
+      // if (isAuthenticated) {
+
       if (userRole === "[ROLE_ADMIN]") {
         navigate("/admin-dashboard");
       } else if (userRole === "[ROLE_MANAGER]") {
@@ -70,6 +84,7 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          <Route path="/create-ticket" element={<CreateTicketPage />} />
           <Route
             path="/admin-dashboard"
             element={
