@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -58,8 +59,40 @@ public class TicketController {
             "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).BUG))")
 
     public ResponseEntity<Ticket> createTicket(@RequestBody Ticket ticket, Authentication authentication) {
+        System.out.println("Received Ticket Data: " + ticket); // Debug log
+
+        // Debugging log for assigned employee before fetching
+        if (ticket.getAssignedEmployee() != null) {
+            System.out.println("Assigned Employee ID from request: " + ticket.getAssignedEmployee().getId());
+        } else {
+            System.out.println("Assigned Employee is NULL in request");
+        }
+
+        // Fetch assigned employee manually if provided
+        if (ticket.getAssignedEmployee() != null && ticket.getAssignedEmployee().getId() != null) {
+            Employee employee = employeeRepository.findById(ticket.getAssignedEmployee().getId())
+                    .orElse(null); // Ensure employee exists
+            ticket.setAssignedEmployee(employee); // Explicitly set employee
+            System.out.println("Employee set in ticket: " + (employee != null ? employee.getId() : "NOT FOUND"));
+        }
+
+        // Generate Ticket Tracking Number
         ticket.setTicketTrackingNumber(generateUniqueTicketTrackingNumber());
+
+        // Set "dueDate" is set to 7 days from creation if not provided
+        if (ticket.getDueDate() == null) {
+            ticket.setDueDate(LocalDateTime.now().plusDays(7));
+        }
+
+        // Make sure`lastUpdated` is initialized
+        ticket.setLastUpdate(LocalDateTime.now());
+        System.out.println("Last Update Before Save: " + ticket.getLastUpdate());
+
+        // Save ticket
         Ticket savedTicket = ticketRepository.save(ticket);
+        System.out.println("Ticket Saved! Assigned Employee ID: " +
+                (savedTicket.getAssignedEmployee() != null ? savedTicket.getAssignedEmployee().getId() : "null"));
+
         return ResponseEntity.ok(savedTicket);
     }
 

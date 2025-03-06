@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const TicketForm = () => {
-  console.log("TicketForm Rendered!"); // Confirm TicketForm is mounted
+  console.log("TicketForm Rendered!"); // Confirms if TicketForm is mounting
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -23,7 +23,7 @@ const TicketForm = () => {
 
     switch (userRole) {
       case "[ROLE_ADMIN]":
-        return ["NEW_BUILD", "REVISIONS", "POST_PUBLISH", "BUG"]; // Admin accesses all categories
+        return ["NEW_BUILD", "REVISIONS", "POST_PUBLISH", "BUG"]; // Admin sees all categories
       case "[ROLE_WEBSITE_SPECIALIST]":
         return ["NEW_BUILD", "REVISIONS", "POST_PUBLISH"];
       case "[ROLE_DEVELOPER]":
@@ -81,6 +81,11 @@ const TicketForm = () => {
         ? { id: parseInt(assignedEmployee) }
         : null,
     };
+
+    console.log(
+      "Ticket Data being sent to API:",
+      JSON.stringify(ticketData, null, 2)
+    ); // Debug log
 
     try {
       const response = await fetch("http://localhost:8080/api/tickets", {

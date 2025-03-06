@@ -37,7 +37,8 @@ public class Ticket {
 
     @ManyToOne
     @JoinColumn(name = "assigned_employee_id")
-    @JsonIgnore
+    //@JsonIgnore
+
     private Employee assignedEmployee;
 
     @Column(updatable = false)
@@ -162,4 +163,5 @@ public class Ticket {
     public void generateTrackingNumber() {
         this.ticketTrackingNumber = "TCK-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
+
 }
