@@ -1,0 +1,47 @@
+/* 📌 Admin Dashboard Styling */
+
+.dashboard-container {
+  padding: 20px;
+}
+
+.dashboard-header {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.dashboard-subtext {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* 🎯 Ticket Status Boxes */
+.dashboard-stats .column {
+  padding: 10px;
+}
+
+.dashboard-stats .segment {
+  text-align: center;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+/* 📊 Chart Section */
+.dashboard-chart {
+  padding: 15px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* 📝 Ticket Lists */
+.dashboard-lists {
+  margin-top: 20px;
+}
+
+.dashboard-lists .ui.segment {
+  padding: 15px;
+  border-radius: 8px;
+}
