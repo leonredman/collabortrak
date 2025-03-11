@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 
 const NewTicketsList = () => {
   const [tickets, setTickets] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ticketsPerPage = 4; // Show max 4 tickets per page
 
   useEffect(() => {
     fetch("http://localhost:8080/api/tickets", {
@@ -18,6 +20,12 @@ const NewTicketsList = () => {
       .catch((error) => console.error("Error fetching tickets:", error));
   }, []);
 
+  // Pagination Logic
+  const indexOfLastTicket = currentPage * ticketsPerPage;
+  const indexOfFirstTicket = indexOfLastTicket - ticketsPerPage;
+  const currentTickets = tickets.slice(indexOfFirstTicket, indexOfLastTicket);
+  const totalPages = Math.ceil(tickets.length / ticketsPerPage);
+
   return (
     <div className="ui green segment">
       <h3>Open Tickets</h3>
@@ -31,7 +39,7 @@ const NewTicketsList = () => {
           </tr>
         </thead>
         <tbody>
-          {tickets.map((ticket) => (
+          {currentTickets.map((ticket) => (
             <tr key={ticket.id}>
               <td>{ticket.id}</td>
               <td>{ticket.title}</td>
@@ -41,6 +49,19 @@ const NewTicketsList = () => {
           ))}
         </tbody>
       </table>
+
+      {/* Pagination Controls (No Previous/Next) */}
+      <div className="ui pagination menu">
+        {[...Array(totalPages)].map((_, index) => (
+          <button
+            key={index + 1}
+            className={`item ${currentPage === index + 1 ? "active" : ""}`}
+            onClick={() => setCurrentPage(index + 1)}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };

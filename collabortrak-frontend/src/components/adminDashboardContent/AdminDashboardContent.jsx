@@ -5,7 +5,7 @@ import NewTicketsList from "./NewTicketsList";
 import TicketsInProgressList from "./TicketsInProgressList";
 import TicketsInQAList from "./TicketsInQAList";
 
-import "./AdminDashboardContent.css"; // ✅ Import custom styles
+import "./AdminDashboardContent.css"; // Import custom styles
 
 const AdminDashboardContent = ({ isAuthenticated }) => {
   const [tickets, setTickets] = useState([]);
@@ -31,7 +31,7 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
       headers: { "Content-Type": "application/json" },
     })
       .then((res) => {
-        console.log("📥 Fetch Response Received:", res);
+        console.log("Fetch Response Received:", res);
         return res.json();
       })
       .then((data) => {
@@ -51,12 +51,12 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
         Welcome! Here you can manage all ticketing and project workflows.
       </p>
 
-      {/* 🟢 First Row: Ticket Status Totals (4 Columns) */}
+      {/* First Row: Ticket Status Totals (4 Columns) */}
       <div className="ui four column grid dashboard-stats">
         <div className="column">
           <div className="ui red segment">
-            <h4>Ready</h4>
-            <p className="dashboard-value">{countByStatus("READY")}</p>
+            <h4>Open</h4>
+            <p className="dashboard-value">{countByStatus("OPEN")}</p>
           </div>
         </div>
         <div className="column">
@@ -81,7 +81,7 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
         </div>
       </div>
 
-      {/* 🔵 Second Row: New Tickets & Tickets In Progress (2 Columns) */}
+      {/* Second Row: New Tickets & Tickets In Progress (2 Columns) */}
       <div className="ui two column grid dashboard-lists">
         <div className="column">
           <div className="ui red segment">
@@ -97,9 +97,9 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
         </div>
       </div>
 
-      {/* 🟠 Third Row: Ticket Status Chart (Left) & Tickets In QA (Right) */}
+      {/* Third Row: Ticket Status Chart (Left) & Tickets In QA (Right) */}
       <div className="ui two column grid dashboard-lists">
-        {/* 📊 Left Column: Chart */}
+        {/* Left Column: Chart */}
         <div className="column">
           <div className="ui segment dashboard-chart">
             <h3>Ticket Status Overview</h3>
@@ -107,7 +107,7 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
           </div>
         </div>
 
-        {/* 🟠 Right Column: Tickets In QA */}
+        {/* Right Column: Tickets In QA */}
         <div className="column">
           <div className="ui orange segment">
             <h4>Tickets In QA</h4>

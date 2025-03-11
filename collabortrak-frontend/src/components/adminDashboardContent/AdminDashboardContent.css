@@ -1,4 +1,4 @@
-/* 📌 Admin Dashboard Styling */
+/* Admin Dashboard Styling */
 
 .dashboard-container {
   padding: 20px;
@@ -17,7 +17,7 @@
   margin-bottom: 20px;
 }
 
-/* 🎯 Ticket Status Boxes */
+/* Ticket Status Boxes */
 .dashboard-stats .column {
   padding: 10px;
 }
@@ -28,7 +28,7 @@
   border-radius: 8px;
 }
 
-/* 📊 Chart Section */
+/* Chart Section */
 .dashboard-chart {
   padding: 15px;
   background: white;
@@ -36,7 +36,7 @@
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* 📝 Ticket Lists */
+/* Ticket Lists */
 .dashboard-lists {
   margin-top: 20px;
 }
