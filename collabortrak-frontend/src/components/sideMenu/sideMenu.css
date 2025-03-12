@@ -30,3 +30,7 @@
 .ui.visible.sidebar.blue.inverted.vertical.menu:hover {
   width: 14rem; /* Expand on hover */
 }
+
+.ui.sidebar {
+  top: 76px !important;
+}

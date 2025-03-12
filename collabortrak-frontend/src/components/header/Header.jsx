@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import "./HeaderMenu.css";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -25,38 +26,40 @@ const Header = () => {
   };
 
   return (
-    <div className="ui blue inverted menu">
-      <Link to="/" className="item">
-        CollaborTrak
-      </Link>
+    <div className="fixed-header">
+      <div className="ui blue inverted menu">
+        <Link to="/" className="item">
+          CollaborTrak
+        </Link>
 
-      <Link to="/dashboard" className="item">
-        Dashboard
-      </Link>
+        <Link to="/dashboard" className="item">
+          Dashboard
+        </Link>
 
-      <Link to="/create-ticket" className="item">
-        Create Ticket
-      </Link>
+        <Link to="/create-ticket" className="item">
+          Create Ticket
+        </Link>
 
-      <button onClick={handleLogout} className="ui primary button">
-        Logout
-      </button>
+        <button onClick={handleLogout} className="ui primary button">
+          Logout
+        </button>
 
-      <div className="right menu">
-        <h4
-          className="ui header"
-          style={{ color: "white", paddingTop: "10px", paddingRight: "20px" }}
-        >
-          <img
-            src="https://semantic-ui.com/images/avatar2/small/matthew.png"
-            alt="placeholder"
-            className="ui tiny circular image"
-          />
-        </h4>
-        <i
-          className="bell outline icon"
-          style={{ color: "white", paddingTop: "10px", paddingRight: "30px" }}
-        ></i>
+        <div className="right menu">
+          <h4
+            className="ui header"
+            style={{ color: "white", paddingTop: "10px", paddingRight: "20px" }}
+          >
+            <img
+              src="https://semantic-ui.com/images/avatar2/small/matthew.png"
+              alt="placeholder"
+              className="ui tiny circular image"
+            />
+          </h4>
+          <i
+            className="bell outline icon"
+            style={{ color: "white", paddingTop: "10px", paddingRight: "30px" }}
+          ></i>
+        </div>
       </div>
     </div>
   );

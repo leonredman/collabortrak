@@ -55,27 +55,27 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
       <div className="ui four column grid dashboard-stats">
         <div className="column">
           <div className="ui red segment">
-            <h4>Open</h4>
+            <h3>Open</h3>
             <p className="dashboard-value">{countByStatus("OPEN")}</p>
           </div>
         </div>
         <div className="column">
           <div className="ui blue segment">
-            <h4>Build In Progress</h4>
+            <h3>Build In Progress</h3>
             <p className="dashboard-value">
               {countByStatus("BUILD_IN_PROGRESS")}
             </p>
           </div>
         </div>
         <div className="column">
-          <div className="ui orange segment">
-            <h4>QA In Progress</h4>
+          <div className="ui yellow segment">
+            <h3>QA In Progress</h3>
             <p className="dashboard-value">{countByStatus("QA_IN_PROGRESS")}</p>
           </div>
         </div>
         <div className="column">
           <div className="ui green segment">
-            <h4>Resolved</h4>
+            <h3>Resolved</h3>
             <p className="dashboard-value">{countByStatus("RESOLVED")}</p>
           </div>
         </div>
@@ -85,13 +85,13 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
       <div className="ui two column grid dashboard-lists">
         <div className="column">
           <div className="ui red segment">
-            <h4>New Tickets</h4>
+            <h3>Open Tickets</h3>
             <NewTicketsList />
           </div>
         </div>
         <div className="column">
           <div className="ui blue segment">
-            <h4>Tickets In Progress</h4>
+            <h3>Tickets In Progress</h3>
             <TicketsInProgressList />
           </div>
         </div>
@@ -101,7 +101,7 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
       <div className="ui two column grid dashboard-lists">
         {/* Left Column: Chart */}
         <div className="column">
-          <div className="ui segment dashboard-chart">
+          <div className="ui purple segment dashboard-chart">
             <h3>Ticket Status Overview</h3>
             <TicketStatusChart apiUrl="http://localhost:8080/api/tickets" />
           </div>
@@ -109,8 +109,8 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
 
         {/* Right Column: Tickets In QA */}
         <div className="column">
-          <div className="ui orange segment">
-            <h4>Tickets In QA</h4>
+          <div className="ui yellow segment">
+            <h3>Tickets In QA</h3>
             <TicketsInQAList />
           </div>
         </div>

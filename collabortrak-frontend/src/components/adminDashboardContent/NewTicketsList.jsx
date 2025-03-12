@@ -27,8 +27,7 @@ const NewTicketsList = () => {
   const totalPages = Math.ceil(tickets.length / ticketsPerPage);
 
   return (
-    <div className="ui green segment">
-      <h3>Open Tickets</h3>
+    <div className="ui segment">
       <table className="ui celled table">
         <thead>
           <tr>

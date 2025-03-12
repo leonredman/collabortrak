@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 
 const TicketsInProgressList = () => {
   const [tickets, setTickets] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ticketsPerPage = 4; // Ensure only 4 tickets per page
 
   useEffect(() => {
     fetch("http://localhost:8080/api/tickets", {
@@ -20,9 +22,15 @@ const TicketsInProgressList = () => {
       .catch((error) => console.error("Error fetching tickets:", error));
   }, []);
 
+  // Pagination Logic (Only 4 tickets per page)
+  const indexOfLastTicket = currentPage * ticketsPerPage;
+  const indexOfFirstTicket = indexOfLastTicket - ticketsPerPage;
+  const currentTickets = tickets.slice(indexOfFirstTicket, indexOfLastTicket);
+
+  const totalPages = Math.ceil(tickets.length / ticketsPerPage);
+
   return (
-    <div className="ui blue segment">
-      <h3>Tickets In Progress</h3>
+    <div className="ui segment">
       <table className="ui celled table">
         <thead>
           <tr>
@@ -33,7 +41,7 @@ const TicketsInProgressList = () => {
           </tr>
         </thead>
         <tbody>
-          {tickets.map((ticket) => (
+          {currentTickets.map((ticket) => (
             <tr key={ticket.id}>
               <td>{ticket.id}</td>
               <td>{ticket.title}</td>
@@ -51,6 +59,21 @@ const TicketsInProgressList = () => {
           ))}
         </tbody>
       </table>
+
+      {/* Pagination Controls (Only if more than 4 tickets exist) */}
+      {totalPages > 1 && (
+        <div className="ui pagination menu">
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button
+              key={index}
+              className={`item ${currentPage === index + 1 ? "active" : ""}`}
+              onClick={() => setCurrentPage(index + 1)}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

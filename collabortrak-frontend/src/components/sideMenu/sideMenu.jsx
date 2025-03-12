@@ -5,17 +5,6 @@ import "./sideMenu.css";
 const SideMenu = () => {
   return (
     <div className="ui visible sidebar blue inverted vertical menu">
-      <h3
-        className="ui header"
-        style={{ color: "white", paddingTop: "30px", paddingLeft: "20px" }}
-      >
-        <img
-          src="https://semantic-ui.com/images/avatar2/small/matthew.png"
-          alt="placeholder"
-          className="ui medium circular image"
-        />
-        Patrick Admin
-      </h3>
       <div className="item">
         <div className="header">Role Manager</div>
         <div className="menu">

@@ -53,10 +53,24 @@ const TicketStatusChart = ({ apiUrl }) => {
     ],
   };
 
+  // ⬇ Add these options directly in the Doughnut component
   return (
-    <div className="ui segment">
-      <h3>Ticket Status Overview</h3>
-      <Doughnut data={chartData} />
+    <div className="ui segment chart-container">
+      <div style={{ width: "300px", height: "300px", margin: "auto" }}>
+        <Doughnut
+          data={chartData}
+          options={{
+            responsive: true,
+            maintainAspectRatio: false,
+            aspectRatio: 2, // Makes the chart smaller
+            plugins: {
+              legend: {
+                position: "bottom", // Moves legend to bottom for better spacing
+              },
+            },
+          }}
+        />
+      </div>
     </div>
   );
 };

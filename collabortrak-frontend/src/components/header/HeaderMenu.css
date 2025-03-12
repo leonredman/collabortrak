@@ -31,3 +31,19 @@
   margin-top: 39px !important;
   position: fixed;
 }
+
+.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; /* Ensures it stays above other elements */
+  background-color: #2185d0; /* Matches blue inverted menu */
+  border-bottom: 2px solid #1a69a4;
+  padding: 10px 15px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Adds slight shadow */
+}
+
+.dashboard-container {
+  padding-top: 60px; /* Pushes content down to avoid overlap */
+}
