@@ -1,0 +1,30 @@
+.dashboard-container {
+  margin: 0 auto;
+  max-width: 98%; /* make layout closer to edges */
+  padding: 10rem 1rem 1rem; /* top padding more space below header */
+}
+
+.expanded-content {
+  width: 100%; /* content full available width */
+}
+
+.ui.statistics .statistic {
+  flex-grow: 1; /* top 4 columns wider */
+  width: 25%; /* Each has equal wider space */
+  min-width: 200px; /* makes responsive */
+}
+
+/* Fix sidebar and prevent header overlap */
+.dashboard-layout {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-container {
+  margin-top: 150px !important; /* Push sidebar below header */
+}
+
+/* so content does not go under fixed header */
+.main-content {
+  padding-top: 70px; /* Adjust based on header height */
+}

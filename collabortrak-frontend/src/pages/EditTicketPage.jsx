@@ -5,39 +5,56 @@ const EditTicketPage = () => {
   const { ticketId } = useParams();
   const navigate = useNavigate();
   const [ticket, setTicket] = useState(null);
+  const [employees, setEmployees] = useState([]); // Store employees for dropdown
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     status: "",
+    priority: "",
+    category: "",
+    dueDate: "",
+    assignedEmployeeId: "", // Added field for changing employee
   });
 
   useEffect(() => {
-    console.log("Fetching ticket with ID:", ticketId); // log to debug
+    console.log("Fetching ticket with ID:", ticketId);
 
     fetch(`http://localhost:8080/api/tickets/${ticketId}`, {
       method: "GET",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch ticket");
-        return res.json(); // return JSON response
-      })
+      .then((res) => res.json())
       .then((data) => {
-        console.log("Ticket data received:", data); //Log data
+        console.log("Ticket data received:", data);
         setTicket(data);
         setFormData({
           title: data.title || "",
           description: data.description || "",
           status: data.status || "",
+          priority: data.priority || "",
+          category: data.category || "",
+          dueDate: data.dueDate ? data.dueDate.split("T")[0] : "",
+          assignedEmployeeId: data.assignedEmployee
+            ? data.assignedEmployee.id
+            : "", // Set default assigned employee
         });
       })
       .catch((error) => console.error("Error fetching ticket details:", error));
-  }, [ticketId]);
 
-  if (!ticket) {
-    return <p>Loading ticket details...</p>;
-  }
+    // Fetch list of employees
+    fetch("http://localhost:8080/api/employees", {
+      method: "GET",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Employees fetched:", data);
+        setEmployees(data);
+      })
+      .catch((error) => console.error("Error fetching employees:", error));
+  }, [ticketId]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -54,7 +71,10 @@ const EditTicketPage = () => {
     })
       .then((res) => {
         if (!res.ok) {
-          throw new Error("Failed to update ticket");
+          return res.json().then((errorData) => {
+            console.error("Error Response:", errorData);
+            throw new Error(`Failed to update ticket: ${errorData.message}`);
+          });
         }
         return res.json();
       })
@@ -72,6 +92,28 @@ const EditTicketPage = () => {
   return (
     <div className="ui container">
       <h2>Edit Ticket</h2>
+
+      {/* Display Read-Only Ticket Info */}
+      <div className="ui segment">
+        <h3>Ticket Details</h3>
+        <p>
+          <strong>Tracking Number:</strong> {ticket.ticketTrackingNumber}
+        </p>
+        <p>
+          <strong>Customer:</strong> {ticket.customer.firstName}{" "}
+          {ticket.customer.lastName}
+        </p>
+        <p>
+          <strong>Email:</strong> {ticket.customer.email}
+        </p>
+        <p>
+          <strong>Current Assigned Employee:</strong>{" "}
+          {ticket.assignedEmployee
+            ? `${ticket.assignedEmployee.firstName} ${ticket.assignedEmployee.lastName}`
+            : "Unassigned"}
+        </p>
+      </div>
+
       <form className="ui form" onSubmit={handleSubmit}>
         <div className="field">
           <label>Title</label>
@@ -83,6 +125,7 @@ const EditTicketPage = () => {
             required
           />
         </div>
+
         <div className="field">
           <label>Description</label>
           <textarea
@@ -92,6 +135,7 @@ const EditTicketPage = () => {
             required
           />
         </div>
+
         <div className="field">
           <label>Status</label>
           <select
@@ -106,6 +150,64 @@ const EditTicketPage = () => {
             <option value="RESOLVED">Resolved</option>
           </select>
         </div>
+
+        <div className="field">
+          <label>Priority</label>
+          <select
+            name="priority"
+            value={formData.priority}
+            onChange={handleChange}
+            required
+          >
+            <option value="LOW">Low</option>
+            <option value="MEDIUM">Medium</option>
+            <option value="HIGH">High</option>
+          </select>
+        </div>
+
+        <div className="field">
+          <label>Category</label>
+          <select
+            name="category"
+            value={formData.category}
+            onChange={handleChange}
+            required
+          >
+            <option value="BUG">Bug</option>
+            <option value="FEATURE">Feature</option>
+            <option value="ENHANCEMENT">Enhancement</option>
+            <option value="REVISIONS">Revisions</option>
+          </select>
+        </div>
+
+        <div className="field">
+          <label>Due Date</label>
+          <input
+            type="date"
+            name="dueDate"
+            value={formData.dueDate}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="field">
+          <label>Assign Employee</label>
+          <select
+            name="assignedEmployeeId"
+            value={formData.assignedEmployeeId}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Select an employee</option>
+            {employees.map((employee) => (
+              <option key={employee.id} value={employee.id}>
+                {employee.firstName} {employee.lastName} ({employee.role})
+              </option>
+            ))}
+          </select>
+        </div>
+
         <button className="ui button primary" type="submit">
           Save Changes
         </button>
