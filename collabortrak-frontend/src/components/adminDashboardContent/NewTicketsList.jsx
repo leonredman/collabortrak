@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const NewTicketsList = () => {
   const [tickets, setTickets] = useState([]);
@@ -35,6 +36,7 @@ const NewTicketsList = () => {
             <th>Title</th>
             <th>Created</th>
             <th>Status</th>
+            <th>Details</th>
           </tr>
         </thead>
         <tbody>
@@ -44,6 +46,11 @@ const NewTicketsList = () => {
               <td>{ticket.title}</td>
               <td>{new Date(ticket.createdDate).toLocaleDateString()}</td>
               <td>{ticket.status}</td>
+              <td>
+                <Link to={`/edit-ticket/${ticket.id}`}>
+                  <i className="edit icon"></i>
+                </Link>
+              </td>
             </tr>
           ))}
         </tbody>

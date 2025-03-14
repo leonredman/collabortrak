@@ -11,6 +11,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import CreateTicketPage from "./pages/CreateTicketPage";
 import Dashboard from "./pages/Dashboard";
 import DeveloperDashboard from "./pages/DeveloperDashboard";
+import EditTicketPage from "./pages/EditTicketPage";
 import LoginPage from "./pages/Login";
 import ManagerDashboard from "./pages/ManagerDashboard";
 import NotAuthorized from "./pages/NotAuthorized";
@@ -36,7 +37,11 @@ const App = () => {
     );
 
     // Prevent navigation if already on /create-ticket
-    if (isAuthenticated && !["/create-ticket"].includes(currentPath)) {
+    if (
+      isAuthenticated &&
+      !["/create-ticket"].includes(currentPath) &&
+      !currentPath.startsWith("/edit-ticket/")
+    ) {
       console.log("Redirecting based on role...");
 
       // if (isAuthenticated) {
@@ -85,6 +90,18 @@ const App = () => {
             }
           />
           <Route path="/create-ticket" element={<CreateTicketPage />} />
+          <Route
+            path="/admin-dashboard"
+            element={
+              <ProtectedRoute
+                allowedRoles={["[ROLE_ADMIN]"]}
+                userRole={userRole}
+              >
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/edit-ticket/:ticketId" element={<EditTicketPage />} />
           <Route
             path="/admin-dashboard"
             element={
