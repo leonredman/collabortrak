@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const TicketsInProgressList = () => {
   const [tickets, setTickets] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const ticketsPerPage = 4; // Ensure only 4 tickets per page
+  const ticketsPerPage = 3; // Ensure only 4 tickets per page
 
   useEffect(() => {
     fetch("http://localhost:8080/api/tickets", {
@@ -26,7 +27,6 @@ const TicketsInProgressList = () => {
   const indexOfLastTicket = currentPage * ticketsPerPage;
   const indexOfFirstTicket = indexOfLastTicket - ticketsPerPage;
   const currentTickets = tickets.slice(indexOfFirstTicket, indexOfLastTicket);
-
   const totalPages = Math.ceil(tickets.length / ticketsPerPage);
 
   return (
@@ -36,8 +36,9 @@ const TicketsInProgressList = () => {
           <tr>
             <th>Ticket ID</th>
             <th>Title</th>
-            <th>Assigned Employee</th>
+            <th>Assigned</th>
             <th>Last Update</th>
+            <th>Details</th>
           </tr>
         </thead>
         <tbody>
@@ -52,8 +53,13 @@ const TicketsInProgressList = () => {
               </td>
               <td>
                 {ticket.lastUpdate
-                  ? new Date(ticket.lastUpdate).toLocaleString()
+                  ? new Date(ticket.lastUpdate).toLocaleDateString()
                   : "No Updates"}
+              </td>
+              <td>
+                <Link to={`/edit-ticket/${ticket.id}`}>
+                  <i className="edit icon"></i>
+                </Link>
               </td>
             </tr>
           ))}

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const TicketsInQAList = () => {
   const [tickets, setTickets] = useState([]);
@@ -26,7 +27,6 @@ const TicketsInQAList = () => {
   const indexOfLastTicket = currentPage * ticketsPerPage;
   const indexOfFirstTicket = indexOfLastTicket - ticketsPerPage;
   const currentTickets = tickets.slice(indexOfFirstTicket, indexOfLastTicket);
-
   const totalPages = Math.ceil(tickets.length / ticketsPerPage);
 
   return (
@@ -36,8 +36,9 @@ const TicketsInQAList = () => {
           <tr>
             <th>Ticket ID</th>
             <th>Title</th>
-            <th>Assigned Employee</th>
+            <th>Assigned</th>
             <th>Last Update</th>
+            <th>Details</th>
           </tr>
         </thead>
         <tbody>
@@ -54,6 +55,11 @@ const TicketsInQAList = () => {
                 {ticket.lastUpdate
                   ? new Date(ticket.lastUpdate).toLocaleString()
                   : "No Updates"}
+              </td>
+              <td>
+                <Link to={`/edit-ticket/${ticket.id}`}>
+                  <i className="edit icon"></i>
+                </Link>
               </td>
             </tr>
           ))}

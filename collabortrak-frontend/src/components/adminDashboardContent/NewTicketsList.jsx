@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const NewTicketsList = () => {
   const [tickets, setTickets] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const ticketsPerPage = 4; // Show max 4 tickets per page
+  const ticketsPerPage = 3; // Show max 4 tickets per page
 
   useEffect(() => {
     fetch("http://localhost:8080/api/tickets", {

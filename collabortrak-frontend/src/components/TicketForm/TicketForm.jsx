@@ -110,7 +110,7 @@ const TicketForm = () => {
   };
 
   return (
-    <div className="newTicketContainer">
+    <div className="newTicketContainer" style={{ paddingTop: "10rem" }}>
       <div className="ui grid">
         <div className="ui row">
           <div className="six wide centered column">
@@ -119,7 +119,7 @@ const TicketForm = () => {
         </div>
 
         <div className="seven wide centered column">
-          <div className="ui raised segment">
+          <div className="ui red raised segment">
             <form className="ui form" onSubmit={handleSubmit}>
               {/* Title */}
               <div className="field">
@@ -152,10 +152,7 @@ const TicketForm = () => {
                   onChange={(e) => setStatus(e.target.value)}
                 >
                   <option value="OPEN">Open</option>
-                  <option value="BUILD_IN_PROGRESS">Build In Progress</option>
-                  <option value="BUILD_COMPLETE">Build Complete</option>
-                  <option value="QA_IN_PROGRESS">QA In Progress</option>
-                  <option value="QA_COMPLETE">QA Complete</option>
+                  <option value="READY">Ready</option>
                 </select>
               </div>
 
