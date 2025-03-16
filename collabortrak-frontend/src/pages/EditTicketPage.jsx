@@ -155,6 +155,7 @@ const EditTicketPage = () => {
               onChange={handleChange}
               required
             >
+              <option value="OPEN">Open</option>
               <option value="READY">Ready</option>
               <option value="BUILD_IN_PROGRESS">Build In Progress</option>
               <option value="BUILD_COMPLETE">Build Complete</option>

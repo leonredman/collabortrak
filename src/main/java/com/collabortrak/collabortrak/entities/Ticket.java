@@ -1,6 +1,9 @@
 package com.collabortrak.collabortrak.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -32,14 +35,20 @@ public class Ticket {
     private String ticketTrackingNumber;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = false)
+    @JoinColumn(name = "customer_id", referencedColumnName = "id", nullable = false)
     private Customer customer;
 
-    @ManyToOne
-    @JoinColumn(name = "assigned_employee_id")
-    //@JsonIgnore
-
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(name = "assigned_employee_id", referencedColumnName = "id", nullable = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL) // Ensures proper serialization
+    @JsonProperty("assignedEmployee") // Explicitly names the field
+    // @JsonManagedReference // used for bidirectional relationships to stop recursion
+    // @JsonIgnore
     private Employee assignedEmployee;
+
+    // Transient `assignedEmployeeId`
+    @Transient
+    private Long assignedEmployeeId;
 
     @Column(updatable = false)
     private LocalDateTime createdDate = LocalDateTime.now();
@@ -159,9 +168,25 @@ public class Ticket {
         this.assignedEmployee = assignedEmployee;
     }
 
+    // Getter for `assignedEmployeeId`
+    public Long getAssignedEmployeeId() {
+        return assignedEmployee != null ? assignedEmployee.getId() : null;
+    }
+
+    // Setter for `assignedEmployeeId`
+    public void setAssignedEmployeeId(Long assignedEmployeeId) {
+        this.assignedEmployeeId = assignedEmployeeId;
+    }
+
     @PrePersist
     public void generateTrackingNumber() {
         this.ticketTrackingNumber = "TCK-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+    }
+
+    // Hibernate auto updates lastUpdate whenever an entity is modified and saved
+    @PreUpdate
+    public void updateTimestamp() {
+        this.lastUpdate = LocalDateTime.now();
     }
 
 }

@@ -47,10 +47,30 @@ const TicketsInProgressList = () => {
               <td>{ticket.id}</td>
               <td>{ticket.title}</td>
               <td>
-                {ticket.assignedEmployee
-                  ? `${ticket.assignedEmployee.firstName} ${ticket.assignedEmployee.lastName}`
+                {console.log(
+                  "Ticket ID:",
+                  ticket.id,
+                  "Assigned Employee:",
+                  ticket.assignedEmployee
+                )}
+                {console.log(
+                  "Ticket ID:",
+                  ticket.id,
+                  "Assigned Employee:",
+                  ticket.assignedEmployee
+                )}
+
+                {ticket.assignedEmployeeFirstName
+                  ? `${ticket.assignedEmployeeFirstName} ${ticket.assignedEmployeeLastName}`
                   : "Unassigned"}
               </td>
+
+              {console.log(
+                "Ticket ID:",
+                ticket.id,
+                "Assigned Employee:",
+                ticket.assignedEmployee
+              )}
               <td>
                 {ticket.lastUpdate
                   ? new Date(ticket.lastUpdate).toLocaleDateString()

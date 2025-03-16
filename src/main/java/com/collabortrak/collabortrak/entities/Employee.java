@@ -30,8 +30,9 @@ public class Employee {
     @Column(nullable = false)
     private RoleType role;
 
-    @OneToMany(mappedBy = "assignedEmployee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Ticket> tickets;
+   // Removed bidirectional relationship ... using flat api with seperate tables
+   // @OneToMany(mappedBy = "assignedEmployee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+   // private List<Ticket> tickets;
 
     // Constructors
     public Employee() {}
@@ -93,11 +94,11 @@ public class Employee {
         this.role = role;
     }
 
-    public List<Ticket> getTickets() {
-        return tickets;
-    }
+//    public List<Ticket> getTickets() {
+//        return tickets;
+//    }
 
-    public void setTickets(List<Ticket> tickets) {
-        this.tickets = tickets;
-    }
+//    public void setTickets(List<Ticket> tickets) {
+//        this.tickets = tickets;
+//    }
 }

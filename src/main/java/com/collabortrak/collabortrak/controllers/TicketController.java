@@ -1,5 +1,6 @@
 package com.collabortrak.collabortrak.controllers;
 
+import com.collabortrak.collabortrak.dto.TicketDTO;
 import com.collabortrak.collabortrak.entities.Ticket;
 import com.collabortrak.collabortrak.entities.Customer;
 import com.collabortrak.collabortrak.entities.Employee;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tickets")
@@ -96,11 +98,44 @@ public class TicketController {
         return ResponseEntity.ok(savedTicket);
     }
 
-    // Get all tickets
+    // Get all Tickets with DTO
     @GetMapping
-    public List<Ticket> getAllTickets() {
-        return ticketRepository.findAll();
+    public List<TicketDTO> getAllTickets() {
+        List<Ticket> tickets = ticketRepository.findAll();
+        return tickets.stream().map(TicketDTO::new).collect(Collectors.toList());
     }
+
+
+    // Get all tickets
+//    @GetMapping
+//    public List<Ticket> getAllTickets() {
+//        return ticketRepository.findAll();
+//    }
+//    @GetMapping
+//    public List<Ticket> getAllTickets() {
+//        return ticketRepository.findAllWithAssignedEmployee();
+//    }
+
+
+    // Get all tickets with Debug log
+//    @GetMapping
+//    public List<Ticket> getAllTickets() {
+//        List<Ticket> tickets = ticketRepository.findAll();
+//
+//        // Debugging: Log assigned employee details
+//        for (Ticket ticket : tickets) {
+//            if (ticket.getAssignedEmployee() != null) {
+//                System.out.println("Ticket ID: " + ticket.getId() +
+//                        ", Assigned Employee ID: " + ticket.getAssignedEmployee().getId() +
+//                        ", First Name: " + ticket.getAssignedEmployee().getFirstName() +
+//                        ", Last Name: " + ticket.getAssignedEmployee().getLastName());
+//            } else {
+//                System.out.println("Ticket ID: " + ticket.getId() + " has no assigned employee.");
+//            }
+//        }
+//
+//        return tickets;
+//    }
 
     // Get ticket by ID
     @GetMapping("/{id}")
@@ -160,6 +195,27 @@ public class TicketController {
                     ticket.setStatus(updatedTicket.getStatus());
                     ticket.setPriority(updatedTicket.getPriority());
                     ticket.setCategory(updatedTicket.getCategory());
+
+                    // Set Due Date is explicitly updated
+                    if (updatedTicket.getDueDate() != null) {
+                        ticket.setDueDate(updatedTicket.getDueDate());
+                    }
+
+                    // Set Assigned Employee is Updated
+//                    if (updatedTicket.getAssignedEmployee() != null && updatedTicket.getAssignedEmployee().getId() != null) {
+//                        Employee employee = employeeRepository.findById(updatedTicket.getAssignedEmployee().getId())
+//                                .orElse(null);
+//                        ticket.setAssignedEmployee(employee); // Set new assigned employee
+//                    }
+
+                    // Handle `assignedEmployeeId` separately (since frontend sends `assignedEmployeeId`)
+                    if (updatedTicket.getAssignedEmployee() == null && updatedTicket.getAssignedEmployeeId() != null) {
+                        Employee employee = employeeRepository.findById(updatedTicket.getAssignedEmployeeId())
+                                .orElse(null);
+                        ticket.setAssignedEmployee(employee);
+                    }
+
+
                     return ResponseEntity.ok(ticketRepository.save(ticket));
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());

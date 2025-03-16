@@ -47,13 +47,13 @@ const TicketsInQAList = () => {
               <td>{ticket.id}</td>
               <td>{ticket.title}</td>
               <td>
-                {ticket.assignedEmployee
-                  ? `${ticket.assignedEmployee.firstName} ${ticket.assignedEmployee.lastName}`
+                {ticket.assignedEmployeeFirstName
+                  ? `${ticket.assignedEmployeeFirstName} ${ticket.assignedEmployeeLastName}`
                   : "Unassigned"}
               </td>
               <td>
                 {ticket.lastUpdate
-                  ? new Date(ticket.lastUpdate).toLocaleString()
+                  ? new Date(ticket.lastUpdate).toLocaleDateString()
                   : "No Updates"}
               </td>
               <td>

@@ -23,12 +23,22 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     List<Ticket> findByPriority(PriorityType priority);
     List<Ticket> findByCategory(CategoryType category);
 
-    // Get single ticket with its customer
-    @Query("SELECT t FROM Ticket t WHERE t.id = :id")
-    Optional<Ticket> findByIdWithCustomer(@Param("id") Long id);
+    // Get single ticket with its customer and assigned employee
+    @Query("SELECT t FROM Ticket t LEFT JOIN FETCH t.assignedEmployee WHERE t.id = :id")
+    Optional<Ticket> findByIdWithCustomerAndEmployee(@Param("id") Long id);
+
+    // previous query cause recursion
+    //@Query("SELECT t FROM Ticket t WHERE t.id = :id")
+   // Optional<Ticket> findByIdWithCustomer(@Param("id") Long id);
+
+    @Query("SELECT t FROM Ticket t LEFT JOIN FETCH t.assignedEmployee WHERE t.id = :id")
+    Optional<Ticket> findByIdWithAssignedEmployee(@Param("id") Long id);
+
+    @Query("SELECT t FROM Ticket t LEFT JOIN FETCH t.assignedEmployee")
+    List<Ticket> findAllWithAssignedEmployee();
 
     // Get all tickets with customer details
-    @Query("SELECT t FROM Ticket t")
+    @Query("SELECT t FROM Ticket t LEFT JOIN FETCH t.assignedEmployee")
     List<Ticket> findAllWithCustomer();
 
     // Get Ticket Counts by status
