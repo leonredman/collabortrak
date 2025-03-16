@@ -3,11 +3,19 @@ import { Link, useNavigate } from "react-router-dom";
 import "./LoginForm.css";
 
 const demoCredentials = {
-  admin: { username: "admin", password: "admin123" },
-  manager: { username: "manager", password: "manager123" },
-  developer: { username: "dev", password: "dev123" },
-  qa: { username: "qa", password: "qa123" },
-  web: { username: "web", password: "web123" },
+  admin: { username: "admin", password: "admin123", icon: "/adminIcon.jpg" },
+  manager: {
+    username: "manager",
+    password: "manager123",
+    icon: "/managerIcon.png",
+  },
+  developer: {
+    username: "dev",
+    password: "dev123",
+    icon: "/developerIcon.png",
+  },
+  qa: { username: "qa", password: "qa123", icon: "/QAIcon.png" },
+  web: { username: "web", password: "web123", icon: "/webSpecialistIcon.png" },
 };
 
 const LoginForm = () => {
@@ -136,15 +144,15 @@ const LoginForm = () => {
         </form>
 
         <h3>Demo Logins</h3>
-        <div className="demo-buttons">
+        <div className="demo-icons">
           {Object.keys(demoCredentials).map((role) => (
             <button
               key={role}
               onClick={() => handleDemoLogin(role)}
-              className="ui secondary button"
-              style={{ margin: "5px" }}
+              className="demo-icon-btn"
             >
-              {role.charAt(0).toUpperCase() + role.slice(1)} Demo
+              <img src={demoCredentials[role].icon} alt={role} />
+              <span> {role.charAt(0).toUpperCase() + role.slice(1)}</span>
             </button>
           ))}
         </div>

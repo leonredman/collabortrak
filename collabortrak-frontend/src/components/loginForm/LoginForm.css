@@ -10,3 +10,39 @@
 .ui.secondary.button {
   background-color: #2196f3;
 }
+
+.demo-icons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.demo-icon-btn {
+  background: none;
+  border: none;
+  text-align: center;
+  cursor: pointer;
+}
+
+.demo-icon-btn img {
+  width: 80px; /* Adjust size as needed */
+  height: 80px;
+  border-radius: 50%; /* Makes the image circular */
+  object-fit: cover; /* Ensures the image fills the circular area */
+  border: 2px solid #ccc; /* Optional border for styling */
+  transition: transform 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.demo-icon-btn img:hover {
+  transform: scale(1.1);
+  border-color: #007bff; /* Optional: Change border color on hover */
+}
+
+.demo-icon-btn span {
+  display: block;
+  margin-top: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}

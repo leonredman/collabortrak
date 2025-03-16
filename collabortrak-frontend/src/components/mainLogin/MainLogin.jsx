@@ -1,4 +1,3 @@
-import DemoLogin from "../demoLogin/DemoLogin";
 import LoginForm from "../loginForm/LoginForm";
 import "./MainLoginStyles.css";
 
@@ -15,7 +14,6 @@ const MainLogin = () => {
         <div className="ui middle aligned center aligned grid">
           <div className="four wide column" style={{ background: "white" }}>
             <LoginForm />
-            <DemoLogin />
           </div>
           <div className="four wide column" id="loginImage"></div>
         </div>
