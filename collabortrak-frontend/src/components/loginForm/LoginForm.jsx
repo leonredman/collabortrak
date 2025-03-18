@@ -143,7 +143,7 @@ const LoginForm = () => {
           </button>
         </form>
 
-        <h3>Demo Logins</h3>
+        <h3>For Demo Logins - Click Icons</h3>
         <div className="demo-icons">
           {Object.keys(demoCredentials).map((role) => (
             <button

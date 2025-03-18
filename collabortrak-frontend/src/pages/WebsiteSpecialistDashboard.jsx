@@ -1,14 +1,11 @@
-// WebsiteSpecialistDashboard.jsx
-
 import React from "react";
 import DashboardLayout from "../components/dashboardLayout/DashboardLayout";
+import WSDashboardContent from "../components/wsDashboardContent/WSDashboardContent";
 
 const WebsiteSpecialistDashboard = () => {
   return (
     <DashboardLayout>
-      <h1>Website Specialist Dashboard</h1>
-      <p>Welcome, Website Specialist! Manage website-related tasks.</p>
-      <p>Confirming protected route.</p>
+      <WSDashboardContent />
     </DashboardLayout>
   );
 };

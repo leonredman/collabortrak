@@ -1,13 +1,11 @@
-// QADashboard.jsx
 import React from "react";
-import DashboardLayout from "../components/dashboardLayout/DashboardLayout";
+import DashboardLayout from "../components/dashboardLayout/DashboardLayout.jsx";
+import QADashboardContent from "../components/qaDashboardContent/QADashboardContent.jsx";
 
 const QADashboard = () => {
   return (
     <DashboardLayout>
-      <h1>QA Dashboard</h1>
-      <p>Welcome, QA Agent! View and test assigned tickets.</p>
-      <p>Confirming protected route.</p>
+      <QADashboardContent />
     </DashboardLayout>
   );
 };

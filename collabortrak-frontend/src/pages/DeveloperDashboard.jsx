@@ -1,13 +1,12 @@
 // Dev Dashboard.jsx
 import React from "react";
 import DashboardLayout from "../components/dashboardLayout/DashboardLayout";
+import DevDashboardContent from "../components/devDashboardContent/DevDashboardContent";
 
 const DeveloperDashboard = () => {
   return (
     <DashboardLayout>
-      <h1>Developer Dashboard</h1>
-      <p>Welcome, Developer! Track and work on your assigned tasks.</p>
-      <p>Confirming protected route.</p>
+      <DevDashboardContent />
     </DashboardLayout>
   );
 };
