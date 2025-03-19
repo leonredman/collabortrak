@@ -13,8 +13,16 @@ public class AuthController {
 
     @GetMapping("/login-success")
     public ResponseEntity<String> loginSuccess(Authentication authentication) {
+        if (authentication == null || authentication.getName() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("{\"message\": \"User not authenticated\"}");
+        }
+
+        String username = authentication.getName(); // Get the authenticated username
         String role = authentication.getAuthorities().toString();
-        return ResponseEntity.ok("{\"message\": \"Login successful\", \"role\": \"" + role + "\"}");
+
+        return ResponseEntity.ok("{\"message\": \"Login successful\", \"username\": \"" + username + "\", \"role\": \"" + role + "\"}");
+
     }
 
     @GetMapping("/login-failure")

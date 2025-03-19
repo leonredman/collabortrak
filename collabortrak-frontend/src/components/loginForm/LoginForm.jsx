@@ -49,9 +49,37 @@ const LoginForm = () => {
         const data = await response.json();
         const userRole = data.role;
 
-        // Store role in local storage
+        // Use hardcoded credentials to determine username and profile image
+        let userName = "Guest";
+        let userProfilePic = "/default-avatar.png";
+
+        if (userRole.includes("ROLE_ADMIN")) {
+          userName = "Admin";
+          userProfilePic = "/adminIcon.jpg";
+        } else if (userRole.includes("ROLE_MANAGER")) {
+          userName = "Manager";
+          userProfilePic = "/managerIcon.png";
+        } else if (userRole.includes("ROLE_DEVELOPER")) {
+          userName = "Developer";
+          userProfilePic = "/developerIcon.png";
+        } else if (userRole.includes("ROLE_QA_AGENT")) {
+          userName = "QA Agent";
+          userProfilePic = "/QAIcon.png";
+        } else if (userRole.includes("ROLE_WEBSITE_SPECIALIST")) {
+          userName = "Web Specialist";
+          userProfilePic = "/webSpecialistIcon.png";
+        }
+
+        // Store user details in local storage
         localStorage.setItem("userRole", userRole);
+
         localStorage.setItem("isAuthenticated", "true");
+
+        localStorage.setItem("userName", userName);
+
+        localStorage.setItem("userProfilePic", userProfilePic);
+
+        localStorage.setItem("userId", data.id); // Store User ID
 
         // Redirect based on role
         switch (userRole) {

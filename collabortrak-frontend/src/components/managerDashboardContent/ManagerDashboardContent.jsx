@@ -2,35 +2,47 @@ import React from "react";
 import ActivityStream from "../widgets/ActivityStream";
 import EmployeeTicketsList from "../widgets/EmployeeTicketsList";
 import StatCard from "../widgets/StatCard";
-import TicketChart from "../widgets/TicketChart";
 import TicketsDueList from "../widgets/TicketsDueList";
 import "./ManagerDashboardContent.css";
+import ManagerTicketChart from "./ManagerTicketChart";
 
 const ManagerDashboardContent = () => {
   return (
-    <div className="manager-dashboard">
-      <h1>Manager Dashboard</h1>
+    <div className="ui container dashboard-container">
+      <h2 className="dashboard-header">Manager Dashboard</h2>
 
-      {/* Row 1: Chart + Stats */}
-      <div className="dashboard-row">
-        <div className="chart-section">
-          <TicketChart />
+      {/* First Row */}
+      <div className="ui segment">
+        <h3>Ticket Stats</h3>
+        <StatCard />
+      </div>
+
+      {/* Second Row */}
+      <div className="ui two column grid" style={{ marginTop: "1rem" }}>
+        <div className="column">
+          <div className="ui orange segment">
+            <h3>Ticket Status Overview</h3>
+            <ManagerTicketChart />
+          </div>
         </div>
-        <div className="stats-section">
-          <StatCard title="Total Ready" count={25} />
-          <StatCard title="Total In Progress" count={12} />
-          <StatCard title="Total Published" count={8} />
+        <div className="column">
+          <div className="ui purple segment">
+            <EmployeeTicketsList />
+          </div>
         </div>
       </div>
 
-      {/* Row 2: Activity Stream + Active Tickets */}
-      <div className="dashboard-row">
-        <div className="left-section">
-          <ActivityStream />
-          <TicketsDueList />
+      {/* Third Row */}
+      <div className="ui two column grid" style={{ marginTop: "1rem" }}>
+        <div className="column">
+          <div className="ui red segment">
+            <ActivityStream />
+          </div>
         </div>
-        <div className="right-section">
-          <EmployeeTicketsList />
+        <div className="column">
+          <div className="ui blue segment">
+            <TicketsDueList />
+          </div>
         </div>
       </div>
     </div>

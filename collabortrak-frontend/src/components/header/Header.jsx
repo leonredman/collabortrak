@@ -1,9 +1,39 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./HeaderMenu.css";
 
+const roleIcons = {
+  ROLE_ADMIN: "/adminIcon.jpg",
+  ROLE_MANAGER: "/managerIcon.png",
+  ROLE_DEVELOPER: "/developerIcon.png",
+  ROLE_QA_AGENT: "/QAIcon.png",
+  ROLE_WEBSITE_SPECIALIST: "/webSpecialistIcon.png",
+};
+
 const Header = () => {
   const navigate = useNavigate();
+  const [userName, setUserName] = useState("Guest");
+  const [userRole, setUserRole] = useState("User");
+  const [userProfilePic, setUserProfilePic] = useState("/default-avatar.png");
+
+  useEffect(() => {
+    const storedUserName = localStorage.getItem("userName") ?? "Guest";
+    const storedUserRole = localStorage.getItem("userRole") ?? "User";
+
+    // Remove brackets [] if they exist in userRole
+    const cleanUserRole = storedUserRole.replace(/[\[\]]/g, ""); // Remove brackets
+
+    console.log(
+      "Loaded from storage → userName:",
+      storedUserName,
+      "userRole:",
+      cleanUserRole
+    );
+
+    setUserName(storedUserName);
+    setUserRole(cleanUserRole);
+    setUserProfilePic(roleIcons[cleanUserRole] || "/default-avatar.png");
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -14,8 +44,7 @@ const Header = () => {
 
       if (response.ok) {
         console.log("Logout successful");
-        localStorage.removeItem("isAuthenticated");
-        localStorage.removeItem("userRole");
+        localStorage.clear(); // Clears all user session data
         navigate("/login");
       } else {
         console.error("Logout failed:", response.statusText);
@@ -40,9 +69,11 @@ const Header = () => {
           Create Ticket
         </Link>
 
-        <button onClick={handleLogout} className="ui primary button">
-          Logout
-        </button>
+        {userName !== "Guest" && (
+          <button onClick={handleLogout} className="ui primary button">
+            Logout
+          </button>
+        )}
 
         <div className="right menu">
           <h4
@@ -50,10 +81,12 @@ const Header = () => {
             style={{ color: "white", paddingTop: "10px", paddingRight: "20px" }}
           >
             <img
-              src="https://semantic-ui.com/images/avatar2/small/matthew.png"
-              alt="placeholder"
+              src={userProfilePic}
+              alt="User Avatar"
               className="ui tiny circular image"
+              onError={(e) => (e.target.src = "/default-avatar.png")} // Fallback to default
             />
+            <span style={{ marginLeft: "10px" }}>{userName}</span>
           </h4>
           <i
             className="bell outline icon"

@@ -91,7 +91,7 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
         </div>
         <div className="column">
           <div className="ui blue segment">
-            <h3>Tickets In Progress</h3>
+            <h3>Build In Progress Tickets</h3>
             <TicketsInProgressList />
           </div>
         </div>
@@ -110,7 +110,7 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
         {/* Right Column: Tickets In QA */}
         <div className="column">
           <div className="ui yellow segment">
-            <h3>Tickets In QA</h3>
+            <h3>QA In Progress Tickets</h3>
             <TicketsInQAList />
           </div>
         </div>

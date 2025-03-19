@@ -17,6 +17,8 @@ const EditTicketPage = () => {
     assignedEmployeeId: "",
   });
 
+  const userRole = localStorage.getItem("userRole"); // Get logged-in user role
+
   useEffect(() => {
     console.log("Fetching ticket with ID:", ticketId);
 
@@ -95,6 +97,31 @@ const EditTicketPage = () => {
       .catch((error) => console.error("Error updating ticket:", error));
   };
 
+  const handleDelete = async () => {
+    if (!window.confirm("Are you sure you want to delete this ticket?")) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/tickets/${ticketId}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+
+      if (response.ok) {
+        alert("Ticket deleted successfully!");
+        navigate("/admin-dashboard"); // Redirect after deletion
+      } else {
+        alert("Failed to delete ticket.");
+      }
+    } catch (error) {
+      console.error("Error deleting ticket:", error);
+    }
+  };
+
   if (!ticket) {
     return <p>Loading ticket details...</p>;
   }
@@ -123,6 +150,27 @@ const EditTicketPage = () => {
               ? `${ticket.assignedEmployee.firstName} ${ticket.assignedEmployee.lastName}`
               : "Unassigned"}
           </p>
+          {/* Delete Ticket Link (Admin Only) */}
+          {userRole === "[ROLE_ADMIN]" && (
+            <p>
+              {" "}
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault(); // Prevents default link behavior
+                  handleDelete();
+                }}
+                style={{
+                  color: "red",
+                  cursor: "pointer",
+                  textDecoration: "underline",
+                  fontWeight: "bold",
+                }}
+              >
+                Delete this ticket
+              </a>{" "}
+            </p>
+          )}
         </div>
 
         <form className="ui form" onSubmit={handleSubmit}>

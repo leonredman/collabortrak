@@ -1,7 +1,7 @@
 .dashboard-container {
   margin: 0 auto;
   max-width: 98%; /* make layout closer to edges */
-  padding: 10rem 1rem 1rem; /* top padding more space below header */
+  padding: 7rem 1rem 1rem; /* top padding more space below header */
 }
 
 .expanded-content {
