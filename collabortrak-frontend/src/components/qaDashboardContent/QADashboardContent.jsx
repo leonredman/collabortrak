@@ -30,7 +30,9 @@ const QADashboardContent = () => {
 
   return (
     <div className="qa-dashboard">
-      <h2 className="dashboard-header">Welcome {userName}</h2>
+      <h2 className="dashboard-header">
+        Welcome {userName} To Your QA Dashboard
+      </h2>
 
       {/* First Row */}
       <div className="ui four column grid dashboard-stats">

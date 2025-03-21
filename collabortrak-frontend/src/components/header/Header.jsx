@@ -61,9 +61,9 @@ const Header = () => {
           CollaborTrak
         </Link>
 
-        <Link to="/dashboard" className="item">
+        {/*  <Link to="/dashboard" className="item">
           Dashboard
-        </Link>
+        </Link>*/}
 
         <Link to="/create-ticket" className="item">
           Create Ticket

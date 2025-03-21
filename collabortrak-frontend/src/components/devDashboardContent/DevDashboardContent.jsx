@@ -30,7 +30,9 @@ const DevDashboardContent = () => {
 
   return (
     <div className="ui container dashboard-container">
-      <h2 className="dashboard-header">Welcome {userName}</h2>
+      <h2 className="dashboard-header">
+        Welcome {userName} To Your Developer Dashboard
+      </h2>
 
       {/* First Row: Ticket Status Totals */}
       <div className="ui four column grid dashboard-stats">

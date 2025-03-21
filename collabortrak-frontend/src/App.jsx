@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import {
   Navigate,
   Route,
-  Routes, // Removed BrowserRouter put in main.jsx
+  Routes,
+  useLocation,
   useNavigate,
 } from "react-router-dom";
 
@@ -23,29 +24,19 @@ import "./App.css";
 
 const App = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
+  const userRole = localStorage.getItem("userRole");
 
   useEffect(() => {
-    const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
-    const userRole = localStorage.getItem("userRole");
-    const currentPath = window.location.pathname; // Get current URL path
+    // Auto-redirect to proper dashboard after login
+    const currentPath = location.pathname;
 
-    console.log(
-      "useEffect triggered: isAuthenticated =",
-      isAuthenticated,
-      "userRole =",
-      userRole
-    );
-
-    // Prevent navigation if already on /create-ticket
     if (
       isAuthenticated &&
-      !["/create-ticket"].includes(currentPath) &&
-      !currentPath.startsWith("/edit-ticket/")
+      currentPath === "/" // Only redirect from root
     ) {
-      console.log("Redirecting based on role...");
-
-      // if (isAuthenticated) {
-
       if (userRole === "[ROLE_ADMIN]") {
         navigate("/admin-dashboard");
       } else if (userRole === "[ROLE_MANAGER]") {
@@ -60,16 +51,12 @@ const App = () => {
         navigate("/dashboard");
       }
     }
-  }, [navigate]);
-
-  const isAuthenticated = localStorage.getItem("isAuthenticated") === "true";
-  const userRole = localStorage.getItem("userRole");
+  }, [isAuthenticated, userRole, location.pathname, navigate]);
 
   return (
     <Routes>
-      {" "}
-      {/* Removed Router */}
       <Route path="/login" element={<LoginPage />} />
+
       {isAuthenticated ? (
         <>
           <Route
@@ -89,7 +76,7 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route path="/create-ticket" element={<CreateTicketPage />} />
+
           <Route
             path="/admin-dashboard"
             element={
@@ -101,59 +88,87 @@ const App = () => {
               </ProtectedRoute>
             }
           />
-          <Route path="/edit-ticket/:ticketId" element={<EditTicketPage />} />
-          <Route
-            path="/admin-dashboard"
-            element={
-              <ProtectedRoute
-                allowedRoles={["[ROLE_ADMIN]"]}
-                userRole={userRole}
-              >
-                <AdminDashboard />
-              </ProtectedRoute>
-            }
-          />
+
           <Route
             path="/manager-dashboard"
             element={
               <ProtectedRoute
-                allowedRoles={["[ROLE_MANAGER]"]}
+                allowedRoles={["[ROLE_MANAGER]", "[ROLE_ADMIN]"]}
                 userRole={userRole}
               >
                 <ManagerDashboard />
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/developer-dashboard"
             element={
               <ProtectedRoute
-                allowedRoles={["[ROLE_DEVELOPER]"]}
+                allowedRoles={["[ROLE_DEVELOPER]", "[ROLE_ADMIN]"]}
                 userRole={userRole}
               >
                 <DeveloperDashboard />
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/qa-dashboard"
             element={
               <ProtectedRoute
-                allowedRoles={["[ROLE_QA_AGENT]"]}
+                allowedRoles={["[ROLE_QA_AGENT]", "[ROLE_ADMIN]"]}
                 userRole={userRole}
               >
                 <QADashboard />
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/website-specialist-dashboard"
             element={
               <ProtectedRoute
-                allowedRoles={["[ROLE_WEBSITE_SPECIALIST]"]}
+                allowedRoles={["[ROLE_WEBSITE_SPECIALIST]", "[ROLE_ADMIN]"]}
                 userRole={userRole}
               >
                 <WebsiteSpecialistDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/create-ticket"
+            element={
+              <ProtectedRoute
+                allowedRoles={[
+                  "[ROLE_ADMIN]",
+                  "[ROLE_MANAGER]",
+                  "[ROLE_DEVELOPER]",
+                  "[ROLE_QA_AGENT]",
+                  "[ROLE_WEBSITE_SPECIALIST]",
+                ]}
+                userRole={userRole}
+              >
+                <CreateTicketPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/edit-ticket/:ticketId"
+            element={
+              <ProtectedRoute
+                allowedRoles={[
+                  "[ROLE_ADMIN]",
+                  "[ROLE_MANAGER]",
+                  "[ROLE_DEVELOPER]",
+                  "[ROLE_QA_AGENT]",
+                  "[ROLE_WEBSITE_SPECIALIST]",
+                ]}
+                userRole={userRole}
+              >
+                <EditTicketPage />
               </ProtectedRoute>
             }
           />
@@ -161,9 +176,10 @@ const App = () => {
       ) : (
         <Route path="*" element={<Navigate to="/login" replace />} />
       )}
+
       <Route path="/not-authorized" element={<NotAuthorized />} />
       <Route path="*" element={<NotFound />} />
-    </Routes> // Remove Router from here
+    </Routes>
   );
 };
 

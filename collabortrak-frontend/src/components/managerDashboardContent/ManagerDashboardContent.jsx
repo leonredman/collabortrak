@@ -15,7 +15,9 @@ const ManagerDashboardContent = () => {
 
   return (
     <div className="ui container dashboard-container">
-      <h2 className="dashboard-header">Welcome {userName}</h2>
+      <h2 className="dashboard-header">
+        Welcome {userName} To Your Manager Dashboard
+      </h2>
 
       {/* First Row */}
       <div className="ui segment">

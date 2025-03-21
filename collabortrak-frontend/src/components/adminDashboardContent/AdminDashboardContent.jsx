@@ -48,7 +48,9 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
 
   return (
     <div className="ui container dashboard-container">
-      <h2 className="dashboard-header">Welcome {userName}</h2>
+      <h2 className="dashboard-header">
+        Welcome {userName} To Your Admin Dashboard
+      </h2>
       <p className="dashboard-subtext">
         Manage all ticketing and project workflows.
       </p>
