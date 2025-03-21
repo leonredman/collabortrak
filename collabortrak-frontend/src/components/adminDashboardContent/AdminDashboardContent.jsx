@@ -5,19 +5,21 @@ import NewTicketsList from "./NewTicketsList";
 import TicketsInProgressList from "./TicketsInProgressList";
 import TicketsInQAList from "./TicketsInQAList";
 
-import "./AdminDashboardContent.css"; // Import custom styles
+import "./AdminDashboardContent.css"; // custom styles
 
 const AdminDashboardContent = ({ isAuthenticated }) => {
   const [tickets, setTickets] = useState([]);
-  console.log(
-    "AdminDashboardContent Rendered! isAuthenticated:",
-    isAuthenticated
-  );
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     console.log(
-      "useEffect triggered in AdminDashboard! Checking `isAuthenticated`..."
+      "AdminDashboardContent Rendered! isAuthenticated:",
+      isAuthenticated
     );
+
+    // Fetch the logged-in user’s name
+    setUserName(localStorage.getItem("userName") || "Admin");
+
     if (!isAuthenticated) {
       console.log("User not authenticated, skipping fetch...");
       return;
@@ -46,9 +48,9 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
 
   return (
     <div className="ui container dashboard-container">
-      <h2 className="dashboard-header">Admin Dashboard</h2>
+      <h2 className="dashboard-header">Welcome {userName}</h2>
       <p className="dashboard-subtext">
-        Welcome! Here you can manage all ticketing and project workflows.
+        Manage all ticketing and project workflows.
       </p>
 
       {/* First Row: Ticket Status Totals (4 Columns) */}

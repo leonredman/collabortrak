@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const TicketsInProgressList = () => {
+const QaNeedsEditsList = () => {
   const [tickets, setTickets] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const ticketsPerPage = 3; // Ensure only 4 tickets per page
+  const ticketsPerPage = 3; // Display 3 tickets per page
 
   useEffect(() => {
     fetch("http://localhost:8080/api/tickets", {
@@ -14,16 +14,16 @@ const TicketsInProgressList = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        // Filter tickets with status "BUILD_IN_PROGRESS"
-        const inProgressTickets = data.filter(
-          (ticket) => ticket.status === "BUILD_IN_PROGRESS"
+        // Filter tickets with status "QA_NEEDS_EDITS"
+        const needsEditsTickets = data.filter(
+          (ticket) => ticket.status === "QA_NEEDS_EDITS"
         );
-        setTickets(inProgressTickets);
+        setTickets(needsEditsTickets);
       })
       .catch((error) => console.error("Error fetching tickets:", error));
   }, []);
 
-  // Pagination Logic (Only 4 tickets per page)
+  // Pagination Logic
   const indexOfLastTicket = currentPage * ticketsPerPage;
   const indexOfFirstTicket = indexOfLastTicket - ticketsPerPage;
   const currentTickets = tickets.slice(indexOfFirstTicket, indexOfLastTicket);
@@ -36,7 +36,6 @@ const TicketsInProgressList = () => {
           <tr>
             <th>Tracking #</th>
             <th>Title</th>
-            <th>Assigned</th>
             <th>Last Update</th>
             <th>Details</th>
           </tr>
@@ -46,31 +45,6 @@ const TicketsInProgressList = () => {
             <tr key={ticket.id}>
               <td>{ticket.ticketTrackingNumber}</td>
               <td>{ticket.title}</td>
-              <td>
-                {console.log(
-                  "Ticket ID:",
-                  ticket.id,
-                  "Assigned Employee:",
-                  ticket.assignedEmployee
-                )}
-                {console.log(
-                  "Ticket ID:",
-                  ticket.id,
-                  "Assigned Employee:",
-                  ticket.assignedEmployee
-                )}
-
-                {ticket.assignedEmployeeFirstName
-                  ? `${ticket.assignedEmployeeFirstName} ${ticket.assignedEmployeeLastName}`
-                  : "Unassigned"}
-              </td>
-
-              {console.log(
-                "Ticket ID:",
-                ticket.id,
-                "Assigned Employee:",
-                ticket.assignedEmployee
-              )}
               <td>
                 {ticket.lastUpdate
                   ? new Date(ticket.lastUpdate).toLocaleDateString()
@@ -86,7 +60,7 @@ const TicketsInProgressList = () => {
         </tbody>
       </table>
 
-      {/* Pagination Controls (Only if more than 4 tickets exist) */}
+      {/* Pagination Controls */}
       {totalPages > 1 && (
         <div className="ui pagination menu">
           {Array.from({ length: totalPages }, (_, index) => (
@@ -104,4 +78,4 @@ const TicketsInProgressList = () => {
   );
 };
 
-export default TicketsInProgressList;
+export default QaNeedsEditsList;

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ActivityStream from "../widgets/ActivityStream";
 import EmployeeTicketsList from "../widgets/EmployeeTicketsList";
 import StatCard from "../widgets/StatCard";
@@ -7,9 +7,15 @@ import "./ManagerDashboardContent.css";
 import ManagerTicketChart from "./ManagerTicketChart";
 
 const ManagerDashboardContent = () => {
+  const [userName, setUserName] = useState("");
+
+  useEffect(() => {
+    setUserName(localStorage.getItem("userName") || "Manager");
+  }, []);
+
   return (
     <div className="ui container dashboard-container">
-      <h2 className="dashboard-header">Manager Dashboard</h2>
+      <h2 className="dashboard-header">Welcome {userName}</h2>
 
       {/* First Row */}
       <div className="ui segment">
