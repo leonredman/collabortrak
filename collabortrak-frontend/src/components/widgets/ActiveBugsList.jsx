@@ -41,7 +41,7 @@ const ActiveBugsList = () => {
             <th>Tracking #</th>
             <th>Title</th>
             <th>Status</th>
-            <th>Last Updated</th>
+            <th>Updated</th>
             <th>Details</th>
           </tr>
         </thead>

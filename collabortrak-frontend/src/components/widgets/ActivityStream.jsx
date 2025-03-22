@@ -37,8 +37,8 @@ const ActivityStream = () => {
           <tr>
             <th>Tracking #</th>
             <th>Title</th>
-            <th>Category</th>
-            <th>Last Updated</th>
+
+            <th>Updated</th>
             <th>Status</th>
             <th>Details</th>
           </tr>
@@ -48,7 +48,7 @@ const ActivityStream = () => {
             <tr key={ticket.id}>
               <td>{ticket.ticketTrackingNumber}</td>
               <td>{ticket.title}</td>
-              <td>{ticket.category}</td>
+
               <td>
                 {ticket.lastUpdate
                   ? new Date(ticket.lastUpdate).toLocaleDateString()

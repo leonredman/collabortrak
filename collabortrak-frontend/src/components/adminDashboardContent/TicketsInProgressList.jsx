@@ -37,7 +37,7 @@ const TicketsInProgressList = () => {
             <th>Tracking #</th>
             <th>Title</th>
             <th>Assigned</th>
-            <th>Last Update</th>
+            <th>Updated</th>
             <th>Details</th>
           </tr>
         </thead>

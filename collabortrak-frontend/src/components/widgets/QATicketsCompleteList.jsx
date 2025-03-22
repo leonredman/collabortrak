@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const TicketsInReadyList = () => {
+const QATicketsCompleteList = () => {
   const [tickets, setTickets] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const ticketsPerPage = 3; // Adjust the number of tickets per page
+  const ticketsPerPage = 3;
 
   useEffect(() => {
     fetch("http://localhost:8080/api/tickets", {
@@ -14,27 +14,30 @@ const TicketsInReadyList = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        // Filter only READY tickets
-        const readyTickets = data.filter((ticket) => ticket.status === "READY");
-        setTickets(readyTickets);
+        const complete = data.filter(
+          (ticket) => ticket.status === "QA_COMPLETE"
+        );
+        setTickets(complete);
       })
-      .catch((error) => console.error("Error fetching tickets:", error));
+      .catch((error) =>
+        console.error("Error fetching QA Complete tickets:", error)
+      );
   }, []);
 
-  // Pagination Logic
-  const indexOfLastTicket = currentPage * ticketsPerPage;
-  const indexOfFirstTicket = indexOfLastTicket - ticketsPerPage;
-  const currentTickets = tickets.slice(indexOfFirstTicket, indexOfLastTicket);
+  // Pagination logic
+  const indexOfLast = currentPage * ticketsPerPage;
+  const indexOfFirst = indexOfLast - ticketsPerPage;
+  const currentTickets = tickets.slice(indexOfFirst, indexOfLast);
   const totalPages = Math.ceil(tickets.length / ticketsPerPage);
 
   return (
-    <div className="ui segment">
+    <div className="widget">
       <table className="ui celled table">
         <thead>
           <tr>
             <th>Tracking #</th>
             <th>Title</th>
-            <th>Created</th>
+            <th>Updated</th>
             <th>Status</th>
             <th>Details</th>
           </tr>
@@ -45,7 +48,11 @@ const TicketsInReadyList = () => {
               <tr key={ticket.id}>
                 <td>{ticket.ticketTrackingNumber}</td>
                 <td>{ticket.title}</td>
-                <td>{new Date(ticket.createdDate).toLocaleDateString()}</td>
+                <td>
+                  {ticket.lastUpdate
+                    ? new Date(ticket.lastUpdate).toLocaleDateString()
+                    : "N/A"}
+                </td>
                 <td>{ticket.status}</td>
                 <td>
                   <Link to={`/edit-ticket/${ticket.id}`}>
@@ -56,9 +63,7 @@ const TicketsInReadyList = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="5" style={{ textAlign: "center" }}>
-                No Ready Tickets Found
-              </td>
+              <td colSpan="5">No QA Complete tickets found.</td>
             </tr>
           )}
         </tbody>
@@ -67,13 +72,13 @@ const TicketsInReadyList = () => {
       {/* Pagination Controls */}
       {totalPages > 1 && (
         <div className="ui pagination menu">
-          {Array.from({ length: totalPages }, (_, index) => (
+          {Array.from({ length: totalPages }, (_, i) => (
             <button
-              key={index}
-              className={`item ${currentPage === index + 1 ? "active" : ""}`}
-              onClick={() => setCurrentPage(index + 1)}
+              key={i}
+              className={`item ${currentPage === i + 1 ? "active" : ""}`}
+              onClick={() => setCurrentPage(i + 1)}
             >
-              {index + 1}
+              {i + 1}
             </button>
           ))}
         </div>
@@ -82,4 +87,4 @@ const TicketsInReadyList = () => {
   );
 };
 
-export default TicketsInReadyList;
+export default QATicketsCompleteList;

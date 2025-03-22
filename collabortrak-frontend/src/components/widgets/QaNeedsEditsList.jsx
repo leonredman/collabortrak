@@ -36,7 +36,7 @@ const QaNeedsEditsList = () => {
           <tr>
             <th>Tracking #</th>
             <th>Title</th>
-            <th>Last Update</th>
+            <th>Updated</th>
             <th>Details</th>
           </tr>
         </thead>

@@ -66,13 +66,12 @@ const EditTicketPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Set LocalDateTime format for update
     const formattedData = {
       ...formData,
       dueDate: formData.dueDate ? `${formData.dueDate}T00:00:00` : null,
     };
 
-    console.log("Submitting Ticket Update Request:", formattedData); // Debug Log payload
+    console.log("Submitting Ticket Update Request:", formattedData);
 
     fetch(`http://localhost:8080/api/tickets/${ticketId}`, {
       method: "PUT",
@@ -90,9 +89,30 @@ const EditTicketPage = () => {
         return res.json();
       })
       .then((updatedTicket) => {
-        console.log("Ticket Updated Successfully:", updatedTicket); // Debug Log Confirm Update
+        console.log("Ticket Updated Successfully:", updatedTicket);
         alert("Ticket updated successfully!");
-        navigate("/dashboard");
+
+        // 🔄 Redirect based on role
+        const userRole = localStorage.getItem("userRole");
+        switch (userRole) {
+          case "[ROLE_ADMIN]":
+            navigate("/admin-dashboard");
+            break;
+          case "[ROLE_MANAGER]":
+            navigate("/manager-dashboard");
+            break;
+          case "[ROLE_DEVELOPER]":
+            navigate("/developer-dashboard");
+            break;
+          case "[ROLE_QA_AGENT]":
+            navigate("/qa-dashboard");
+            break;
+          case "[ROLE_WEBSITE_SPECIALIST]":
+            navigate("/website-specialist-dashboard");
+            break;
+          default:
+            navigate("/dashboard");
+        }
       })
       .catch((error) => console.error("Error updating ticket:", error));
   };

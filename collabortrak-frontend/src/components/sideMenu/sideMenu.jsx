@@ -19,6 +19,14 @@ const SideMenu = () => {
               </Link>
             </div>
           </div>
+          <div className="item">
+            <div className="header">Manager</div>
+            <div className="menu">
+              <Link to="/manager-dashboard" className="item">
+                Manager-Dash
+              </Link>
+            </div>
+          </div>
 
           <div className="item">
             <div className="header">Website Specialist</div>

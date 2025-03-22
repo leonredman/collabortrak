@@ -32,11 +32,11 @@ const EmployeeTicketsList = () => {
       <table className="ui celled table">
         <thead>
           <tr>
-            <th>Ticket Tracking #</th>
+            <th>Tracking #</th>
             <th>Title</th>
-            <th>Category</th>
-            <th>Last Updated</th>
-            <th>Assigned Employee</th>
+
+            <th>Updated</th>
+            <th>Assigned</th>
             <th>Details</th>
           </tr>
         </thead>
@@ -46,7 +46,7 @@ const EmployeeTicketsList = () => {
               <tr key={ticket.id}>
                 <td>{ticket.ticketTrackingNumber}</td>
                 <td>{ticket.title}</td>
-                <td>{ticket.category}</td>
+
                 <td>
                   {ticket.lastUpdate
                     ? new Date(ticket.lastUpdate).toLocaleDateString()

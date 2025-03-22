@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
-import TicketChart from "../widgets/TicketChart";
-import TicketsList from "../widgets/TicketsList";
+import NewTicketsList from "../widgets/NewTicketsList";
+import QATicketsCompleteList from "../widgets/QATicketsCompleteList";
+import TicketsInReadyList from "../widgets/TicketsInReadyList";
+import WSDashboardChart from "./WSDashboardChart";
+
 import "./WSDashboardContent.css";
 
 const WSDashboardContent = () => {
@@ -8,7 +11,7 @@ const WSDashboardContent = () => {
   const [tickets, setTickets] = useState([]);
 
   useEffect(() => {
-    setUserName(localStorage.getItem("userName") || "Developer");
+    setUserName(localStorage.getItem("userName") || "Website Specialist");
 
     fetch("http://localhost:8080/api/tickets", {
       method: "GET",
@@ -31,15 +34,59 @@ const WSDashboardContent = () => {
         Welcome {userName} To Your Website Specialist Dashboard
       </h2>
 
-      <div className="widget-container">
-        <TicketsList title="Open" status="OPEN" />
-        <TicketsList title="Ready" status="READY" />
-        <TicketsList title="QA Complete" status="QA_COMPLETE" />
-        <TicketsList title="Bugs (All Statuses)" category="BUG" />
+      {/* First Row: Ticket Status Totals (3 Columns) */}
+      <div className="ui three column grid dashboard-stats">
+        <div className="column">
+          <div className="ui red segment">
+            <h3>Tickets In Open</h3>
+            <p className="dashboard-value">{countByStatus("OPEN")}</p>
+          </div>
+        </div>
+        <div className="column">
+          <div className="ui blue segment">
+            <h3>Tickets In Ready</h3>
+            <p className="dashboard-value">{countByStatus("READY")}</p>
+          </div>
+        </div>
+        <div className="column">
+          <div className="ui yellow segment">
+            <h3>Tickets In QA Complete</h3>
+            <p className="dashboard-value">{countByStatus("QA_COMPLETE")}</p>
+          </div>
+        </div>
       </div>
 
-      <div className="chart-container">
-        <TicketChart />
+      {/* Second Row */}
+      <div className="ui two column grid dashboard-lists">
+        <div className="column">
+          <div className="ui red segment">
+            <h3>Tickets in Open</h3>
+            <NewTicketsList />
+          </div>
+        </div>
+        <div className="column">
+          <div className="ui blue segment">
+            <h3>Tickets in Ready</h3>
+            <TicketsInReadyList />
+          </div>
+        </div>
+      </div>
+      {/* Third Row */}
+      <div className="ui two column grid dashboard-lists">
+        {/* Left Column: Chart */}
+        <div className="column">
+          <div className="ui purple segment dashboard-chart">
+            <h3>QA Ticket Status Overview</h3>
+            <WSDashboardChart />
+          </div>
+        </div>
+
+        <div className="column">
+          <div className="ui yellow segment">
+            <h3>Tickets QA Edits Complete</h3>
+            <QATicketsCompleteList />
+          </div>
+        </div>
       </div>
     </div>
   );

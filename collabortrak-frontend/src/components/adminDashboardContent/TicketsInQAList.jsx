@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const TicketsInQAList = () => {
   const [tickets, setTickets] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const ticketsPerPage = 4; // Show only 4 tickets per page
+  const ticketsPerPage = 3; // Show only 4 tickets per page
 
   useEffect(() => {
     fetch("http://localhost:8080/api/tickets", {
@@ -34,7 +34,7 @@ const TicketsInQAList = () => {
       <table className="ui celled table">
         <thead>
           <tr>
-            <th>Ticket ID</th>
+            <th>Tracking #</th>
             <th>Title</th>
             <th>Assigned</th>
             <th>Last Update</th>
@@ -44,7 +44,7 @@ const TicketsInQAList = () => {
         <tbody>
           {currentTickets.map((ticket) => (
             <tr key={ticket.id}>
-              <td>{ticket.id}</td>
+              <td>{ticket.ticketTrackingNumber}</td>
               <td>{ticket.title}</td>
               <td>
                 {ticket.assignedEmployeeFirstName
