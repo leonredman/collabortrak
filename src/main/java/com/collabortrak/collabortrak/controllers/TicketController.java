@@ -196,24 +196,26 @@ public class TicketController {
                     ticket.setPriority(updatedTicket.getPriority());
                     ticket.setCategory(updatedTicket.getCategory());
 
-                    // Set Due Date is explicitly updated
+                    // Update Due Date is explicitly updated
                     if (updatedTicket.getDueDate() != null) {
                         ticket.setDueDate(updatedTicket.getDueDate());
                     }
 
-                    // Set Assigned Employee is Updated
-//                    if (updatedTicket.getAssignedEmployee() != null && updatedTicket.getAssignedEmployee().getId() != null) {
-//                        Employee employee = employeeRepository.findById(updatedTicket.getAssignedEmployee().getId())
-//                                .orElse(null);
-//                        ticket.setAssignedEmployee(employee); // Set new assigned employee
-//                    }
 
-                    // Handle `assignedEmployeeId` separately (since frontend sends `assignedEmployeeId`)
-                    if (updatedTicket.getAssignedEmployee() == null && updatedTicket.getAssignedEmployeeId() != null) {
-                        Employee employee = employeeRepository.findById(updatedTicket.getAssignedEmployeeId())
+                    // Tested Original Set Assigned Employee is Updated
+                    if (updatedTicket.getAssignedEmployee() != null && updatedTicket.getAssignedEmployee().getId() != null) {
+                        Employee employee = employeeRepository.findById(updatedTicket.getAssignedEmployee().getId())
                                 .orElse(null);
-                        ticket.setAssignedEmployee(employee);
-                    }
+                        ticket.setAssignedEmployee(employee); // Set new assigned employee
+                   }
+
+                    // OLD APPROACH NOW COMMENTED OUT
+                    // Handle `assignedEmployeeId` separately (since frontend sends `assignedEmployeeId`)
+//                    if (updatedTicket.getAssignedEmployee() == null && updatedTicket.getAssignedEmployeeId() != null) {
+//                        Employee employee = employeeRepository.findById(updatedTicket.getAssignedEmployeeId())
+//                                .orElse(null);
+//                        ticket.setAssignedEmployee(employee);
+//                    }
 
 
                     return ResponseEntity.ok(ticketRepository.save(ticket));

@@ -93,6 +93,7 @@ const EditTicketPage = () => {
     };
 
     console.log("Submitting Ticket Update Request:", formattedData);
+    console.log("Final payload:", formattedData);
 
     fetch(`http://localhost:8080/api/tickets/${ticketId}`, {
       method: "PUT",

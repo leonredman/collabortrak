@@ -136,7 +136,7 @@ const LoginForm = () => {
           onSubmit={handleSubmit}
           method="POST"
           action="http://localhost:8080/api/login"
-          id="login-form" // Add this line
+          id="login-form"
         >
           <div className="field">
             <label>USERNAME:</label>

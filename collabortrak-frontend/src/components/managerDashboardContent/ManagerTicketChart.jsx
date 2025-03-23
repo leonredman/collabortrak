@@ -28,7 +28,7 @@ const ManagerTicketChart = ({
       .then((data) => {
         console.log("Manager Chart API Response:", data);
 
-        // ✅ Filter tickets to match Manager Dashboard needs
+        // Filter tickets to match Manager Dash
         const statusCounts = {
           READY: 0,
           BUILD_IN_PROGRESS: 0,

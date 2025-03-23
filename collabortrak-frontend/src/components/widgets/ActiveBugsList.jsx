@@ -14,7 +14,7 @@ const ActiveBugsList = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        // ✅ Filter bugs by status (OPEN, READY, QA_NEEDS_EDITS)
+        // Filter bugs by status (OPEN, READY, QA_NEEDS_EDITS)
         const activeBugs = data.filter(
           (ticket) =>
             ticket.category === "BUG" &&
