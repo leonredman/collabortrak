@@ -13,6 +13,7 @@ const TicketForm = () => {
   const [assignedEmployee, setAssignedEmployee] = useState("");
   const [customers, setCustomers] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const [ticketType, setTicketType] = useState("EPIC"); // Default to EPIC
 
   const navigate = useNavigate();
   const userRole = localStorage.getItem("userRole");
@@ -98,6 +99,7 @@ const TicketForm = () => {
       assignedEmployee: assignedEmployee
         ? { id: parseInt(assignedEmployee) }
         : null,
+      ticketType,
     };
 
     console.log(
@@ -194,6 +196,22 @@ const TicketForm = () => {
                 >
                   <option value="OPEN">Open</option>
                   <option value="READY">Ready</option>
+                </select>
+              </div>
+
+              {/* Ticket Type */}
+              <div className="field">
+                <label>Ticket Type</label>
+                <select
+                  value={ticketType}
+                  onChange={(e) => setTicketType(e.target.value)}
+                  required
+                >
+                  <option value="">Select Ticket Type</option>
+                  <option value="EPIC">Epic</option>
+                  <option value="STORY">Story</option>
+                  <option value="TASK">Task</option>
+                  <option value="BUG">Bug</option>
                 </select>
               </div>
 
