@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -31,7 +32,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance(); // Use plain text passwords for simplicity
+        return new BCryptPasswordEncoder(); // Updated from NoOpPasswordEncoder plain text passwords for simplicity to BCrypt
     }
 
     @Bean
@@ -107,18 +108,18 @@ public class SecurityConfig {
 
     // Insert demo users on startup (if not present)
     @Bean
-    public CommandLineRunner createDemoUsers(UserRepository userRepository) {
+    public CommandLineRunner createDemoUsers(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
             if (userRepository.count() == 0) {
                 List<User> demoUsers = List.of(
-                        new User("admin", "admin123", RoleType.ADMIN),
-                        new User("manager", "manager123", RoleType.MANAGER),
-                        new User("dev", "dev123", RoleType.DEVELOPER),
-                        new User("qa", "qa123", RoleType.QA_AGENT),
-                        new User("web", "web123", RoleType.WEBSITE_SPECIALIST)
+                        new User("admin", passwordEncoder.encode(  "admin123"), RoleType.ADMIN),
+                        new User("manager", passwordEncoder.encode("manager123"), RoleType.MANAGER),
+                        new User("dev", passwordEncoder.encode("dev123"), RoleType.DEVELOPER),
+                        new User("qa", passwordEncoder.encode("qa123"), RoleType.QA_AGENT),
+                        new User("web", passwordEncoder.encode("web123"), RoleType.WEBSITE_SPECIALIST)
                 );
                 userRepository.saveAll(demoUsers);
-                System.out.println("Demo users inserted successfully!");
+                System.out.println("Demo users added with hashed passwords completed!");
             }
         };
     }
