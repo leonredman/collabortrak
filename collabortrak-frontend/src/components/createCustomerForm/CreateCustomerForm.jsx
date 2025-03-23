@@ -28,12 +28,17 @@ const CreateCustomerForm = () => {
     e.preventDefault();
     setMessage(null);
 
+    // Trim input before submit
+    const trimmedData = Object.fromEntries(
+      Object.entries(formData).map(([Key, value]) => [Key, value.trim()])
+    );
+
     try {
       const response = await fetch("http://localhost:8080/api/customers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify(formData),
+        body: JSON.stringify(trimmedData),
       });
 
       if (response.ok) {
@@ -78,6 +83,7 @@ const CreateCustomerForm = () => {
               value={formData.firstName}
               onChange={handleChange}
               required
+              maxLength={100}
               placeholder="First Name"
             />
           </div>
@@ -88,6 +94,7 @@ const CreateCustomerForm = () => {
               value={formData.lastName}
               onChange={handleChange}
               required
+              maxLength={100}
               placeholder="Last Name"
             />
           </div>
@@ -101,6 +108,8 @@ const CreateCustomerForm = () => {
             value={formData.email}
             onChange={handleChange}
             required
+            maxLength={150}
+            pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$" // reg-ex for email characters
             placeholder="Email"
           />
         </div>
@@ -111,6 +120,7 @@ const CreateCustomerForm = () => {
             name="phoneNumber"
             value={formData.phoneNumber}
             onChange={handleChange}
+            maxLength={20}
             placeholder="Phone Number"
           />
         </div>
@@ -121,6 +131,7 @@ const CreateCustomerForm = () => {
             name="address"
             value={formData.address}
             onChange={handleChange}
+            maxLength={255}
             placeholder="Street Address"
           />
         </div>
@@ -132,6 +143,7 @@ const CreateCustomerForm = () => {
               name="city"
               value={formData.city}
               onChange={handleChange}
+              maxLength={100}
               placeholder="City"
             />
           </div>
@@ -141,6 +153,7 @@ const CreateCustomerForm = () => {
               name="state"
               value={formData.state}
               onChange={handleChange}
+              maxLength={100}
               placeholder="State"
             />
           </div>
@@ -150,6 +163,7 @@ const CreateCustomerForm = () => {
               name="zip"
               value={formData.zip}
               onChange={handleChange}
+              maxLength={20}
               placeholder="Zip Code"
             />
           </div>
@@ -161,6 +175,7 @@ const CreateCustomerForm = () => {
             name="country"
             value={formData.country}
             onChange={handleChange}
+            maxLength={100}
             placeholder="Country"
           />
         </div>

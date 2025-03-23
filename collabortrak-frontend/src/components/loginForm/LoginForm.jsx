@@ -29,10 +29,28 @@ const LoginForm = () => {
     e.preventDefault();
     setError(""); // Clear previous errors
 
-    const form = e.target;
+    // const form = e.target;
 
-    const formData = new FormData(form);
-    const payload = new URLSearchParams(formData);
+    //const formData = new FormData(form);
+    //const payload = new URLSearchParams(formData);
+
+    const trimmedUsername = username.trim();
+    const trimmedPassword = password.trim();
+
+    // Basic validation
+    if (!/^[a-zA-Z0-9]+$/.test(trimmedUsername)) {
+      setError("Username must be alphanumeric with no spaces.");
+      return;
+    }
+
+    if (trimmedPassword.length < 5) {
+      setError("Password must be at least 6 characters.");
+      return;
+    }
+
+    const payload = new URLSearchParams();
+    payload.append("username", trimmedUsername);
+    payload.append("password", trimmedPassword);
 
     try {
       const response = await fetch("http://localhost:8080/api/login", {
