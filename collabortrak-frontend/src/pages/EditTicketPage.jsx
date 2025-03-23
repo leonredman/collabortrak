@@ -65,8 +65,12 @@ const EditTicketPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // updated with input validations
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const trimmedTitle = formData.title.trim();
+    const trimmedDescription = formData.description.trim();
 
     const selectedOrCurrentStatus = selectedStatus || formData.status;
 
@@ -81,17 +85,20 @@ const EditTicketPage = () => {
       alert("Please assign an employee before changing to this status.");
       return;
     }
-
+    // with validations
     const formattedData = {
       ...formData,
-      status: selectedOrCurrentStatus,
+      title: trimmedTitle,
+      description: trimmedDescription,
       dueDate: formData.dueDate ? `${formData.dueDate}T00:00:00` : null,
+      status: selectedOrCurrentStatus,
       assignedEmployee:
         isUnassigned || !formData.assignedEmployeeId
           ? null
           : { id: parseInt(formData.assignedEmployeeId) },
     };
 
+    console.log("Final Payload:", formattedData);
     console.log("Submitting Ticket Update Request:", formattedData);
     console.log("Final payload:", formattedData);
 
@@ -256,6 +263,7 @@ const EditTicketPage = () => {
               name="title"
               value={formData.title}
               onChange={handleChange}
+              maxLength={100}
               required
             />
           </div>
@@ -266,6 +274,7 @@ const EditTicketPage = () => {
               name="description"
               value={formData.description}
               onChange={handleChange}
+              maxLength={1000}
               required
             />
           </div>
