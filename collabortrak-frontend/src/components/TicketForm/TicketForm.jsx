@@ -79,9 +79,18 @@ const TicketForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const trimmedTitle = title.trim();
+    const trimmedDescription = description.trim();
+
+    if (!trimmedTitle || !trimmedDescription) {
+      alert("An Empty Title or Description or just spaces are not allowed.");
+      return;
+    }
+
+    // updated to trim input on change for input validations
     const ticketData = {
-      title,
-      description,
+      title: trimmedTitle,
+      description: trimmedDescription,
       status,
       priority,
       category,
@@ -159,6 +168,7 @@ const TicketForm = () => {
                   placeholder="Enter ticket title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                  maxLength={100}
                   required
                 />
               </div>
@@ -170,6 +180,7 @@ const TicketForm = () => {
                   placeholder="Describe the issue"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
+                  maxLength={1000}
                   required
                 />
               </div>
