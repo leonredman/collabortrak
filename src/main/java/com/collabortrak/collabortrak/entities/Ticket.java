@@ -50,6 +50,10 @@ public class Ticket {
     @Transient
     private Long assignedEmployeeId;
 
+    @Transient
+    private TicketType ticketType;
+
+
     @Column(updatable = false)
     private LocalDateTime createdDate = LocalDateTime.now();
 
@@ -62,7 +66,7 @@ public class Ticket {
     // Constructors
     public Ticket() {}
 
-    public Ticket(String title, String description, StatusType status, PriorityType priority, CategoryType category, Customer customer, Employee assignedEmployee) {
+    public Ticket(String title, String description, StatusType status, PriorityType priority, CategoryType category, Customer customer, Employee assignedEmployee, TicketType ticketType) {
         this.title = title;
         this.description = description;
         this.status = status;
@@ -70,6 +74,7 @@ public class Ticket {
         this.category = category;
         this.customer = customer;
         this.assignedEmployee = assignedEmployee;
+        this.ticketType = ticketType;
     }
 
     // Getters & Setters
@@ -173,6 +178,13 @@ public class Ticket {
         return assignedEmployee != null ? assignedEmployee.getId() : null;
     }
 
+    public void setTicketType(TicketType ticketType) {
+        this.ticketType = ticketType;
+    }
+    public TicketType getTicketType() {
+        return ticketType;
+    }
+
     // Setter for `assignedEmployeeId`
     public void setAssignedEmployeeId(Long assignedEmployeeId) {
         this.assignedEmployeeId = assignedEmployeeId;
@@ -188,5 +200,6 @@ public class Ticket {
     public void updateTimestamp() {
         this.lastUpdate = LocalDateTime.now();
     }
+
 
 }
