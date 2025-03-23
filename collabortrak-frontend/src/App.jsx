@@ -9,6 +9,7 @@ import {
 
 import ProtectedRoute from "./components/protectedRoute/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
+import CreateCustomerPage from "./pages/CreateCustomerPage";
 import CreateTicketPage from "./pages/CreateTicketPage";
 import Dashboard from "./pages/Dashboard";
 import DeveloperDashboard from "./pages/DeveloperDashboard";
@@ -151,6 +152,17 @@ const App = () => {
                 userRole={userRole}
               >
                 <CreateTicketPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/create-customer"
+            element={
+              <ProtectedRoute
+                allowedRoles={["[ROLE_ADMIN]"]}
+                userRole={userRole}
+              >
+                <CreateCustomerPage />
               </ProtectedRoute>
             }
           />

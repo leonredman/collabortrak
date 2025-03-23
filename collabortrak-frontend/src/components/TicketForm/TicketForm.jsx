@@ -45,13 +45,22 @@ const TicketForm = () => {
         "Content-Type": "application/json",
       },
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed to fetch customers");
+        }
+        return res.json();
+      })
       .then((data) => {
-        console.log("Customers Fetched:", data);
-        setCustomers(data);
+        if (Array.isArray(data)) {
+          console.log("Customers Fetched:", data);
+          setCustomers(data);
+        } else {
+          console.warn("Unexpected data format for customers:", data);
+          setCustomers([]); // fallback
+        }
       })
       .catch((err) => console.error("Customer API failed:", err));
-
     fetch("http://localhost:8080/api/employees", {
       method: "GET",
       credentials: "include",
@@ -99,7 +108,28 @@ const TicketForm = () => {
 
       if (response.ok) {
         console.log("Ticket created successfully");
-        navigate("/dashboard");
+
+        const userRole = localStorage.getItem("userRole");
+
+        switch (userRole) {
+          case "[ROLE_ADMIN]":
+            navigate("/admin-dashboard");
+            break;
+          case "[ROLE_MANAGER]":
+            navigate("/manager-dashboard");
+            break;
+          case "[ROLE_DEVELOPER]":
+            navigate("/developer-dashboard");
+            break;
+          case "[ROLE_QA_AGENT]":
+            navigate("/qa-dashboard");
+            break;
+          case "[ROLE_WEBSITE_SPECIALIST]":
+            navigate("/website-specialist-dashboard");
+            break;
+          default:
+            navigate("/dashboard");
+        }
       } else {
         const errorData = await response.json();
         console.error("Error creating ticket:", errorData.message);
@@ -195,11 +225,15 @@ const TicketForm = () => {
                   required
                 >
                   <option value="">Select Customer</option>
-                  {customers.map((cust) => (
-                    <option key={cust.id} value={cust.id}>
-                      {cust.firstName} {cust.lastName} (ID: {cust.id})
-                    </option>
-                  ))}
+                  {Array.isArray(customers) && customers.length > 0 ? (
+                    customers.map((cust) => (
+                      <option key={cust.id} value={cust.id}>
+                        {cust.firstName} {cust.lastName} (ID: {cust.id})
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled>No customers found</option>
+                  )}
                 </select>
               </div>
 

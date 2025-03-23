@@ -6,6 +6,7 @@ import com.collabortrak.collabortrak.repositories.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -37,11 +38,36 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(withDefaults()) // Enable CORS
+                .cors(withDefaults())
+
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login","/login-success", "/login-failure").permitAll()
+                        .requestMatchers("/api/login", "/login-success", "/login-failure").permitAll()
+
+                        // Allow GET for customers to authenticated users
+                        .requestMatchers(HttpMethod.GET, "/api/customers/**").hasAnyRole("ADMIN", "MANAGER", "WEBSITE_SPECIALIST", "DEVELOPER", "QA_AGENT")
+
+                        // Only admins can update customer APIs
+                        .requestMatchers(HttpMethod.POST, "/api/customers")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.PUT, "/api/customers/**")
+                        .hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.DELETE, "/api/customers/**")
+                        .hasRole("ADMIN")
+
                         .anyRequest().authenticated()
                 )
+
+                // Don't redirect to login on auth failure — return 401 JSON instead
+                .exceptionHandling(e -> e
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"message\": \"Unauthorized access\"}");
+                        })
+                )
+
                 .formLogin(form -> form
                         .loginProcessingUrl("/api/login")
                         .defaultSuccessUrl("/api/login-success", true)
@@ -52,6 +78,7 @@ public class SecurityConfig {
                         })
                         .permitAll()
                 )
+
                 .logout(logout -> logout
                         .logoutUrl("/api/logout")
                         .invalidateHttpSession(true)
@@ -63,6 +90,7 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // Enable CORS for your frontend
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
@@ -77,7 +105,7 @@ public class SecurityConfig {
         };
     }
 
-
+    // Insert demo users on startup (if not present)
     @Bean
     public CommandLineRunner createDemoUsers(UserRepository userRepository) {
         return args -> {

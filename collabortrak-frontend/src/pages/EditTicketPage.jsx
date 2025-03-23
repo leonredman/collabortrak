@@ -17,6 +17,7 @@ const EditTicketPage = () => {
     assignedEmployeeId: "",
   });
 
+  const [selectedStatus, setSelectedStatus] = useState("");
   const userRole = localStorage.getItem("userRole"); // Get logged-in user role
 
   useEffect(() => {
@@ -42,6 +43,7 @@ const EditTicketPage = () => {
             ? data.assignedEmployee.id
             : "",
         });
+        setSelectedStatus(data.status || "");
       })
       .catch((error) => console.error("Error fetching ticket details:", error));
 
@@ -66,9 +68,28 @@ const EditTicketPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const selectedOrCurrentStatus = selectedStatus || formData.status;
+
+    const statusesThatAllowUnassigned = ["OPEN", "READY"];
+    const isUnassigned = formData.assignedEmployeeId === "unassigned";
+
+    // Enforce employee assignment for later statuses
+    if (
+      !statusesThatAllowUnassigned.includes(selectedOrCurrentStatus) &&
+      isUnassigned
+    ) {
+      alert("Please assign an employee before changing to this status.");
+      return;
+    }
+
     const formattedData = {
       ...formData,
+      status: selectedOrCurrentStatus,
       dueDate: formData.dueDate ? `${formData.dueDate}T00:00:00` : null,
+      assignedEmployee:
+        isUnassigned || !formData.assignedEmployeeId
+          ? null
+          : { id: parseInt(formData.assignedEmployeeId) },
     };
 
     console.log("Submitting Ticket Update Request:", formattedData);
@@ -92,7 +113,7 @@ const EditTicketPage = () => {
         console.log("Ticket Updated Successfully:", updatedTicket);
         alert("Ticket updated successfully!");
 
-        // 🔄 Redirect based on role
+        // Redirect based on role
         const userRole = localStorage.getItem("userRole");
         switch (userRole) {
           case "[ROLE_ADMIN]":
@@ -146,6 +167,40 @@ const EditTicketPage = () => {
     return <p>Loading ticket details...</p>;
   }
 
+  const getAllowedStatuses = (role) => {
+    switch (role) {
+      case "[ROLE_WEBSITE_SPECIALIST]":
+        return ["OPEN", "READY", "PUBLISHED"];
+      case "[ROLE_QA_AGENT]":
+        return ["QA_IN_PROGRESS", "QA_NEEDS_EDITS", "QA_COMPLETE"];
+      case "[ROLE_DEVELOPER]":
+        return [
+          "OPEN",
+          "READY",
+          "BUILD_IN_PROGRESS",
+          "BUILD_COMPLETE",
+          "READY_FOR_QA",
+          "QA_EDITS_COMPLETE",
+        ];
+      case "[ROLE_MANAGER]":
+      case "[ROLE_ADMIN]":
+        return [
+          "OPEN",
+          "READY",
+          "BUILD_IN_PROGRESS",
+          "BUILD_COMPLETE",
+          "READY_FOR_QA",
+          "QA_IN_PROGRESS",
+          "QA_NEEDS_EDITS",
+          "QA_EDITS_COMPLETE",
+          "QA_COMPLETE",
+          "PUBLISHED",
+        ];
+      default:
+        return [];
+    }
+  };
+
   return (
     <DashboardLayout>
       <div className="ui container" style={{ paddingTop: "10rem" }}>
@@ -173,11 +228,10 @@ const EditTicketPage = () => {
           {/* Delete Ticket Link (Admin Only) */}
           {userRole === "[ROLE_ADMIN]" && (
             <p>
-              {" "}
               <a
                 href="#"
                 onClick={(e) => {
-                  e.preventDefault(); // Prevents default link behavior
+                  e.preventDefault();
                   handleDelete();
                 }}
                 style={{
@@ -188,7 +242,7 @@ const EditTicketPage = () => {
                 }}
               >
                 Delete this ticket
-              </a>{" "}
+              </a>
             </p>
           )}
         </div>
@@ -216,23 +270,22 @@ const EditTicketPage = () => {
           </div>
 
           <div className="field">
-            <label>Status</label>
+            <p>
+              <strong>Current Status:</strong>{" "}
+              {formData.status.replace(/_/g, " ")}
+            </p>
             <select
               name="status"
-              value={formData.status}
-              onChange={handleChange}
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
               required
             >
-              <option value="OPEN">Open</option>
-              <option value="READY">Ready</option>
-              <option value="BUILD_IN_PROGRESS">Build In Progress</option>
-              <option value="BUILD_COMPLETE">Build Complete</option>
-              <option value="READY_FOR_QA">Ready for QA</option>
-              <option value="QA_IN_PROGRESS">QA In Progress</option>
-              <option value="QA_NEEDS_EDITS">QA Needs Edits</option>
-              <option value="QA_EDITS_COMPLETE">QA Edits Complete</option>
-              <option value="QA_COMPLETE">QA Complete</option>
-              <option value="PUBLISHED">Published</option>
+              <option value="">If Required Select New Status</option>
+              {getAllowedStatuses(userRole).map((status) => (
+                <option key={status} value={status}>
+                  {status.replace(/_/g, " ")}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -258,10 +311,10 @@ const EditTicketPage = () => {
               onChange={handleChange}
               required
             >
-              <option value="BUG">Bug</option>
-              <option value="FEATURE">Feature</option>
-              <option value="ENHANCEMENT">Enhancement</option>
+              <option value="NEW_BUILD">New Build</option>
               <option value="REVISIONS">Revisions</option>
+              <option value="POST_PUBLISH">Post Publish</option>
+              <option value="BUG">Bug</option>
             </select>
           </div>
 
@@ -284,7 +337,7 @@ const EditTicketPage = () => {
               onChange={handleChange}
               required
             >
-              <option value="">Select an employee</option>
+              <option value="unassigned">Unassigned</option>
               {employees.map((employee) => (
                 <option key={employee.id} value={employee.id}>
                   {employee.firstName} {employee.lastName} ({employee.role})

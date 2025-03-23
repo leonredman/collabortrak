@@ -65,6 +65,12 @@ const Header = () => {
           Dashboard
         </Link>*/}
 
+        {userRole === "ROLE_ADMIN" && (
+          <Link to="/create-customer" className="item">
+            Create Customer
+          </Link>
+        )}
+
         <Link to="/create-ticket" className="item">
           Create Ticket
         </Link>
