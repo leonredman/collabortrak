@@ -27,6 +27,7 @@ public class StoryController {
         if (!epicRepository.existsById(story.getEpic().getId())) {
             return ResponseEntity.badRequest().build();
         }
+
         Story savedStory = storyRepository.save(story);
         return ResponseEntity.ok(savedStory);
     }

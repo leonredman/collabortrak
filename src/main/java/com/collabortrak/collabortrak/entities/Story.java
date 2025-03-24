@@ -30,6 +30,9 @@ public class Story {
     @Column(updatable = false)
     private LocalDateTime createdDate = LocalDateTime.now();
 
+    @Column(name = "ticket_id", nullable = false)
+    private Long ticketId;
+
     // Constructors
     public Story() {}
 
@@ -92,5 +95,13 @@ public class Story {
 
     public LocalDateTime getCreatedDate() {
         return createdDate;
+    }
+
+    public Long getTicketId() {
+        return ticketId;
+    }
+
+    public void setTicketId(Long ticketId) {
+        this.ticketId = ticketId;
     }
 }

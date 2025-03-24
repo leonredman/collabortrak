@@ -1,15 +1,8 @@
 package com.collabortrak.collabortrak.controllers;
 
 import com.collabortrak.collabortrak.dto.TicketDTO;
-import com.collabortrak.collabortrak.entities.Ticket;
-import com.collabortrak.collabortrak.entities.Customer;
-import com.collabortrak.collabortrak.entities.Employee;
-import com.collabortrak.collabortrak.entities.StatusType;
-import com.collabortrak.collabortrak.entities.PriorityType;
-import com.collabortrak.collabortrak.entities.CategoryType;
-import com.collabortrak.collabortrak.repositories.CustomerRepository;
-import com.collabortrak.collabortrak.repositories.TicketRepository;
-import com.collabortrak.collabortrak.repositories.EmployeeRepository;
+import com.collabortrak.collabortrak.entities.*;
+import com.collabortrak.collabortrak.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,6 +27,12 @@ public class TicketController {
 
     @Autowired
     private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private EpicRepository epicRepository;
+
+    @Autowired
+    private StoryRepository storyRepository;
 
     private String generateUniqueTicketTrackingNumber() {
         String trackingNumber;
@@ -92,6 +91,55 @@ public class TicketController {
 
         // Save ticket
         Ticket savedTicket = ticketRepository.save(ticket);
+
+        // EPIC logic: If ticketType == EPIC, insert into epics & a default story on auto
+        if (ticket.getTicketType() == TicketType.EPIC) {
+            System.out.println("EPIC detected — saving to epics table and creating default story.");
+
+            // Save Epic
+            Epic epic = new Epic();
+            epic.setTicketId(savedTicket.getId());
+            epic.setTitle(savedTicket.getTitle()); // required field
+            epic.setCustomer(savedTicket.getCustomer()); // also required
+            // Optional
+            epic.setDescription(savedTicket.getDescription());
+            epic.setPriority(savedTicket.getPriority());
+            epic.setStatus(savedTicket.getStatus());
+
+            Epic savedEpic = epicRepository.save(epic);
+
+            // Create default Story ticket
+            Ticket defaultStoryTicket = new Ticket();
+            String epicTrackingNumber = savedTicket.getTicketTrackingNumber(); // Get Epic's tracking #
+            Long epicId = savedEpic.getId(); // Get Epic ID
+
+            defaultStoryTicket.setTitle("Default Story for Epic: " + epicTrackingNumber);
+            defaultStoryTicket.setDescription("Auto-generated story for Epic ID " + epicId + " (" + epicTrackingNumber + ")");
+            defaultStoryTicket.setStatus(StatusType.OPEN);
+            defaultStoryTicket.setPriority(savedTicket.getPriority());
+            defaultStoryTicket.setCategory(savedTicket.getCategory());
+            defaultStoryTicket.setCustomer(savedTicket.getCustomer());
+            defaultStoryTicket.setAssignedEmployee(null); // Unassigned by default
+            defaultStoryTicket.setTicketTrackingNumber(generateUniqueTicketTrackingNumber());
+            defaultStoryTicket.setDueDate(LocalDateTime.now().plusDays(7));
+            defaultStoryTicket.setLastUpdate(LocalDateTime.now());
+
+            Ticket savedStoryTicket = ticketRepository.save(defaultStoryTicket);
+
+            // Save Story entry linked to the Epic
+            Story defaultStory = new Story();
+            defaultStory.setTitle(defaultStoryTicket.getTitle());
+            defaultStory.setDescription(defaultStoryTicket.getDescription());
+            defaultStory.setStatus(defaultStoryTicket.getStatus());
+            defaultStory.setPriority(defaultStoryTicket.getPriority());
+            defaultStory.setTicketId(savedStoryTicket.getId());
+            defaultStory.setEpic(savedEpic); // or setEpicId?
+
+            storyRepository.save(defaultStory);
+
+            System.out.println("Default Story created for Epic ID: " + savedEpic.getId());
+        }
+
         System.out.println("Ticket Saved! Assigned Employee ID: " +
                 (savedTicket.getAssignedEmployee() != null ? savedTicket.getAssignedEmployee().getId() : "null"));
 
