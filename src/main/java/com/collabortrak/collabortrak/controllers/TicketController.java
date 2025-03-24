@@ -4,6 +4,7 @@ import com.collabortrak.collabortrak.dto.TicketDTO;
 import com.collabortrak.collabortrak.entities.*;
 import com.collabortrak.collabortrak.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -45,19 +46,38 @@ public class TicketController {
 
     // Create a ticket
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or " +
-            "(hasRole('WEBSITE_SPECIALIST') and " +
-            "(#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).NEW_BUILD or " +
-            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).REVISIONS or " +
-            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).POST_PUBLISH) and " +
-            "(#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).EPIC or " +
-            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).STORY))) or " +
-            "(hasRole('DEVELOPER') and (#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).BUG and " +
-            "(#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).STORY or " +
-            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).TASK or " +
-            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).BUG))) or " +
-            "(hasRole('QA_AGENT') and (#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).BUG and " +
-            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).BUG))")
+    @PreAuthorize(
+            "hasRole('ADMIN') or " +
+                    "(hasRole('WEBSITE_SPECIALIST') and " +
+                    "(#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).NEW_BUILD or " +
+                    "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).REVISIONS or " +
+                    "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).POST_PUBLISH) and " +
+                    "(#ticket.ticketType == T(com.collabortrak.collabortrak.entities.TicketType).EPIC or " +
+                    "#ticket.ticketType == T(com.collabortrak.collabortrak.entities.TicketType).STORY)" +
+                    ") or " +
+                    "(hasRole('DEVELOPER') and (" +
+                    "#ticket.ticketType == T(com.collabortrak.collabortrak.entities.TicketType).STORY or " +
+                    "#ticket.ticketType == T(com.collabortrak.collabortrak.entities.TicketType).TASK or " +
+                    "#ticket.ticketType == T(com.collabortrak.collabortrak.entities.TicketType).BUG" +
+                    ")) or " +
+                    "(hasRole('QA_AGENT') and " +
+                    "#ticket.ticketType == T(com.collabortrak.collabortrak.entities.TicketType).BUG)"
+    )
+
+    // syntax error on 74
+//    @PreAuthorize("hasRole('ADMIN') or " +
+//            "(hasRole('WEBSITE_SPECIALIST') and " +
+//            "(#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).NEW_BUILD or " +
+//            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).REVISIONS or " +
+//            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).POST_PUBLISH) and " +
+//            "(#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).EPIC or " +
+//            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).STORY))) or " +
+//            "(hasRole('DEVELOPER') and (#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).BUG and " +
+//            "(#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).STORY or " +
+//            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).TASK or " +
+//            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).BUG))) or " +
+//            "(hasRole('QA_AGENT') and (#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).BUG and " +
+//            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).BUG))")
 
     public ResponseEntity<Ticket> createTicket(@RequestBody Ticket ticket, Authentication authentication) {
         System.out.println("Received Ticket Data: " + ticket); // Debug log
@@ -91,6 +111,43 @@ public class TicketController {
 
         // Save ticket
         Ticket savedTicket = ticketRepository.save(ticket);
+
+        // Set Story ticket type
+        if (ticket.getTicketType() == TicketType.STORY) {
+            System.out.println("Ticket type received: " + ticket.getTicketType());
+            System.out.println("Entered STORY handling block");
+
+            Long epicId = ticket.getLinkedEpicId(); // must add transient field
+            System.out.println("🔍 Linked Epic ID: " + epicId);
+
+            if (epicId == null) {
+                System.out.println("Linked Epic ID is null — cannot create Story without Epic.");
+                return ResponseEntity.badRequest().body(null); // Epic must be provided
+            }
+
+            Epic linkedEpic = epicRepository.findById(epicId).orElse(null);
+            if (linkedEpic == null) {
+                System.out.println("Epic not found for ID: " + epicId);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Epic not found
+            }
+
+            System.out.println("Linked Epic found: " + linkedEpic.getId());
+
+            Story story = new Story();
+            story.setTitle(ticket.getTitle());
+            story.setDescription(ticket.getDescription());
+            story.setStatus(ticket.getStatus());
+            story.setPriority(ticket.getPriority());
+            story.setEpic(linkedEpic); // required
+            story.setTicketId(savedTicket.getId());
+
+            System.out.println("Saving Story linked to Epic ID " + linkedEpic.getId() +
+                    ", Ticket ID: " + savedTicket.getId());
+
+            storyRepository.save(story);
+
+            System.out.println("Story successfully saved in the database.");
+        }
 
         // EPIC logic: If ticketType == EPIC, insert into epics & a default story on auto
         if (ticket.getTicketType() == TicketType.EPIC) {

@@ -50,9 +50,12 @@ public class Ticket {
     @Transient
     private Long assignedEmployeeId;
 
-    @Transient
+    @Enumerated(EnumType.STRING)
+    @Column(name = "ticket_type")
     private TicketType ticketType;
 
+    @Transient
+    private Long linkedEpicId;
 
     @Column(updatable = false)
     private LocalDateTime createdDate = LocalDateTime.now();
@@ -178,16 +181,24 @@ public class Ticket {
         return assignedEmployee != null ? assignedEmployee.getId() : null;
     }
 
-    public void setTicketType(TicketType ticketType) {
-        this.ticketType = ticketType;
-    }
     public TicketType getTicketType() {
         return ticketType;
+    }
+
+    public void setTicketType(TicketType ticketType) {
+        this.ticketType = ticketType;
     }
 
     // Setter for `assignedEmployeeId`
     public void setAssignedEmployeeId(Long assignedEmployeeId) {
         this.assignedEmployeeId = assignedEmployeeId;
+    }
+
+    public Long getLinkedEpicId() {
+        return linkedEpicId;
+    }
+    public void setLinkedEpicId(Long linkedEpicId) {
+        this.linkedEpicId = linkedEpicId;
     }
 
     @PrePersist

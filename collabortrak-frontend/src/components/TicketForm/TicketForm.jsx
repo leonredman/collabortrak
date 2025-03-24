@@ -14,6 +14,8 @@ const TicketForm = () => {
   const [customers, setCustomers] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [ticketType, setTicketType] = useState("EPIC"); // Default to EPIC
+  const [selectedEpicID, setSelectedEpicID] = useState("");
+  const [tickets, setTickets] = useState([]);
 
   const navigate = useNavigate();
   const userRole = localStorage.getItem("userRole");
@@ -39,6 +41,7 @@ const TicketForm = () => {
   useEffect(() => {
     console.log(" useEffect in TicketForm triggered!"); // Logs when API calls start
 
+    // fetch customers
     fetch("http://localhost:8080/api/customers", {
       method: "GET",
       credentials: "include",
@@ -62,6 +65,8 @@ const TicketForm = () => {
         }
       })
       .catch((err) => console.error("Customer API failed:", err));
+
+    // fetch  Employees
     fetch("http://localhost:8080/api/employees", {
       method: "GET",
       credentials: "include",
@@ -75,6 +80,25 @@ const TicketForm = () => {
         setEmployees(data);
       })
       .catch((err) => console.error("Employee API failed:", err));
+
+    // fetch tickets for epic drop down filters
+    fetch("http://localhost:8080/api/tickets", {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Tickets fetched:", data);
+        setTickets(data);
+
+        // Debug to see Epics only
+        const epicsOnly = data.filter((t) => t.ticketType === "EPIC");
+        console.log("Epics found:", epicsOnly);
+      })
+      .catch((err) => console.error("Failed to fetch tickets:", err));
   }, []);
 
   const handleSubmit = async (e) => {
@@ -101,6 +125,11 @@ const TicketForm = () => {
         : null,
       ticketType,
     };
+
+    // include only if a Story is being created
+    if (ticketType === "STORY" && selectedEpicID) {
+      ticketData.linkedEpicId = parseInt(selectedEpicID);
+    }
 
     console.log(
       "Ticket Data being sent to API:",
@@ -214,6 +243,28 @@ const TicketForm = () => {
                   <option value="BUG">Bug</option>
                 </select>
               </div>
+
+              {/* Epic Link (Only shows if type is STORY) */}
+              {ticketType === "STORY" && (
+                <div className="field">
+                  <label>Link to Epic</label>
+                  <select
+                    value={selectedEpicID}
+                    onChange={(e) => setSelectedEpicID(e.target.value)}
+                    required
+                  >
+                    <option value="">Select an Epic</option>
+                    {tickets
+                      .filter((t) => t.ticketType === "EPIC")
+                      .map((epic) => (
+                        <option key={epic.id} value={epic.id}>
+                          {epic.title} (#
+                          {epic.ticketTrackingNumber || `EPIC-${epic.id}`})
+                        </option>
+                      ))}
+                  </select>
+                </div>
+              )}
 
               {/* Priority */}
               <div className="field">

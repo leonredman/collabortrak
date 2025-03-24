@@ -1,6 +1,7 @@
 package com.collabortrak.collabortrak.dto;
 
 import com.collabortrak.collabortrak.entities.Ticket;
+import com.collabortrak.collabortrak.entities.TicketType;
 
 import java.time.LocalDateTime;
 
@@ -19,6 +20,7 @@ public class TicketDTO {
     private Long assignedEmployeeId;
     private String assignedEmployeeFirstName;
     private String assignedEmployeeLastName;
+    private TicketType ticketType;
 
     public TicketDTO(Ticket ticket) {
         this.id = ticket.getId();
@@ -32,6 +34,7 @@ public class TicketDTO {
         this.dueDate = ticket.getDueDate();
         this.lastUpdate = ticket.getLastUpdate();
         this.customerId = ticket.getCustomer().getId();
+        this.ticketType = ticket.getTicketType();
         if (ticket.getAssignedEmployee() != null) {
             this.assignedEmployeeId = ticket.getAssignedEmployee().getId();
             this.assignedEmployeeFirstName = ticket.getAssignedEmployee().getFirstName();
@@ -151,5 +154,13 @@ public class TicketDTO {
 
     public void setAssignedEmployeeLastName(String assignedEmployeeLastName) {
         this.assignedEmployeeLastName = assignedEmployeeLastName;
+    }
+
+    public TicketType getTicketType() {
+        return ticketType;
+    }
+
+    public void setTicketType(TicketType ticketType) {
+        this.ticketType = ticketType;
     }
 }
