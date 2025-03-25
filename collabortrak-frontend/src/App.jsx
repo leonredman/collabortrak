@@ -10,6 +10,7 @@ import {
 import ProtectedRoute from "./components/protectedRoute/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
 import CreateCustomerPage from "./pages/CreateCustomerPage";
+import CreateStoryPage from "./pages/CreateStoryPage";
 import CreateTicketPage from "./pages/CreateTicketPage";
 import Dashboard from "./pages/Dashboard";
 import DeveloperDashboard from "./pages/DeveloperDashboard";
@@ -155,6 +156,25 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+
+          <Route
+            path="/create-story"
+            element={
+              <ProtectedRoute
+                allowedRoles={[
+                  "[ROLE_ADMIN]",
+                  "[ROLE_MANAGER]",
+                  "[ROLE_DEVELOPER]",
+                  "[ROLE_QA_AGENT]",
+                  "[ROLE_WEBSITE_SPECIALIST]",
+                ]}
+                userRole={userRole}
+              >
+                <CreateStoryPage />
+              </ProtectedRoute>
+            }
+          />
+
           <Route
             path="/create-customer"
             element={

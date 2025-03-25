@@ -71,9 +71,24 @@ const Header = () => {
           </Link>
         )}
 
-        <Link to="/create-ticket" className="item">
-          Create Ticket
-        </Link>
+        <div className="ui simple dropdown item">
+          Create Tickets
+          <i className="dropdown icon"></i>
+          <div className="menu">
+            <Link to="/create-epic" className="item">
+              Create Epic (Auto Story)
+            </Link>
+            <Link to="/create-story" className="item">
+              Create Story
+            </Link>
+            <Link to="/create-task" className="item">
+              Create Task
+            </Link>
+            <Link to="/create-bug" className="item">
+              Create Bug
+            </Link>
+          </div>
+        </div>
 
         {userName !== "Guest" && (
           <button onClick={handleLogout} className="ui primary button">

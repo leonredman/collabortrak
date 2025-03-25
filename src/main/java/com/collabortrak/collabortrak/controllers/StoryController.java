@@ -1,9 +1,13 @@
 package com.collabortrak.collabortrak.controllers;
 
+import com.collabortrak.collabortrak.entities.Customer;
 import com.collabortrak.collabortrak.entities.Story;
 import com.collabortrak.collabortrak.entities.Epic;
+import com.collabortrak.collabortrak.entities.Ticket;
+import com.collabortrak.collabortrak.repositories.CustomerRepository;
 import com.collabortrak.collabortrak.repositories.StoryRepository;
 import com.collabortrak.collabortrak.repositories.EpicRepository;
+import com.collabortrak.collabortrak.repositories.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +20,61 @@ import java.util.Optional;
 public class StoryController {
 
     @Autowired
+    private TicketRepository ticketRepository;
+
+    @Autowired
     private StoryRepository storyRepository;
 
     @Autowired
     private EpicRepository epicRepository;
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
+
+// Add to your existing StoryController.java
+
+    @PostMapping("/with-ticket")
+    public ResponseEntity<String> createStoryWithTicket(@RequestBody Ticket storyTicket) {
+        if (storyTicket.getLinkedEpicId() == null) {
+            return ResponseEntity.badRequest().body("Missing linkedEpicId");
+        }
+
+        Epic epic = epicRepository.findById(storyTicket.getLinkedEpicId()).orElse(null);
+        if (epic == null) {
+            return ResponseEntity.badRequest().body("Epic not found");
+        }
+
+        // Save ticket first
+        storyTicket.setTicketTrackingNumber("TCK-" + java.util.UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+        storyTicket.setLastUpdate(java.time.LocalDateTime.now());
+        if (storyTicket.getDueDate() == null) {
+            storyTicket.setDueDate(java.time.LocalDateTime.now().plusDays(7));
+        }
+        // Fetch and assign the customer manually
+        if (storyTicket.getCustomerId() != null) {
+            Customer customer = customerRepository.findById(storyTicket.getCustomerId()).orElse(null);
+            if (customer == null) {
+                return ResponseEntity.badRequest().body("Customer not found");
+            }
+            storyTicket.setCustomer(customer);
+        }
+        Ticket savedTicket = ticketRepository.save(storyTicket);
+
+        // Save story
+        Story story = new Story();
+        story.setTitle(savedTicket.getTitle());
+        story.setDescription(savedTicket.getDescription());
+        story.setStatus(savedTicket.getStatus());
+        story.setPriority(savedTicket.getPriority());
+        story.setTicketId(savedTicket.getId());
+        story.setEpic(epic);
+
+        storyRepository.save(story);
+
+        return ResponseEntity.ok("Story created and linked to Epic ID: " + epic.getId());
+    }
+
 
     // Create a story
     @PostMapping

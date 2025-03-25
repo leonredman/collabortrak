@@ -53,5 +53,5 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     List<Object[]> countTicketsByEmployee();
 
     // Get tickets by customer ID
-    List<Ticket> findByCustomerId(Long customerId);
+    List<Ticket> findByCustomer_Id(Long customerId);
 }

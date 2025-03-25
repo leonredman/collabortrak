@@ -46,6 +46,9 @@ public class Ticket {
     // @JsonIgnore
     private Employee assignedEmployee;
 
+    @Transient
+    private Long customerId;
+
     // Transient `assignedEmployeeId`
     @Transient
     private Long assignedEmployeeId;
@@ -199,6 +202,14 @@ public class Ticket {
     }
     public void setLinkedEpicId(Long linkedEpicId) {
         this.linkedEpicId = linkedEpicId;
+    }
+
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
     }
 
     @PrePersist
