@@ -10,8 +10,11 @@ const StoryForm = () => {
   const [status, setStatus] = useState("OPEN");
   const [customerId, setCustomerId] = useState("");
   const [category] = useState("NEW_BUILD"); // default or constant for now
+  const [employees, setEmployees] = useState([]);
+  const [assignedEmployeeId, setAssignedEmployeeId] = useState(null);
 
   useEffect(() => {
+    // Fetch epics
     fetch("http://localhost:8080/api/epics", {
       credentials: "include",
     })
@@ -21,6 +24,18 @@ const StoryForm = () => {
         console.log("Epics Fetched:", data);
       })
       .catch((err) => console.error("Failed to fetch epics:", err));
+
+    // Fetch employees
+    fetch("http://localhost:8080/api/employees", {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setEmployees(data);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch employees", err);
+      });
   }, []);
 
   const handleSubmit = async (e) => {
@@ -47,8 +62,10 @@ const StoryForm = () => {
       linkedEpicId: parseInt(selectedEpicId),
       customerId: parseInt(customerId),
       ticketType: "STORY",
-      category,
+      category: "NEW_BUILD",
+      assignedEmployeeId,
     };
+    console.log("Payload:", payload);
 
     try {
       const res = await fetch("http://localhost:8080/api/stories/with-ticket", {
@@ -78,6 +95,28 @@ const StoryForm = () => {
       <div className="ui red raised segment">
         <form className="ui form" onSubmit={handleSubmit}>
           <h3>Create a New Story</h3>
+          {selectedEpic && (
+            <div className="ui segment">
+              <h4>Epic Details</h4>
+              <p>
+                <strong>Title:</strong> {selectedEpic.title}
+              </p>
+              <p>
+                <strong>Priority:</strong> {selectedEpic.priority}
+              </p>
+              <p>
+                <strong>Customer:</strong> {selectedEpic.customer?.firstName}{" "}
+                {selectedEpic.customer?.lastName}
+              </p>
+              <p>
+                <strong>Email:</strong> {selectedEpic.customer?.email}
+              </p>
+              <p>
+                <strong>Created:</strong>{" "}
+                {new Date(selectedEpic.createdDate).toLocaleDateString()}
+              </p>
+            </div>
+          )}
 
           <div className="field">
             <select
@@ -140,6 +179,25 @@ const StoryForm = () => {
             <select value={status} onChange={(e) => setStatus(e.target.value)}>
               <option value="OPEN">Open</option>
               <option value="READY">Ready</option>
+            </select>
+          </div>
+          <div className="field">
+            <label>Assign To</label>
+            <select
+              value={assignedEmployeeId || ""}
+              onChange={(e) =>
+                setAssignedEmployeeId(
+                  e.target.value === "" ? null : parseInt(e.target.value)
+                )
+              }
+            >
+              <option value="">Unassigned</option>
+              {employees.map((emp) => (
+                <option key={emp.id} value={emp.id}>
+                  {emp.firstName} {emp.lastName} (
+                  {emp.role.replace("ROLE_", "")})
+                </option>
+              ))}
             </select>
           </div>
 

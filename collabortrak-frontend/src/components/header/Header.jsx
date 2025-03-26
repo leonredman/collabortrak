@@ -75,8 +75,8 @@ const Header = () => {
           Create Tickets
           <i className="dropdown icon"></i>
           <div className="menu">
-            <Link to="/create-epic" className="item">
-              Create Epic (Auto Story)
+            <Link to="/create-ticket" className="item">
+              Create Epic (+Auto Story)
             </Link>
             <Link to="/create-story" className="item">
               Create Story

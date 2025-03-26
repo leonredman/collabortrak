@@ -51,6 +51,7 @@ public class Ticket {
 
     // Transient `assignedEmployeeId`
     @Transient
+    @JsonProperty("assignedEmployeeId")
     private Long assignedEmployeeId;
 
     @Enumerated(EnumType.STRING)
@@ -193,9 +194,9 @@ public class Ticket {
     }
 
     // Setter for `assignedEmployeeId`
-    public void setAssignedEmployeeId(Long assignedEmployeeId) {
-        this.assignedEmployeeId = assignedEmployeeId;
-    }
+  //  public void setAssignedEmployeeId(Long assignedEmployeeId) {
+   //     this.assignedEmployeeId = assignedEmployeeId;
+   // }
 
     public Long getLinkedEpicId() {
         return linkedEpicId;
