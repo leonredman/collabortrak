@@ -14,8 +14,10 @@ import DashboardLayout from "../components/dashboardLayout/DashboardLayout";
 const EditTicketPage = () => {
   const { ticketId } = useParams();
   const navigate = useNavigate();
+
   const [ticket, setTicket] = useState(null);
   const [employees, setEmployees] = useState([]);
+  const [linkedTickets, setLinkedTickets] = useState([]);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -30,6 +32,7 @@ const EditTicketPage = () => {
   const userRole = localStorage.getItem("userRole");
 
   useEffect(() => {
+    // fetch the ticket
     fetch(`http://localhost:8080/api/tickets/${ticketId}`, {
       method: "GET",
       credentials: "include",
@@ -50,8 +53,29 @@ const EditTicketPage = () => {
             : "",
         });
         setSelectedStatus(data.status || "");
+
+        console.log("Current ticketId from URL:", ticketId);
+
+        // If it's an EPIC, fetch linked tickets
+        if (data.ticketType === "EPIC") {
+          fetch(
+            `http://localhost:8080/api/tickets/epic/${ticketId}/linked-tickets`,
+            {
+              credentials: "include",
+            }
+          )
+            .then((res) => res.json())
+            .then((linked) => {
+              setLinkedTickets(linked);
+              console.log("Linked Tickets:", linked);
+            })
+            .catch((err) =>
+              console.error("Error fetching linked tickets", err)
+            );
+        }
       });
 
+    // fetch the employees
     fetch("http://localhost:8080/api/employees", {
       method: "GET",
       credentials: "include",
@@ -197,11 +221,11 @@ const EditTicketPage = () => {
                 <p>{formData.description}</p>
               </Segment>
 
-              {ticket.linkedTickets?.length > 0 && (
+              {linkedTickets.length > 0 && (
                 <Segment>
                   <Header as="h4">Linked Tickets</Header>
                   <List divided relaxed>
-                    {ticket.linkedTickets.map((linked) => (
+                    {linkedTickets.map((linked) => (
                       <List.Item key={linked.id}>
                         <List.Icon
                           name="linkify"
@@ -210,9 +234,27 @@ const EditTicketPage = () => {
                         />
                         <List.Content>
                           <List.Header>
-                            {linked.ticketTrackingNumber}
+                            {linked.ticketTrackingNumber} — {linked.title}
                           </List.Header>
-                          <List.Description>{linked.title}</List.Description>
+                          <List.Description>
+                            <strong>Type:</strong> {linked.ticketType} |{" "}
+                            <strong>Status:</strong> {linked.status} |{" "}
+                            <strong>Priority:</strong> {linked.priority}
+                            <br />
+                            <strong>Due:</strong>{" "}
+                            {linked.dueDate
+                              ? new Date(linked.dueDate).toLocaleDateString()
+                              : "N/A"}{" "}
+                            | <strong>Last Updated:</strong>{" "}
+                            {linked.lastUpdate
+                              ? new Date(linked.lastUpdate).toLocaleDateString()
+                              : "N/A"}
+                            <br />
+                            <strong>Assigned To:</strong>{" "}
+                            {linked.assignedEmployee
+                              ? `${linked.assignedEmployee.firstName} ${linked.assignedEmployee.lastName}`
+                              : "Unassigned"}
+                          </List.Description>
                         </List.Content>
                       </List.Item>
                     ))}

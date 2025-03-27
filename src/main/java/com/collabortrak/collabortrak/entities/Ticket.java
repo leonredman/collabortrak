@@ -58,6 +58,9 @@ public class Ticket {
     @Column(name = "ticket_type")
     private TicketType ticketType;
 
+    @Column(name = "epic_id")
+    private Long epicId;
+
     @Transient
     private Long linkedEpicId;
 

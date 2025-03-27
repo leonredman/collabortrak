@@ -6,6 +6,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
+
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -152,8 +155,12 @@ public class DemoDataInitializer {
                     story.setDescription(storyTicket.getDescription());
                     story.setStatus(storyTicket.getStatus());
                     story.setPriority(storyTicket.getPriority());
-                    story.setEpic(epic);
-                    story.setTicketId(storyTicket.getId());
+
+                  //  story.setEpicId(epic.getId());
+                    story.setTicketId(storyTicket.getId());  // replaced
+
+                  //  story.setTicketId(storyTicket.getId());
+                    story.setEpic(epic); // link full Epic object - replaced
                     storyRepo.save(story);
                 }
 

@@ -23,25 +23,29 @@ public class Story {
     @Enumerated(EnumType.STRING)
     private PriorityType priority;
 
-    @ManyToOne
-    @JoinColumn(name = "epic_id", nullable = false)
-    private Epic epic;
+    @Column(name = "ticket_id", nullable = false)
+    private Long ticketId;
+
+    @Column(name = "epic_id", insertable = false, updatable = false)
+    private Long epicId;
 
     @Column(updatable = false)
     private LocalDateTime createdDate = LocalDateTime.now();
 
-    @Column(name = "ticket_id", nullable = false)
-    private Long ticketId;
+    @ManyToOne
+    @JoinColumn(name = "epic_id", nullable = false)
+    private Epic epic;
 
     // Constructors
     public Story() {}
 
-    public Story(String title, String description, StatusType status, PriorityType priority, Epic epic) {
+    public Story(String title, String description, StatusType status, PriorityType priority, Long epicId) {
         this.title = title;
         this.description = description;
         this.status = status;
         this.priority = priority;
-        this.epic = epic;
+        this.epicId = epicId;
+     // this.epic = epic;
     }
 
     // Getters & Setters
@@ -85,18 +89,6 @@ public class Story {
         this.priority = priority;
     }
 
-    public Epic getEpic() {
-        return epic;
-    }
-
-    public void setEpic(Epic epic) {
-        this.epic = epic;
-    }
-
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
-    }
-
     public Long getTicketId() {
         return ticketId;
     }
@@ -104,4 +96,23 @@ public class Story {
     public void setTicketId(Long ticketId) {
         this.ticketId = ticketId;
     }
+
+    public Long getEpicId() {
+        return epicId;
+    }
+
+    public void setEpicId(Long epicId) {
+        this.epicId = epicId;
+    }
+
+    public void setEpic(Epic epic) {
+        this.epic = epic;
+    }
+
+    public Epic getEpic() {
+        return epic;
+    }
+    public LocalDateTime getCreatedDate() {
+    return createdDate;
+   }
 }

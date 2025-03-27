@@ -1,11 +1,6 @@
 package com.collabortrak.collabortrak.repositories;
 
-import com.collabortrak.collabortrak.entities.Ticket;
-import com.collabortrak.collabortrak.entities.Customer;
-import com.collabortrak.collabortrak.entities.Employee;
-import com.collabortrak.collabortrak.entities.StatusType;
-import com.collabortrak.collabortrak.entities.PriorityType;
-import com.collabortrak.collabortrak.entities.CategoryType;
+import com.collabortrak.collabortrak.entities.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -52,6 +47,17 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query("SELECT e.firstName, e.lastName, COUNT(t) FROM Ticket t JOIN t.assignedEmployee e GROUP BY e.id")
     List<Object[]> countTicketsByEmployee();
 
+    @Query("SELECT t FROM Ticket t " +
+            "LEFT JOIN Story s ON s.ticketId = t.id " +
+            "LEFT JOIN Bug b ON b.ticketId = t.id " +
+            "WHERE t.ticketType IN (:types) AND (s.epicId = :epicId OR b.epicId = :epicId)")
+    List<Ticket> findLinkedTicketsByEpicId(@Param("epicId") Long epicId,
+                                           @Param("types") List<TicketType> types);
+
+
+
     // Get tickets by customer ID
     List<Ticket> findByCustomer_Id(Long customerId);
+
+    List<Ticket> findByEpicId(Long epicId);
 }

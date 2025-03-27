@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -327,6 +328,27 @@ public class TicketController {
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+//    @GetMapping("/epic/{epicId}/linked-tickets")
+//    public ResponseEntity<List<Ticket>> getLinkedTicketsByEpic(@PathVariable Long epicId) {
+//        List<Ticket> linkedTickets = ticketRepository.findByEpicId(epicId);
+//        return ResponseEntity.ok(linkedTickets);
+//    }
+
+    @GetMapping("/epic/{ticketId}/linked-tickets")
+    public ResponseEntity<List<Ticket>> getLinkedTicketsByEpic(@PathVariable Long ticketId) {
+        Optional<Epic> epic = epicRepository.findByTicketId(ticketId);
+        if (epic.isEmpty()) {
+            return ResponseEntity.badRequest().body(Collections.emptyList());
+        }
+
+        Long epicId = epic.get().getId(); // Actual ID from `epics` table
+        List<TicketType> types = List.of(TicketType.STORY, TicketType.TASK, TicketType.BUG);
+
+        List<Ticket> linkedTickets = ticketRepository.findLinkedTicketsByEpicId(epicId, types);
+        return ResponseEntity.ok(linkedTickets);
+    }
+
 
     // Delete a ticket - only Admins delete
     @DeleteMapping("/{id}")
