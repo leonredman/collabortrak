@@ -10,5 +10,5 @@ import java.util.List;
 public interface BugRepository extends JpaRepository<Bug, Long> {
 
     // Fetch all bugs for a given story
-    List<Bug> findByStoryId(Long storyId);
+ //   List<Bug> findByStoryId(Long storyId);
 }

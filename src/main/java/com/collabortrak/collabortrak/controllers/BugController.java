@@ -1,13 +1,16 @@
 package com.collabortrak.collabortrak.controllers;
 
-import com.collabortrak.collabortrak.entities.Bug;
-import com.collabortrak.collabortrak.entities.Story;
+import com.collabortrak.collabortrak.dto.BugWithTicketDTO;
+import com.collabortrak.collabortrak.entities.*;
 import com.collabortrak.collabortrak.repositories.BugRepository;
+import com.collabortrak.collabortrak.repositories.EpicRepository;
 import com.collabortrak.collabortrak.repositories.StoryRepository;
+import com.collabortrak.collabortrak.repositories.TicketRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,15 +24,22 @@ public class BugController {
     @Autowired
     private StoryRepository storyRepository;
 
+    @Autowired
+    private TicketRepository ticketRepository;
+
+    @Autowired
+    private EpicRepository epicRepository;
+
+
     // Create a bug
-    @PostMapping
-    public ResponseEntity<Bug> createBug(@RequestBody Bug bug) {
-        if (!storyRepository.existsById(bug.getStory().getId())) {
-            return ResponseEntity.badRequest().build();
-        }
-        Bug savedBug = bugRepository.save(bug);
-        return ResponseEntity.ok(savedBug);
-    }
+//    @PostMapping
+//    public ResponseEntity<Bug> createBug(@RequestBody Bug bug) {
+//        if (!storyRepository.existsById(bug.getStory().getId())) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//        Bug savedBug = bugRepository.save(bug);
+//        return ResponseEntity.ok(savedBug);
+//    }
 
     // Get all bugs
     @GetMapping
@@ -38,10 +48,10 @@ public class BugController {
     }
 
     // Get bugs by story ID
-    @GetMapping("/story/{storyId}")
-    public List<Bug> getBugsByStory(@PathVariable Long storyId) {
-        return bugRepository.findByStoryId(storyId);
-    }
+//    @GetMapping("/story/{storyId}")
+//    public List<Bug> getBugsByStory(@PathVariable Long storyId) {
+//        return bugRepository.findByStoryId(storyId);
+//    }
 
     // Get bug by ID
     @GetMapping("/{id}")
@@ -73,4 +83,41 @@ public class BugController {
         bugRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/with-ticket")
+    public ResponseEntity<Bug> createBugWithTicket(@RequestBody BugWithTicketDTO dto) {
+        // Validate Epic ID
+        Optional<Epic> epicOpt = epicRepository.findById(dto.getLinkedEpicId());
+        if (epicOpt.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        // Create Ticket
+        Ticket ticket = new Ticket();
+        ticket.setTitle(dto.getTitle());
+        ticket.setDescription(dto.getDescription());
+        ticket.setStatus(dto.getStatus());
+        ticket.setPriority(dto.getPriority());
+        ticket.setCategory(dto.getCategory());
+        ticket.setCustomer(dto.getCustomer());
+        ticket.setAssignedEmployee(dto.getAssignedEmployee());
+        ticket.setTicketType(TicketType.BUG);
+        ticket.setCreatedDate(LocalDateTime.now());
+        ticket.setLastUpdate(LocalDateTime.now());
+
+        Ticket savedTicket = ticketRepository.save(ticket);
+
+        // Create Bug (linked to Epic only)
+        Bug bug = new Bug();
+        bug.setTitle(dto.getTitle());
+        bug.setDescription(dto.getDescription());
+        bug.setStatus(dto.getStatus());
+        bug.setPriority(dto.getPriority());
+        bug.setEpic(epicOpt.get());
+        bug.setTicketId(savedTicket.getId());
+
+        Bug savedBug = bugRepository.save(bug);
+        return ResponseEntity.ok(savedBug);
+    }
+
 }

@@ -10,5 +10,5 @@ import java.util.List;
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
     // Fetch all tasks for a given story
-    List<Task> findByStoryId(Long storyId);
+  //  List<Task> findByStoryId(Long storyId);
 }

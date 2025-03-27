@@ -11,6 +11,7 @@ import ProtectedRoute from "./components/protectedRoute/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
 import CreateCustomerPage from "./pages/CreateCustomerPage";
 import CreateStoryPage from "./pages/CreateStoryPage";
+import CreateTaskPage from "./pages/CreateTaskPage";
 import CreateTicketPage from "./pages/CreateTicketPage";
 import Dashboard from "./pages/Dashboard";
 import DeveloperDashboard from "./pages/DeveloperDashboard";
@@ -171,6 +172,18 @@ const App = () => {
                 userRole={userRole}
               >
                 <CreateStoryPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/create-task"
+            element={
+              <ProtectedRoute
+                allowedRoles={["[ROLE_ADMIN]", "[ROLE_DEVELOPER]"]}
+                userRole={userRole}
+              >
+                <CreateTaskPage />
               </ProtectedRoute>
             }
           />

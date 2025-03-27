@@ -35,6 +35,15 @@ public class DemoDataInitializer {
             }
 
             if (customerRepo.count() == 0) {
+                Customer internalCustomer = new Customer(
+                        "CollaborTrak", "Internal",
+                        "internal@collabortrak.com",
+                        "602-000-0000",
+                        "100 Tech Way",
+                        "Phoenix", "AZ", "85001", "USA"
+                );
+                customerRepo.save(internalCustomer);
+
                 List<Customer> customers = List.of(
                         new Customer("Peter", "Parker", "peter@example.com", "212-555-1234", "123 Main St", "New York", "NY", "10019", "USA"),
                         new Customer("Tony", "Stark", "tony@example.com", "212-555-5678", "10880 Malibu Point", "New York", "NY", "10002", "USA"),

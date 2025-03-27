@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const TicketForm = () => {
-  console.log("TicketForm Rendered!"); // Confirms if TicketForm is mounting
-
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState("OPEN");
@@ -16,14 +14,11 @@ const TicketForm = () => {
   const [ticketType, setTicketType] = useState("EPIC"); // Default to EPIC
   const [selectedEpicID, setSelectedEpicID] = useState("");
   const [tickets, setTickets] = useState([]);
-
   const navigate = useNavigate();
   const userRole = localStorage.getItem("userRole");
 
   // **Role-Based Category Options**
   const categoryOptions = () => {
-    console.log("Checking category options for userRole:", userRole); // Debug log
-
     switch (userRole) {
       case "[ROLE_ADMIN]":
         return ["NEW_BUILD", "REVISIONS", "POST_PUBLISH", "BUG"]; // Admin sees all categories
@@ -123,13 +118,13 @@ const TicketForm = () => {
       assignedEmployee: assignedEmployee
         ? { id: parseInt(assignedEmployee) }
         : null,
-      ticketType,
+      ticketType: "EPIC",
     };
 
     // include only if a Story is being created
-    if (ticketType === "STORY" && selectedEpicID) {
-      ticketData.linkedEpicId = parseInt(selectedEpicID);
-    }
+    // if (ticketType === "STORY" && selectedEpicID) {
+    //   ticketData.linkedEpicId = parseInt(selectedEpicID);
+    // }
 
     console.log(
       "Ticket Data being sent to API:",
@@ -184,7 +179,8 @@ const TicketForm = () => {
       <div className="ui grid">
         <div className="ui row">
           <div className="six wide centered column">
-            <h1>Create A New Ticket</h1>
+            <h1>Create A New Epic</h1>
+            <p>This form create a new epic and the first default story.</p>
           </div>
         </div>
 
@@ -227,44 +223,6 @@ const TicketForm = () => {
                   <option value="READY">Ready</option>
                 </select>
               </div>
-
-              {/* Ticket Type */}
-              <div className="field">
-                <label>Ticket Type</label>
-                <select
-                  value={ticketType}
-                  onChange={(e) => setTicketType(e.target.value)}
-                  required
-                >
-                  <option value="">Select Ticket Type</option>
-                  <option value="EPIC">Epic</option>
-                  <option value="STORY">Story</option>
-                  <option value="TASK">Task</option>
-                  <option value="BUG">Bug</option>
-                </select>
-              </div>
-
-              {/* Epic Link (Only shows if type is STORY) */}
-              {ticketType === "STORY" && (
-                <div className="field">
-                  <label>Link to Epic</label>
-                  <select
-                    value={selectedEpicID}
-                    onChange={(e) => setSelectedEpicID(e.target.value)}
-                    required
-                  >
-                    <option value="">Select an Epic</option>
-                    {tickets
-                      .filter((t) => t.ticketType === "EPIC")
-                      .map((epic) => (
-                        <option key={epic.id} value={epic.id}>
-                          {epic.title} (#
-                          {epic.ticketTrackingNumber || `EPIC-${epic.id}`})
-                        </option>
-                      ))}
-                  </select>
-                </div>
-              )}
 
               {/* Priority */}
               <div className="field">

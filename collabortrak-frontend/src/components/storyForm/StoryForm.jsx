@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const StoryForm = () => {
   const [title, setTitle] = useState("");
@@ -12,6 +13,7 @@ const StoryForm = () => {
   const [category] = useState("NEW_BUILD"); // default or constant for now
   const [employees, setEmployees] = useState([]);
   const [assignedEmployeeId, setAssignedEmployeeId] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Fetch epics
@@ -78,7 +80,29 @@ const StoryForm = () => {
       });
 
       if (res.ok) {
-        alert("Story created successfully.");
+        console.log("Story created successfully.");
+        // alert("Story created successfully."); // optional
+        const userRole = localStorage.getItem("userRole");
+
+        switch (userRole) {
+          case "[ROLE_ADMIN]":
+            navigate("/admin-dashboard");
+            break;
+          case "[ROLE_MANAGER]":
+            navigate("/manager-dashboard");
+            break;
+          case "[ROLE_DEVELOPER]":
+            navigate("/developer-dashboard");
+            break;
+          case "[ROLE_QA_AGENT]":
+            navigate("/qa-dashboard");
+            break;
+          case "[ROLE_WEBSITE_SPECIALIST]":
+            navigate("/website-specialist-dashboard");
+            break;
+          default:
+            navigate("/dashboard");
+        }
       } else {
         const error = await res.text();
         console.error("Create failed:", error);

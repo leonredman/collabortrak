@@ -24,8 +24,16 @@ public class Bug {
     private PriorityType priority;
 
     @ManyToOne
-    @JoinColumn(name = "story_id", nullable = false)
-    private Story story;
+    @JoinColumn(name = "epic_id", nullable = false)
+    private Epic epic;
+
+    @Column(name = "ticket_id", nullable = false)
+    private Long ticketId;
+
+
+//    @ManyToOne
+//    @JoinColumn(name = "story_id", nullable = false)
+//    private Story story;
 
     @Column(updatable = false)
     private LocalDateTime createdDate = LocalDateTime.now();
@@ -38,7 +46,7 @@ public class Bug {
         this.description = description;
         this.status = status;
         this.priority = priority;
-        this.story = story;
+//        this.story = story;
     }
 
     // Getters & Setters
@@ -82,13 +90,30 @@ public class Bug {
         this.priority = priority;
     }
 
-    public Story getStory() {
-        return story;
+    public Epic getEpic() {
+        return epic;
     }
 
-    public void setStory(Story story) {
-        this.story = story;
+    public void setEpic(Epic epic) {
+        this.epic = epic;
     }
+
+    public Long getTicketId() {
+        return ticketId;
+    }
+
+    public void setTicketId(Long ticketId) {
+        this.ticketId = ticketId;
+    }
+
+
+//    public Story getStory() {
+//        return story;
+//    }
+//
+//    public void setStory(Story story) {
+//        this.story = story;
+//    }
 
     public LocalDateTime getCreatedDate() {
         return createdDate;

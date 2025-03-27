@@ -23,9 +23,8 @@ public class Task {
     @Enumerated(EnumType.STRING)
     private PriorityType priority;
 
-    @ManyToOne
-    @JoinColumn(name = "story_id", nullable = false)
-    private Story story;
+    @Column(name = "ticket_id", nullable = false)
+    private Long ticketId;
 
     @Column(updatable = false)
     private LocalDateTime createdDate = LocalDateTime.now();
@@ -33,12 +32,12 @@ public class Task {
     // Constructors
     public Task() {}
 
-    public Task(String title, String description, StatusType status, PriorityType priority, Story story) {
+    public Task(String title, String description, StatusType status, PriorityType priority) {
         this.title = title;
         this.description = description;
         this.status = status;
         this.priority = priority;
-        this.story = story;
+
     }
 
     // Getters & Setters
@@ -82,12 +81,12 @@ public class Task {
         this.priority = priority;
     }
 
-    public Story getStory() {
-        return story;
+    public Long getTicketId() {
+        return ticketId;
     }
 
-    public void setStory(Story story) {
-        this.story = story;
+    public void setTicketId(Long ticketId) {
+        this.ticketId = ticketId;
     }
 
     public LocalDateTime getCreatedDate() {
