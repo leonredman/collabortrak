@@ -227,34 +227,36 @@ const EditTicketPage = () => {
                   <List divided relaxed>
                     {linkedTickets.map((linked) => (
                       <List.Item key={linked.id}>
-                        <List.Icon
-                          name="linkify"
-                          size="large"
-                          verticalAlign="middle"
-                        />
                         <List.Content>
-                          <List.Header>
-                            {linked.ticketTrackingNumber} — {linked.title}
-                          </List.Header>
-                          <List.Description>
-                            <strong>Type:</strong> {linked.ticketType} |{" "}
-                            <strong>Status:</strong> {linked.status} |{" "}
-                            <strong>Priority:</strong> {linked.priority}
-                            <br />
-                            <strong>Due:</strong>{" "}
-                            {linked.dueDate
-                              ? new Date(linked.dueDate).toLocaleDateString()
-                              : "N/A"}{" "}
-                            | <strong>Last Updated:</strong>{" "}
-                            {linked.lastUpdate
-                              ? new Date(linked.lastUpdate).toLocaleDateString()
-                              : "N/A"}
-                            <br />
-                            <strong>Assigned To:</strong>{" "}
-                            {linked.assignedEmployee
-                              ? `${linked.assignedEmployee.firstName} ${linked.assignedEmployee.lastName}`
-                              : "Unassigned"}
-                          </List.Description>
+                          <div
+                            style={{
+                              display: "flex",
+                              flexWrap: "wrap",
+                              gap: "2rem",
+                            }}
+                          >
+                            <div>
+                              <strong>Type:</strong> {linked.ticketType}
+                            </div>
+                            <div>
+                              <strong>ID:</strong> {linked.ticketTrackingNumber}
+                            </div>
+                            <div>
+                              <strong>Title:</strong> {linked.title}
+                            </div>
+                            <div>
+                              <strong>Priority:</strong> {linked.priority}
+                            </div>
+                            <div>
+                              <strong>Assigned:</strong>{" "}
+                              {linked.assignedEmployee
+                                ? `${linked.assignedEmployee.firstName} ${linked.assignedEmployee.lastName}`
+                                : "Unassigned"}
+                            </div>
+                            <div>
+                              <strong>Status:</strong> {linked.status}
+                            </div>
+                          </div>
                         </List.Content>
                       </List.Item>
                     ))}

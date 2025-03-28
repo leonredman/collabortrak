@@ -11,6 +11,7 @@ public class BugWithTicketDTO {
     private Long linkedEpicId;
     private Customer customer;
     private Employee assignedEmployee;
+    private Long customerId;
 
     public String getTitle() {
         return title;
@@ -66,6 +67,10 @@ public class BugWithTicketDTO {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+    }
+
+    public Long getCustomerId() {
+        return customerId;
     }
 
     public Employee getAssignedEmployee() {

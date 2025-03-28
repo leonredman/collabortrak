@@ -2,10 +2,7 @@ package com.collabortrak.collabortrak.controllers;
 
 import com.collabortrak.collabortrak.dto.BugWithTicketDTO;
 import com.collabortrak.collabortrak.entities.*;
-import com.collabortrak.collabortrak.repositories.BugRepository;
-import com.collabortrak.collabortrak.repositories.EpicRepository;
-import com.collabortrak.collabortrak.repositories.StoryRepository;
-import com.collabortrak.collabortrak.repositories.TicketRepository;
+import com.collabortrak.collabortrak.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +26,9 @@ public class BugController {
 
     @Autowired
     private EpicRepository epicRepository;
+
+    @Autowired
+    private CustomerRepository customerRepository;
 
 
     // Create a bug
@@ -92,6 +92,12 @@ public class BugController {
             return ResponseEntity.badRequest().build();
         }
 
+        // Validate Customer ID
+        Optional<Customer> customerOpt = customerRepository.findById(dto.getCustomerId());
+        if (customerOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
         // Create Ticket
         Ticket ticket = new Ticket();
         ticket.setTitle(dto.getTitle());
@@ -99,7 +105,8 @@ public class BugController {
         ticket.setStatus(dto.getStatus());
         ticket.setPriority(dto.getPriority());
         ticket.setCategory(dto.getCategory());
-        ticket.setCustomer(dto.getCustomer());
+      //  ticket.setCustomer(dto.getCustomer());
+        ticket.setCustomer(customerOpt.get());
         ticket.setAssignedEmployee(dto.getAssignedEmployee());
         ticket.setTicketType(TicketType.BUG);
         ticket.setCreatedDate(LocalDateTime.now());
@@ -114,6 +121,7 @@ public class BugController {
         bug.setStatus(dto.getStatus());
         bug.setPriority(dto.getPriority());
         bug.setEpic(epicOpt.get());
+        bug.setEpicId(epicOpt.get().getId());
         bug.setTicketId(savedTicket.getId());
 
         Bug savedBug = bugRepository.save(bug);

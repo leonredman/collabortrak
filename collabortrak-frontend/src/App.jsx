@@ -9,6 +9,7 @@ import {
 
 import ProtectedRoute from "./components/protectedRoute/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
+import CreateBugPage from "./pages/CreateBugPage";
 import CreateCustomerPage from "./pages/CreateCustomerPage";
 import CreateStoryPage from "./pages/CreateStoryPage";
 import CreateTaskPage from "./pages/CreateTaskPage";
@@ -172,6 +173,22 @@ const App = () => {
                 userRole={userRole}
               >
                 <CreateStoryPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/create-bug"
+            element={
+              <ProtectedRoute
+                allowedRoles={[
+                  "[ROLE_ADMIN]",
+                  "[ROLE_DEVELOPER]",
+                  "[ROLE_QA_AGENT]",
+                ]}
+                userRole={userRole}
+              >
+                <CreateBugPage />
               </ProtectedRoute>
             }
           />
