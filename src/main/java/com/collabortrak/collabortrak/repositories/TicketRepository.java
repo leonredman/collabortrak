@@ -22,10 +22,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query("SELECT t FROM Ticket t LEFT JOIN FETCH t.assignedEmployee WHERE t.id = :id")
     Optional<Ticket> findByIdWithCustomerAndEmployee(@Param("id") Long id);
 
-    // previous query cause recursion
-    //@Query("SELECT t FROM Ticket t WHERE t.id = :id")
-   // Optional<Ticket> findByIdWithCustomer(@Param("id") Long id);
-
     @Query("SELECT t FROM Ticket t LEFT JOIN FETCH t.assignedEmployee WHERE t.id = :id")
     Optional<Ticket> findByIdWithAssignedEmployee(@Param("id") Long id);
 
@@ -53,8 +49,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
             "WHERE t.ticketType IN (:types) AND (s.epicId = :epicId OR b.epicId = :epicId)")
     List<Ticket> findLinkedTicketsByEpicId(@Param("epicId") Long epicId,
                                            @Param("types") List<TicketType> types);
-
-
 
     // Get tickets by customer ID
     List<Ticket> findByCustomer_Id(Long customerId);
