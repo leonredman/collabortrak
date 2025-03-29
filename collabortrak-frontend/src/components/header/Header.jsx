@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import SearchBarWithFilters from "../searchBarWithFilters/SearchBarWithFilters";
 import "./HeaderMenu.css";
 
 const roleIcons = {
@@ -96,7 +97,11 @@ const Header = () => {
           </button>
         )}
 
-        <div className="right menu">
+        <div
+          className="right menu"
+          style={{ display: "flex", alignItems: "center" }}
+        >
+          <SearchBarWithFilters />
           <h4
             className="ui header"
             style={{ color: "white", paddingTop: "10px", paddingRight: "20px" }}
@@ -105,6 +110,7 @@ const Header = () => {
               src={userProfilePic}
               alt="User Avatar"
               className="ui tiny circular image"
+              style={{ marginLeft: "40px" }}
               onError={(e) => (e.target.src = "/default-avatar.png")} // Fallback to default
             />
             <span style={{ marginLeft: "10px" }}>{userName}</span>

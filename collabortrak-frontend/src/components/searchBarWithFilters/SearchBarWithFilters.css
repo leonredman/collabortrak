@@ -1,0 +1,31 @@
+/* SearchBarWithFilters.css */
+.search-bar-container {
+  position: relative;
+}
+
+.search-input {
+  transition: width 0.3s ease;
+  /* transition: all 0.3s ease; */
+  width: 200px;
+}
+
+.search-input.expanded {
+  width: 400px;
+}
+
+.search-modal .search-results-panel {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.results-list {
+  width: 60%;
+  border-right: 1px solid #ddd;
+  padding-right: 20px;
+}
+
+.filters-panel {
+  width: 35%;
+  padding-left: 20px;
+}
