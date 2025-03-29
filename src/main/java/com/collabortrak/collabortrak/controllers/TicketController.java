@@ -65,21 +65,6 @@ public class TicketController {
                     "#ticket.ticketType == T(com.collabortrak.collabortrak.entities.TicketType).BUG)"
     )
 
-    // syntax error on 74
-//    @PreAuthorize("hasRole('ADMIN') or " +
-//            "(hasRole('WEBSITE_SPECIALIST') and " +
-//            "(#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).NEW_BUILD or " +
-//            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).REVISIONS or " +
-//            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).POST_PUBLISH) and " +
-//            "(#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).EPIC or " +
-//            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).STORY))) or " +
-//            "(hasRole('DEVELOPER') and (#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).BUG and " +
-//            "(#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).STORY or " +
-//            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).TASK or " +
-//            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).BUG))) or " +
-//            "(hasRole('QA_AGENT') and (#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).BUG and " +
-//            "#ticket.category == T(com.collabortrak.collabortrak.entities.CategoryType).BUG))")
-
     public ResponseEntity<Ticket> createTicket(@RequestBody Ticket ticket, Authentication authentication) {
         System.out.println("Received Ticket Data: " + ticket); // Debug log
 
@@ -215,49 +200,12 @@ public class TicketController {
     }
 
 
-    // Get all tickets
-//    @GetMapping
-//    public List<Ticket> getAllTickets() {
-//        return ticketRepository.findAll();
-//    }
-//    @GetMapping
-//    public List<Ticket> getAllTickets() {
-//        return ticketRepository.findAllWithAssignedEmployee();
-//    }
-
-
-    // Get all tickets with Debug log
-//    @GetMapping
-//    public List<Ticket> getAllTickets() {
-//        List<Ticket> tickets = ticketRepository.findAll();
-//
-//        // Debugging: Log assigned employee details
-//        for (Ticket ticket : tickets) {
-//            if (ticket.getAssignedEmployee() != null) {
-//                System.out.println("Ticket ID: " + ticket.getId() +
-//                        ", Assigned Employee ID: " + ticket.getAssignedEmployee().getId() +
-//                        ", First Name: " + ticket.getAssignedEmployee().getFirstName() +
-//                        ", Last Name: " + ticket.getAssignedEmployee().getLastName());
-//            } else {
-//                System.out.println("Ticket ID: " + ticket.getId() + " has no assigned employee.");
-//            }
-//        }
-//
-//        return tickets;
-//    }
-
     // Get ticket by ID
     @GetMapping("/{id}")
     public ResponseEntity<Ticket> getTicketById(@PathVariable Long id) {
         Optional<Ticket> ticket = ticketRepository.findById(id);
         return ticket.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
-
-    // Get tickets by customer ID
-//    @GetMapping("/customer/{customerId}")
-//    public List<Ticket> getTicketsByCustomer(@PathVariable Long customerId) {
-//        return ticketRepository.findByCustomerId(customerId);
-//    }
 
     // Get tickets by customer ID
     @GetMapping("/customer/{customerId}")
@@ -309,32 +257,16 @@ public class TicketController {
                         ticket.setDueDate(updatedTicket.getDueDate());
                     }
 
-
                     // Tested Original Set Assigned Employee is Updated
                     if (updatedTicket.getAssignedEmployee() != null && updatedTicket.getAssignedEmployee().getId() != null) {
                         Employee employee = employeeRepository.findById(updatedTicket.getAssignedEmployee().getId())
                                 .orElse(null);
                         ticket.setAssignedEmployee(employee); // Set new assigned employee
                    }
-
-                    // OLD APPROACH NOW COMMENTED OUT
-                    // Handle `assignedEmployeeId` separately (since frontend sends `assignedEmployeeId`)
-//                    if (updatedTicket.getAssignedEmployee() == null && updatedTicket.getAssignedEmployeeId() != null) {
-//                        Employee employee = employeeRepository.findById(updatedTicket.getAssignedEmployeeId())
-//                                .orElse(null);
-//                        ticket.setAssignedEmployee(employee);
-//                    }
-
                     return ResponseEntity.ok(ticketRepository.save(ticket));
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
-//    @GetMapping("/epic/{epicId}/linked-tickets")
-//    public ResponseEntity<List<Ticket>> getLinkedTicketsByEpic(@PathVariable Long epicId) {
-//        List<Ticket> linkedTickets = ticketRepository.findByEpicId(epicId);
-//        return ResponseEntity.ok(linkedTickets);
-//    }
 
 
     @GetMapping("/epic/{ticketId}/linked-tickets")
@@ -351,7 +283,6 @@ public class TicketController {
         List<Ticket> linkedTickets = ticketRepository.findLinkedTicketsByEpicId(epicId, types);
         return ResponseEntity.ok(linkedTickets);
     }
-
 
     // Delete a ticket - only Admins delete
     @DeleteMapping("/{id}")
