@@ -156,10 +156,10 @@ public class DemoDataInitializer {
                     story.setStatus(storyTicket.getStatus());
                     story.setPriority(storyTicket.getPriority());
 
-                  //  story.setEpicId(epic.getId());
+                    //  story.setEpicId(epic.getId());
                     story.setTicketId(storyTicket.getId());  // replaced
 
-                  //  story.setTicketId(storyTicket.getId());
+                    //  story.setTicketId(storyTicket.getId());
                     story.setEpic(epic); // link full Epic object - replaced
                     storyRepo.save(story);
                 }
