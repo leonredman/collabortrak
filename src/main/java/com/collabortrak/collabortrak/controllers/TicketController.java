@@ -182,6 +182,9 @@ public class TicketController {
             defaultStoryTicket.setDueDate(LocalDateTime.now().plusDays(7));
             defaultStoryTicket.setLastUpdate(LocalDateTime.now());
 
+            // Must set the ticketType to for Auto Story
+            defaultStoryTicket.setTicketType(TicketType.STORY);
+
             Ticket savedStoryTicket = ticketRepository.save(defaultStoryTicket);
 
             // Save Story entry linked to the Epic
@@ -289,7 +292,6 @@ public class TicketController {
         }
     }
 
-
     // Update a ticket
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER') or hasRole('DEVELOPER') or hasRole('QA_AGENT') or hasRole('WEBSITE_SPECIALIST')")
@@ -323,7 +325,6 @@ public class TicketController {
 //                        ticket.setAssignedEmployee(employee);
 //                    }
 
-
                     return ResponseEntity.ok(ticketRepository.save(ticket));
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
@@ -335,14 +336,16 @@ public class TicketController {
 //        return ResponseEntity.ok(linkedTickets);
 //    }
 
+
     @GetMapping("/epic/{ticketId}/linked-tickets")
     public ResponseEntity<List<Ticket>> getLinkedTicketsByEpic(@PathVariable Long ticketId) {
-        Optional<Epic> epic = epicRepository.findByTicketId(ticketId);
-        if (epic.isEmpty()) {
+        Optional<Epic> epicOptional = epicRepository.findByTicketId(ticketId); // Find Epic by its ticketId
+        if (epicOptional.isEmpty()) {
             return ResponseEntity.badRequest().body(Collections.emptyList());
         }
 
-        Long epicId = epic.get().getId(); // Actual ID from `epics` table
+        Epic epic = epicOptional.get();
+        Long epicId = epic.getId(); // Get the actual ID from the epics table
         List<TicketType> types = List.of(TicketType.STORY, TicketType.TASK, TicketType.BUG);
 
         List<Ticket> linkedTickets = ticketRepository.findLinkedTicketsByEpicId(epicId, types);
