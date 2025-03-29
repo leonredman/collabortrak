@@ -294,4 +294,28 @@ public class TicketController {
         ticketRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    // Added Unified Search Endpoint
+    @GetMapping("/search")
+    public ResponseEntity<List<Ticket>> searchTickets(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String description,
+            @RequestParam(required = false) String ticketTrackingNumber
+    ) {
+        List<Ticket> results;
+
+        if (title != null && !title.isEmpty()) {
+            results = ticketRepository.findByTitleContainingIgnoreCase(title);
+        } else if (description != null && !description.isEmpty()) {
+            results = ticketRepository.findByDescriptionContainingIgnoreCase(description);
+        } else if (ticketTrackingNumber != null && !ticketTrackingNumber.isEmpty()) {
+            results = ticketRepository.findByTicketTrackingNumberContainingIgnoreCase(ticketTrackingNumber);
+        } else {
+            // If no search criteria provided, return all tickets
+            results = ticketRepository.findAll();
+        }
+
+        return ResponseEntity.ok(results);
+    }
+
 }

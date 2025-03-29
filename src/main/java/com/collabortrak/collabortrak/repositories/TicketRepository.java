@@ -18,6 +18,12 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     List<Ticket> findByPriority(PriorityType priority);
     List<Ticket> findByCategory(CategoryType category);
 
+    // added methods for unified search
+    List<Ticket> findByTitleContainingIgnoreCase(String title);
+    List<Ticket> findByDescriptionContainingIgnoreCase(String description);
+    List<Ticket> findByTicketTrackingNumberContainingIgnoreCase(String ticketTrackingNumber);
+
+
     // Get single ticket with its customer and assigned employee
     @Query("SELECT t FROM Ticket t LEFT JOIN FETCH t.assignedEmployee WHERE t.id = :id")
     Optional<Ticket> findByIdWithCustomerAndEmployee(@Param("id") Long id);
