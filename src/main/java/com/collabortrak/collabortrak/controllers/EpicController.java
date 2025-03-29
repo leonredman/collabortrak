@@ -2,9 +2,12 @@ package com.collabortrak.collabortrak.controllers;
 
 import com.collabortrak.collabortrak.entities.Epic;
 import com.collabortrak.collabortrak.entities.Customer;
+import com.collabortrak.collabortrak.repositories.BugRepository;
 import com.collabortrak.collabortrak.repositories.EpicRepository;
 import com.collabortrak.collabortrak.repositories.CustomerRepository;
+import com.collabortrak.collabortrak.repositories.StoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +23,12 @@ public class EpicController {
 
     @Autowired
     private CustomerRepository customerRepository;
+
+    @Autowired
+    private StoryRepository storyRepository;
+
+    @Autowired
+    private BugRepository bugRepository;
 
     // Create an epic
     @PostMapping
@@ -52,27 +61,29 @@ public class EpicController {
 
     // Update an epic
     @PutMapping("/{id}")
-    public ResponseEntity<Epic> updateEpic(@PathVariable Long id, @RequestBody Epic updatedEpic) {
-        return epicRepository.findById(id)
-                .map(epic -> {
-                    epic.setTitle(updatedEpic.getTitle());
-                    epic.setDescription(updatedEpic.getDescription());
-                    epic.setStatus(updatedEpic.getStatus());
-                    epic.setPriority(updatedEpic.getPriority());
-                    return ResponseEntity.ok(epicRepository.save(epic));
-                })
-                .orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-
-
-    // Delete an epic
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteEpic(@PathVariable Long id) {
+    public ResponseEntity<String> updateEpic(@PathVariable Long id) {
         if (!epicRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
-        epicRepository.deleteById(id);
-        return ResponseEntity.noContent().build();
-    }
+
+        try {
+            epicRepository.deleteById(id);  // Database will prevent deletion if Stories or Bugs exist
+            return ResponseEntity.noContent().build();
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.badRequest().body("Cannot delete Epic. It has linked Stories or Bugs.");
+        }
+}
+
+
+    // Delete an epic - need to add safe guard so cannot now delete with linked tickets existing
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Void> deleteEpic(@PathVariable Long id) {
+//        if (!epicRepository.existsById(id)) {
+//            return ResponseEntity.notFound().build();
+//        }
+//        epicRepository.deleteById(id);
+//        return ResponseEntity.noContent().build();
+//    }
+
+
 }

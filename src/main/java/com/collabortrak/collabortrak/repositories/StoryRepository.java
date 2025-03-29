@@ -6,8 +6,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+
 @Repository
 public interface StoryRepository extends JpaRepository<Story, Long> {
+
+    boolean existsByEpicId(Long epicId);
 
     // Fetch all stories for a given epic
     List<Story> findByEpicId(Long epicId);

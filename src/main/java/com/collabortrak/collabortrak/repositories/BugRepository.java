@@ -9,6 +9,8 @@ import java.util.List;
 @Repository
 public interface BugRepository extends JpaRepository<Bug, Long> {
 
+    boolean existsByEpicId(Long epicId);
+
     // Fetch all bugs for a given story
  //   List<Bug> findByStoryId(Long storyId);
 }
