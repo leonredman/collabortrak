@@ -22,6 +22,7 @@ import ManagerDashboard from "./pages/ManagerDashboard";
 import NotAuthorized from "./pages/NotAuthorized";
 import NotFound from "./pages/NotFound";
 import QADashboard from "./pages/QADashboard";
+import ReportsPage from "./pages/ReportsPage";
 import WebsiteSpecialistDashboard from "./pages/WebsiteSpecialistDashboard";
 
 import "./App.css";
@@ -213,6 +214,24 @@ const App = () => {
                 userRole={userRole}
               >
                 <CreateCustomerPage />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/reports"
+            element={
+              <ProtectedRoute
+                allowedRoles={[
+                  "[ROLE_ADMIN]",
+                  "[ROLE_MANAGER]",
+                  "[ROLE_DEVELOPER]",
+                  "[ROLE_QA_AGENT]",
+                  "[ROLE_WEBSITE_SPECIALIST]",
+                ]}
+                userRole={userRole}
+              >
+                <ReportsPage />
               </ProtectedRoute>
             }
           />

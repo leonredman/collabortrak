@@ -75,14 +75,8 @@ const SideMenu = () => {
       <div className="item">
         <div className="header">Reports</div>
         <div className="menu">
-          <Link to="/reports/option1" className="item">
-            Option 1
-          </Link>
-          <Link to="/reports/option2" className="item">
-            Option 2
-          </Link>
-          <Link to="/reports/option3" className="item">
-            Option 3
+          <Link to="/reports" className="item">
+            Main
           </Link>
         </div>
       </div>
