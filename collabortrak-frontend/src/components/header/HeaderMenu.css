@@ -20,7 +20,7 @@
   > fragement
   > div.ui.visible.sidebar.blue.inverted.vertical.menu
   > div:nth-child(1) {
-  margin-top: 50px;
+  margin-top: 20px;
 }
 
 #root
@@ -28,7 +28,7 @@
   > div
   > fragement
   > div.ui.visible.sidebar.blue.inverted.vertical.menu {
-  margin-top: 39px !important;
+  margin-top: 19px !important;
   position: fixed;
 }
 
@@ -40,7 +40,7 @@
   z-index: 1000; /* Ensures it stays above other elements */
   background-color: #2185d0; /* Matches blue inverted menu */
   border-bottom: 2px solid #1a69a4;
-  padding: 10px 15px;
+  /* padding: 10px 15px; */
   box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Adds slight shadow */
 }
 

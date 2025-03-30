@@ -104,7 +104,7 @@ const Header = () => {
           <SearchBarWithFilters />
           <h4
             className="ui header"
-            style={{ color: "white", paddingTop: "10px", paddingRight: "20px" }}
+            style={{ color: "white", paddingTop: "5px", paddingRight: "20px" }}
           >
             <img
               src={userProfilePic}
@@ -117,7 +117,7 @@ const Header = () => {
           </h4>
           <i
             className="bell outline icon"
-            style={{ color: "white", paddingTop: "10px", paddingRight: "30px" }}
+            style={{ color: "white", paddingTop: "5px", paddingRight: "30px" }}
           ></i>
         </div>
       </div>

@@ -109,7 +109,8 @@ const SearchBarWithFilters = () => {
         >
           <Modal.Header
             style={{
-              backgroundColor: "#e0e0e0",
+              backgroundColor: "#2185d0",
+              color: "white",
               borderRadius: "8px 8px 0 0",
               padding: "10px",
             }}
@@ -141,7 +142,7 @@ const SearchBarWithFilters = () => {
                   </List>
                 )}
               </div>
-
+              {/*
               {/* Filters Panel */}
               <div
                 style={{
@@ -152,7 +153,7 @@ const SearchBarWithFilters = () => {
                   marginLeft: "20px",
                 }}
               >
-                <h3>Filters</h3>
+                <h3>Filters Coming Soon!</h3>
 
                 {/* Last Updated Filter */}
                 <div style={{ marginBottom: "15px" }}>
