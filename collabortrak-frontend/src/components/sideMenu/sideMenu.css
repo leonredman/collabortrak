@@ -34,3 +34,39 @@
 .ui.sidebar {
   top: 76px !important;
 }
+/* HeaderMenu.css */
+
+/* Styling for the Roles link */
+.hover-not-implemented {
+  transition: background-color 0.3s, color 0.3s;
+  position: relative;
+}
+
+/* Default state */
+.hover-not-implemented .default-text {
+  transition: opacity 0.3s;
+}
+
+/* Hover state */
+.hover-not-implemented:hover {
+  background-color: #ff6666; /* Red background color */
+  color: white !important; /* Default color */
+}
+
+/* When hovered, the text changes to 'Not Implemented' */
+.hover-not-implemented:hover .default-text {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.hover-not-implemented:hover::after {
+  content: "Not Implemented";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 10px 15px;
+  color: rgb(233, 249, 126) !important; /* Changes text to red on hover */
+  text-align: left;
+  pointer-events: none;
+}

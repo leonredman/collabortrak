@@ -14,11 +14,16 @@ const SideMenu = () => {
           <div className="item">
             <div className="header">Role Manager</div>
             <div className="menu">
-              <Link to="/roles" className="item">
-                Roles
+              <Link
+                to="#"
+                className="item hover-not-implemented"
+                onClick={(e) => e.preventDefault()} // Prevents navigation
+              >
+                <span className="default-text">Roles</span>
               </Link>
             </div>
           </div>
+
           <div className="item">
             <div className="header">Manager</div>
             <div className="menu">
