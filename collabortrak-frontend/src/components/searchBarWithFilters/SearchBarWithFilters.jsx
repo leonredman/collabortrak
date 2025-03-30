@@ -117,27 +117,96 @@ const SearchBarWithFilters = () => {
             Search Results
           </Modal.Header>
           <Modal.Content>
-            {loading && <p>Loading...</p>}
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            {!loading && !error && searchResults.length === 0 && (
-              <p>No results found.</p>
-            )}
-            {!loading && searchResults.length > 0 && (
-              <List divided>
-                {searchResults.map((ticket) => (
-                  <List.Item key={ticket.id}>
-                    <List.Content>
-                      <List.Header>{ticket.title}</List.Header>
-                      <List.Description>
-                        {ticket.description} <br />
-                        <strong>Tracking Number:</strong>{" "}
-                        {ticket.ticketTrackingNumber}
-                      </List.Description>
-                    </List.Content>
-                  </List.Item>
-                ))}
-              </List>
-            )}
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div style={{ width: "65%" }}>
+                {loading && <p>Loading...</p>}
+                {error && <p style={{ color: "red" }}>{error}</p>}
+                {!loading && !error && searchResults.length === 0 && (
+                  <p>No results found.</p>
+                )}
+                {!loading && searchResults.length > 0 && (
+                  <List divided>
+                    {searchResults.map((ticket) => (
+                      <List.Item key={ticket.id}>
+                        <List.Content>
+                          <List.Header>{ticket.title}</List.Header>
+                          <List.Description>
+                            {ticket.description} <br />
+                            <strong>Tracking Number:</strong>{" "}
+                            {ticket.ticketTrackingNumber}
+                          </List.Description>
+                        </List.Content>
+                      </List.Item>
+                    ))}
+                  </List>
+                )}
+              </div>
+
+              {/* Filters Panel */}
+              <div
+                style={{
+                  width: "30%",
+                  padding: "20px",
+                  backgroundColor: "#e9e9e9",
+                  borderRadius: "10px",
+                  marginLeft: "20px",
+                }}
+              >
+                <h3>Filters</h3>
+
+                {/* Last Updated Filter */}
+                <div style={{ marginBottom: "15px" }}>
+                  <label>
+                    <strong>Last Updated:</strong>
+                  </label>
+                  <select
+                    style={{ width: "100%", padding: "5px", marginTop: "5px" }}
+                  >
+                    <option value="">Anytime</option>
+                    <option value="yesterday">Yesterday</option>
+                    <option value="7days">Past 7 Days</option>
+                    <option value="30days">Past 30 Days</option>
+                    <option value="year">Past Year</option>
+                  </select>
+                </div>
+
+                {/* Assigned Employee Filter */}
+                <div style={{ marginBottom: "15px" }}>
+                  <label>
+                    <strong>Assigned Employee:</strong>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Search employee..."
+                    style={{ width: "100%", padding: "5px", marginTop: "5px" }}
+                  />
+                </div>
+
+                {/* Ticket Status Filter */}
+                <div style={{ marginBottom: "15px" }}>
+                  <label>
+                    <strong>Status:</strong>
+                  </label>
+                  <div>
+                    <label>
+                      <input type="checkbox" value="open" /> Open
+                    </label>
+                    <br />
+                    <label>
+                      <input type="checkbox" value="published" /> Published
+                    </label>
+                    <br />
+                    <label>
+                      <input type="checkbox" value="in_progress" /> In Progress
+                    </label>
+                    <br />
+                    <label>
+                      <input type="checkbox" value="complete" /> Complete
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
           </Modal.Content>
         </Modal>
       )}
