@@ -1,5 +1,5 @@
-/*
-  Cache-Control: public, max-age=0, must-revalidate
-
 /assets/*
   Content-Type: application/javascript; charset=UTF-8
+
+/*
+  X-Test-Header: CollaborTrak-Test
