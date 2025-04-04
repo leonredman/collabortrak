@@ -51,9 +51,12 @@ const LoginForm = () => {
     const payload = new URLSearchParams();
     payload.append("username", trimmedUsername);
     payload.append("password", trimmedPassword);
+    const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
 
     try {
-      const response = await fetch("http://localhost:8080/api/login", {
+      // env variable files set for local dev and prod enviro.. Vite will do automatically
+      //const response = await fetch("http://localhost:8080/api/login", {
+      const response = await fetch(`${backendUrl}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
