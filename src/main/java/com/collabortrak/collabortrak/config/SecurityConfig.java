@@ -17,6 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -115,11 +116,9 @@ public class SecurityConfig {
 //    }
 
     // CorsFilter has  globally to all requests before spring security
-    @Configuration
-    public class WebConfig {
 
-        @Bean
-        public CorsConfigurationSource corsConfigurationSource() {
+           @Bean
+        public CorsFilter customCorsFilter() {  // Note the name change
             CorsConfiguration corsConfiguration = new CorsConfiguration();
             corsConfiguration.setAllowCredentials(true);
 
@@ -134,11 +133,11 @@ public class SecurityConfig {
             UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
             source.registerCorsConfiguration("/**", corsConfiguration);
 
-            return source;
+            return new CorsFilter(source);
         }
-    }
 
-    // Insert demo users on startup (if not present)
+
+        // Insert demo users on startup (if not present)
     @Bean
     public CommandLineRunner createDemoUsers(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {
