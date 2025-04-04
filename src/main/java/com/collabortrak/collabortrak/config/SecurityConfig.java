@@ -99,7 +99,7 @@ public class SecurityConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
                         .allowedOrigins("http://localhost:5173",
-                                "https://collabortrak-*.leonredmans-projects.vercel.app", // Allow only your specific project URLs on Vercel
+                                "*", // Allow only your specific project URLs on Vercel
                                 "https://collabortrak.vercel.app" // Custom Domain URL for your project
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
