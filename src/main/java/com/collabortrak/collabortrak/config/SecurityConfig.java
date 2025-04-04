@@ -3,7 +3,6 @@ package com.collabortrak.collabortrak.config;
 import com.collabortrak.collabortrak.entities.RoleType;
 import com.collabortrak.collabortrak.entities.User;
 import com.collabortrak.collabortrak.repositories.UserRepository;
-import org.apache.catalina.filters.CorsFilter;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +15,7 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -119,23 +119,22 @@ public class SecurityConfig {
     public class WebConfig {
 
         @Bean
-        public CorsFilter corsFilter() {
+        public CorsConfigurationSource corsConfigurationSource() {
             CorsConfiguration corsConfiguration = new CorsConfiguration();
             corsConfiguration.setAllowCredentials(true);
 
-            // Allow any Vercel subdomain and localhost for development
+            // Allowing all Vercel subdomains and localhost
             corsConfiguration.setAllowedOrigins(Arrays.asList(
-                    "http://localhost:5173", // Local development
-                    "https://*.vercel.app"   // Allow any Vercel deployment URL
+                    "http://localhost:5173",
+                    "https://*.vercel.app"
             ));
-
             corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization"));
             corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
             UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
             source.registerCorsConfiguration("/**", corsConfiguration);
 
-            return new CorsFilter();
+            return source;
         }
     }
 
