@@ -125,6 +125,7 @@ public class SecurityConfig {
             // Allowing all Vercel subdomains and localhost
             corsConfiguration.setAllowedOrigins(Arrays.asList(
                     "http://localhost:5173",
+                    "https://collabortrak-dqeu4gtch-leonredmans-projects.vercel.app",
                     "https://*.vercel.app"
             ));
             corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization"));
