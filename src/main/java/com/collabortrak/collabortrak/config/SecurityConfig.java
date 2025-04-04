@@ -3,6 +3,7 @@ package com.collabortrak.collabortrak.config;
 import com.collabortrak.collabortrak.entities.RoleType;
 import com.collabortrak.collabortrak.entities.User;
 import com.collabortrak.collabortrak.repositories.UserRepository;
+import org.apache.catalina.filters.CorsFilter;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,9 +15,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -91,22 +95,48 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // Disabled WebMVC - due to only specific Cors settings
     // Enable CORS for your frontend
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**")
-                        .allowedOrigins("http://localhost:5173",
-                                "*", // Allow only your specific project URLs on Vercel
-                                "https://collabortrak.vercel.app" // Custom Domain URL for your project
-                        )
-                        .allowedMethods("GET", "POST", "PUT", "DELETE")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
-            }
-        };
+//    @Bean
+//    public WebMvcConfigurer corsConfigurer() {
+//        return new WebMvcConfigurer() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/api/**")
+//                        .allowedOrigins("http://localhost:5173",
+//                                "*", // Allow only your specific project URLs on Vercel
+//                                "https://collabortrak.vercel.app" // Custom Domain URL for your project
+//                        )
+//                        .allowedMethods("GET", "POST", "PUT", "DELETE")
+//                        .allowedHeaders("*")
+//                        .allowCredentials(true);
+//            }
+//        };
+//    }
+
+    // CorsFilter has  globally to all requests before spring security
+    @Configuration
+    public class WebConfig {
+
+        @Bean
+        public CorsFilter corsFilter() {
+            CorsConfiguration corsConfiguration = new CorsConfiguration();
+            corsConfiguration.setAllowCredentials(true);
+
+            // Allow any Vercel subdomain and localhost for development
+            corsConfiguration.setAllowedOrigins(Arrays.asList(
+                    "http://localhost:5173", // Local development
+                    "https://*.vercel.app"   // Allow any Vercel deployment URL
+            ));
+
+            corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization"));
+            corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+            UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+            source.registerCorsConfiguration("/**", corsConfiguration);
+
+            return new CorsFilter();
+        }
     }
 
     // Insert demo users on startup (if not present)
