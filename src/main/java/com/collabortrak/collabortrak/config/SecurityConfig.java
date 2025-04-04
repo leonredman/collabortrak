@@ -87,6 +87,10 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/api/logout-success")
                         .permitAll()
                 );
+        // Force Spring Security to use HTTPS for all redirects
+        http.requiresChannel(channel -> channel
+                .anyRequest().requiresSecure()
+        );
 
         return http.build();
     }
