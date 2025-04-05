@@ -14,17 +14,23 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@CrossOrigin
 public class SecurityConfig {
+
+    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {
@@ -63,6 +69,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        logger.info("Configuring security filter chain...");
         http
                 .csrf(csrf -> csrf.disable())
                 .cors().configurationSource(corsConfigurationSource()) // Re-enabled CORS to properly integrate with Spring Security
@@ -79,11 +86,13 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginProcessingUrl("/api/login")
                         .successHandler((request, response, authentication) -> {
+                            logger.info("Login successful for user: {}", authentication.getName());
                             response.setStatus(HttpStatus.OK.value());
                             response.setContentType("application/json");
                             response.getWriter().write("{\"message\": \"Login successful\"}");
                         })
                         .failureHandler((request, response, exception) -> {
+                            logger.warn("Login failed: {}", exception.getMessage());
                             response.setStatus(HttpStatus.UNAUTHORIZED.value());
                             response.setContentType("application/json");
                             response.getWriter().write("{\"message\": \"Invalid username or password.\"}");
