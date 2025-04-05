@@ -35,6 +35,50 @@ public class SecurityConfig {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    // Disabled WebMVC - due to only specific Cors settings
+    // Enable CORS for your frontend
+//    @Bean
+//    public WebMvcConfigurer corsConfigurer() {
+//        return new WebMvcConfigurer() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/api/**")
+//                        .allowedOrigins("http://localhost:5173",
+//                                "*", // Allow only your specific project URLs on Vercel
+//                                "https://collabortrak.vercel.app" // Custom Domain URL for your project
+//                        )
+//                        .allowedMethods("GET", "POST", "PUT", "DELETE")
+//                        .allowedHeaders("*")
+//                        .allowCredentials(true);
+//            }
+//        };
+//    }
+
+    // CorsFilter has  globally to all requests before spring security
+
+    @Bean
+    public CorsFilter customCorsFilter() {  // Note the name change
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.setAllowCredentials(true);
+
+        // Allowing all Vercel subdomains and localhost
+        corsConfiguration.setAllowedOrigins(Arrays.asList(
+                "https://collabortrak-dqeu4gtch-leonredmans-projects.vercel.app",
+                "https://*.vercel.app",
+                "https://collabortrak-dqeu4g.vercel.app",
+                "https://collabortrak-production.up.railway.app",
+                "http://localhost:5173"
+
+        ));
+        corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization"));
+        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+
+        return new CorsFilter(source);
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(); // Updated from NoOpPasswordEncoder plain text passwords for simplicity to BCrypt
@@ -95,47 +139,6 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-    // Disabled WebMVC - due to only specific Cors settings
-    // Enable CORS for your frontend
-//    @Bean
-//    public WebMvcConfigurer corsConfigurer() {
-//        return new WebMvcConfigurer() {
-//            @Override
-//            public void addCorsMappings(CorsRegistry registry) {
-//                registry.addMapping("/api/**")
-//                        .allowedOrigins("http://localhost:5173",
-//                                "*", // Allow only your specific project URLs on Vercel
-//                                "https://collabortrak.vercel.app" // Custom Domain URL for your project
-//                        )
-//                        .allowedMethods("GET", "POST", "PUT", "DELETE")
-//                        .allowedHeaders("*")
-//                        .allowCredentials(true);
-//            }
-//        };
-//    }
-
-    // CorsFilter has  globally to all requests before spring security
-
-           @Bean
-        public CorsFilter customCorsFilter() {  // Note the name change
-            CorsConfiguration corsConfiguration = new CorsConfiguration();
-            corsConfiguration.setAllowCredentials(true);
-
-            // Allowing all Vercel subdomains and localhost
-            corsConfiguration.setAllowedOrigins(Arrays.asList(
-                    "http://localhost:5173",
-                    "https://collabortrak-dqeu4gtch-leonredmans-projects.vercel.app",
-                    "https://*.vercel.app"
-            ));
-            corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization"));
-            corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
-            UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-            source.registerCorsConfiguration("/**", corsConfiguration);
-
-            return new CorsFilter(source);
-        }
 
 
         // Insert demo users on startup (if not present)
