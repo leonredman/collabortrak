@@ -19,6 +19,11 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tickets")
+@CrossOrigin(origins = {
+        "http://localhost:5173",
+        "https://collabortrak.vercel.app",
+        "https://collabortrak-production.up.railway.app"
+})
 public class TicketController {
 
     @Autowired

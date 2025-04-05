@@ -10,7 +10,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin
+@CrossOrigin(origins = {
+        "http://localhost:5173",
+        "https://collabortrak.vercel.app",
+        "https://collabortrak-production.up.railway.app"
+})
 public class AuthController {
 
     @GetMapping("/login-success")

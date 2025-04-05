@@ -6,6 +6,7 @@ import com.collabortrak.collabortrak.repositories.TicketRepository;
 import com.collabortrak.collabortrak.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,6 +17,11 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/reports")
+@CrossOrigin(origins = {
+        "http://localhost:5173",
+        "https://collabortrak.vercel.app",
+        "https://collabortrak-production.up.railway.app"
+})
 public class ReportController {
 
     @Autowired

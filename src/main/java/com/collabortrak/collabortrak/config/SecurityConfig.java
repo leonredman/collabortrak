@@ -8,18 +8,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.List;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
-//@EnableWebSecurity
-public class SecurityConfig implements WebMvcConfigurer {
+@EnableWebSecurity
+public class SecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {
@@ -27,67 +29,24 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    // Keep your CORS configuration
-   // @Bean
-     //  public WebMvcConfigurer corsConfigurer() {
-    //    return new WebMvcConfigurer() {
-
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOrigins(
-                                "http://localhost:5173",
-                                "https://collabortrak.vercel.app",
-                                "https://collabortrak-production.up.railway.app",
-                                "https://collabortrak-dqeu4gtch-leonredmans-projects.vercel.app"
-                        )
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
-        //    }
-    //    };
-    }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // 🚫 Disable Spring Security by commenting out the SecurityFilterChain
-    /*
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(withDefaults())
-
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/login", "/login-success", "/login-failure").permitAll()
-
-                        // Allow GET for customers to authenticated users
                         .requestMatchers(HttpMethod.GET, "/api/customers/**").hasAnyRole("ADMIN", "MANAGER", "WEBSITE_SPECIALIST", "DEVELOPER", "QA_AGENT")
-
-                        // Only admins can update customer APIs
-                        .requestMatchers(HttpMethod.POST, "/api/customers")
-                        .hasRole("ADMIN")
-
-                        .requestMatchers(HttpMethod.PUT, "/api/customers/**")
-                        .hasRole("ADMIN")
-
-                        .requestMatchers(HttpMethod.DELETE, "/api/customers/**")
-                        .hasRole("ADMIN")
-
+                        .requestMatchers(HttpMethod.POST, "/api/customers").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/customers/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/customers/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
-
-                .exceptionHandling(e -> e
-                        .authenticationEntryPoint((request, response, authException) -> {
-                            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                            response.setContentType("application/json");
-                            response.getWriter().write("{\"message\": \"Unauthorized access\"}");
-                        })
-                )
-
                 .formLogin(form -> form
                         .loginProcessingUrl("/api/login")
                         .defaultSuccessUrl("/api/login-success", true)
@@ -98,7 +57,6 @@ public class SecurityConfig implements WebMvcConfigurer {
                         })
                         .permitAll()
                 )
-
                 .logout(logout -> logout
                         .logoutUrl("/api/logout")
                         .invalidateHttpSession(true)
@@ -109,9 +67,7 @@ public class SecurityConfig implements WebMvcConfigurer {
 
         return http.build();
     }
-    */
 
-    // ✅ Your CommandLineRunner remains intact
     @Bean
     public CommandLineRunner createDemoUsers(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         return args -> {

@@ -12,6 +12,11 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/employees")
+@CrossOrigin(origins = {
+        "http://localhost:5173",
+        "https://collabortrak.vercel.app",
+        "https://collabortrak-production.up.railway.app"
+})
 public class EmployeeController {
 
     @Autowired
