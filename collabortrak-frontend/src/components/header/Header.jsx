@@ -42,7 +42,7 @@ const Header = () => {
     try {
       // const response = await fetch("http://localhost:8080/api/logout", {
       const response = await fetch(
-        "https://collabortrak-production.up.railway.app",
+        `${import.meta.env.VITE_BACKEND_URL}/api/logout`,
         {
           //const response = await fetch(`${backendUrl}/api/logout`, {
           method: "POST",
