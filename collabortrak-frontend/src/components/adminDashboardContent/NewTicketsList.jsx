@@ -6,8 +6,11 @@ const NewTicketsList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const ticketsPerPage = 3; // Show max 4 tickets per page
 
+  const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
+
   useEffect(() => {
-    fetch("http://localhost:8080/api/tickets", {
+    //  fetch("http://localhost:8080/api/tickets", {
+    fetch(`${backendUrl}/api/tickets`, {
       method: "GET",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
