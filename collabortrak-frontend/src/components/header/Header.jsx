@@ -11,7 +11,7 @@ const roleIcons = {
   ROLE_WEBSITE_SPECIALIST: "/webSpecialistIcon.png",
 };
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
+//const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const Header = () => {
   const navigate = useNavigate();
@@ -41,10 +41,14 @@ const Header = () => {
   const handleLogout = async () => {
     try {
       // const response = await fetch("http://localhost:8080/api/logout", {
-      const response = await fetch(`${backendUrl}/api/logout`, {
-        method: "POST",
-        credentials: "include",
-      });
+      const response = await fetch(
+        "https://collabortrak-production.up.railway.app",
+        {
+          //const response = await fetch(`${backendUrl}/api/logout`, {
+          method: "POST",
+          credentials: "include",
+        }
+      );
 
       if (response.ok) {
         console.log("Logout successful");
