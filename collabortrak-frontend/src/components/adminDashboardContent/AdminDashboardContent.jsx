@@ -8,10 +8,12 @@ import TicketsInQAList from "./TicketsInQAList";
 
 import "./AdminDashboardContent.css"; // custom styles
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
+console.log("Backend URL being used:", backendUrl);
+
 const AdminDashboardContent = ({ isAuthenticated }) => {
   const [tickets, setTickets] = useState([]);
   const [userName, setUserName] = useState("");
-  const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
 
   useEffect(() => {
     console.log(
