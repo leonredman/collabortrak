@@ -199,9 +199,14 @@ public class TicketController {
 
     // Get all Tickets with DTO
     @GetMapping
-    public List<TicketDTO> getAllTickets() {
+    public ResponseEntity<List<TicketDTO>> getAllTickets() {
         List<Ticket> tickets = ticketRepository.findAll();
-        return tickets.stream().map(TicketDTO::new).collect(Collectors.toList());
+        List<TicketDTO> ticketDTOs = tickets.stream().map(TicketDTO::new).collect(Collectors.toList());
+       // return tickets.stream().map(TicketDTO::new).collect(Collectors.toList());
+        return ResponseEntity.ok()
+                .header("Content-Type", "application/json")
+                .body(ticketDTOs);
+
     }
 
 
