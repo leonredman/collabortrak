@@ -10,6 +10,7 @@ const roleIcons = {
   ROLE_QA_AGENT: "/QAIcon.png",
   ROLE_WEBSITE_SPECIALIST: "/webSpecialistIcon.png",
 };
+
 // env. vars per enviroment dev or prod
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -39,21 +40,9 @@ const Header = () => {
   }, []);
 
   const handleLogout = async () => {
-    // const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
-    //  const backendUrl = import.meta.env.MODE === 'production'
-    //   ? `https://${import.meta.env.VITE_SECURE_BACKEND_URL}`
-    //   : import.meta.env.VITE_BACKEND_URL;
-
-    console.log("Backend URL being used:", backendUrl); // Confirming correct URL
+    console.log("Backend URL being used:", backendUrl); // Confirm correct URL
 
     try {
-      // const response = await fetch("http://localhost:8080/api/logout", {
-      // const response = await fetch(`${backendUrl}/api/logout`, {
-      // console.log("Attempting logout at forced HTTPS URL");
-      // "https://collabortrak-production.up.railway.app/api/logout",
-      // `https://${backendUrl}/api/logout`,
-
       const response = await fetch(`${backendUrl}/api/logout`, {
         method: "POST",
         credentials: "include",
