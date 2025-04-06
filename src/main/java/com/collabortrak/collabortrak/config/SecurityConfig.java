@@ -54,11 +54,12 @@ public class SecurityConfig {
                             response.setContentType("application/json");
                             response.getWriter().write("{\"message\": \"Login successful\"}");
                         })
-                        .defaultSuccessUrl("/api/login-success", true)
+                        //.defaultSuccessUrl("/api/login-success", true)  // this line committed in error
                         .failureHandler((request, response, exception) -> {
                             response.setStatus(HttpStatus.UNAUTHORIZED.value());
                             response.setContentType("application/json");
                             response.getWriter().write("{\"message\": \"Invalid username or password.\"}");
+                            response.getWriter().flush(); // Make sure the response is sent
                         })
                         .permitAll()
                 )
