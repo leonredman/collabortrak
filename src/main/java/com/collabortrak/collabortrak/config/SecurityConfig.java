@@ -54,6 +54,7 @@ public class SecurityConfig {
                             response.setContentType("application/json");
                             response.getWriter().write("{\"message\": \"Login successful\"}");
                         })
+                        .defaultSuccessUrl("/api/login-success", true)
                         .failureHandler((request, response, exception) -> {
                             response.setStatus(HttpStatus.UNAUTHORIZED.value());
                             response.setContentType("application/json");
