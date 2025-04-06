@@ -10,6 +10,7 @@ import "./AdminDashboardContent.css"; // custom styles
 const AdminDashboardContent = ({ isAuthenticated }) => {
   const [tickets, setTickets] = useState([]);
   const [userName, setUserName] = useState("");
+  const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
 
   useEffect(() => {
     console.log(
@@ -26,7 +27,6 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
     }
 
     console.log("Fetching ticketData from API!");
-    const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
 
     //fetch("http://localhost:8080/api/tickets", {
     fetch(`${backendUrl}/api/tickets`, {
@@ -109,7 +109,7 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
         <div className="column">
           <div className="ui purple segment dashboard-chart">
             <h3>Ticket Status Overview</h3>
-            <TicketStatusChart apiUrl="http://localhost:8080/api/tickets" />
+            <TicketStatusChart apiUrl={`${backendUrl}/api/tickets`} />
           </div>
         </div>
 
