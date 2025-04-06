@@ -1,3 +1,4 @@
+// be sure to run npm run build before push
 import React, { useEffect, useState } from "react";
 
 import TicketStatusChart from "../charts/TicketStatusChart";
