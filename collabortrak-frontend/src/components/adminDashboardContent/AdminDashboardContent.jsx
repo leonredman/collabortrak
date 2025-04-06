@@ -1,10 +1,10 @@
 // be sure to run npm run build before push
 import React, { useEffect, useState } from "react";
 
-//import TicketStatusChart from "../charts/TicketStatusChart";
-//import NewTicketsList from "./NewTicketsList";
-//import TicketsInProgressList from "./TicketsInProgressList";
-//import TicketsInQAList from "./TicketsInQAList";
+import TicketStatusChart from "../charts/TicketStatusChart";
+import NewTicketsList from "./NewTicketsList";
+import TicketsInProgressList from "./TicketsInProgressList";
+import TicketsInQAList from "./TicketsInQAList";
 
 import "./AdminDashboardContent.css"; // custom styles
 
@@ -24,8 +24,6 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
     // Fetch the logged-in user’s name
     setUserName(localStorage.getItem("userName") || "Admin");
 
-    // Disable all fetching for now to test
-    /*
     if (!isAuthenticated) {
       console.log("User not authenticated, skipping fetch...");
       return;
@@ -48,7 +46,6 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
         setTickets(data);
       })
       .catch((error) => console.error("Error fetching tickets:", error));
-      */
   }, [isAuthenticated]);
 
   const countByStatus = (status) =>
@@ -64,7 +61,6 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
       </p>
 
       {/* First Row: Ticket Status Totals (4 Columns) */}
-      {/*
       <div className="ui four column grid dashboard-stats">
         <div className="column">
           <div className="ui red segment">
@@ -95,7 +91,6 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
       </div>
 
       {/* Second Row: New Tickets & Tickets In Progress (2 Columns) */}
-      {/*
       <div className="ui two column grid dashboard-lists">
         <div className="column">
           <div className="ui red segment">
@@ -112,10 +107,8 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
       </div>
 
       {/* Third Row: Ticket Status Chart (Left) & Tickets In QA (Right) */}
-      {/*
       <div className="ui two column grid dashboard-lists">
         {/* Left Column: Chart */}
-      {/*
         <div className="column">
           <div className="ui purple segment dashboard-chart">
             <h3>Ticket Status Overview</h3>
@@ -124,7 +117,7 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
         </div>
 
         {/* Right Column: Tickets In QA */}
-      {/*
+
         <div className="column">
           <div className="ui yellow segment">
             <h3>QA In Progress Tickets</h3>
@@ -132,7 +125,6 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
           </div>
         </div>
       </div>
-      */}
     </div>
   );
 };
