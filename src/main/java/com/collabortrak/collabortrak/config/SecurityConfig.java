@@ -45,6 +45,13 @@ public class SecurityConfig {
                     config.addAllowedOrigin("https://collabortrak-production.up.railway.app");
                     config.addAllowedHeader("*");
                     config.addAllowedMethod("*");
+                    // added these additional cors methods to prevent errors
+                    config.addExposedHeader("Access-Control-Allow-Origin"); // Expose the header
+                    config.addAllowedMethod(HttpMethod.POST);
+                    config.addAllowedMethod(HttpMethod.GET);
+                    config.addAllowedMethod(HttpMethod.PUT);
+                    config.addAllowedMethod(HttpMethod.DELETE);
+                    config.addAllowedMethod(HttpMethod.OPTIONS); // Allow pre-flight requests
                     return config;
                 }))
 
