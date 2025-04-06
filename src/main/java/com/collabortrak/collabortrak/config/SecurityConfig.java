@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 
-//import static org.springframework.security.config.Customizer.withDefaults;  - removed
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -64,18 +62,18 @@ public class SecurityConfig {
                             response.setStatus(HttpStatus.OK.value());
                             response.setContentType("application/json");
 
+                            // add name and role to JSON req by front end
                             String username = authentication.getName();
                             String role = authentication.getAuthorities().toString();
 
                             response.getWriter().write("{\"message\": \"Back End Login successful\", \"username\": \"" + username + "\", \"role\": \"" + role + "\"}");
 
-                          //  response.getWriter().write("{\"message\": \"Back End Login successful\"}");
+
                         })
                         .failureHandler((request, response, exception) -> {
                             response.setStatus(HttpStatus.UNAUTHORIZED.value());
                             response.setContentType("application/json");
                             response.getWriter().write("{\"message\": \"Invalid username or password.\"}");
-                       //     response.getWriter().flush(); // Make sure the response is sent removed
                         })
                         .permitAll()
                 )

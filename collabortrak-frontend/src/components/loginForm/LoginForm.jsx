@@ -54,7 +54,7 @@ const LoginForm = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
 
     try {
-      // env variable files set for local dev and prod enviro.. Vite will do automatically
+      // use env variable files set for local dev and prod enviro.. Vite will do it instead of:
       //const response = await fetch("http://localhost:8080/api/login", {
 
       const response = await fetch(`${backendUrl}/api/login`, {
@@ -158,7 +158,6 @@ const LoginForm = () => {
           className="ui form"
           onSubmit={handleSubmit}
           method="POST"
-          // action="http://localhost:8080/api/login"  fetch overide this action dont need it
           id="login-form"
         >
           <div className="field">
