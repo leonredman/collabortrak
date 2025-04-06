@@ -88,7 +88,12 @@ public class SecurityConfig {
                         .logoutUrl("/api/logout")
                         .invalidateHttpSession(true)
                         .clearAuthentication(true)
-                        .logoutSuccessUrl("/api/logout-success")
+                     // .logoutSuccessUrl("/api/logout-success")  // replace with success handler
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setStatus(HttpStatus.OK.value());
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"message\": \"Logout successful\"}");
+                        })
                         .permitAll()
                 );
 
