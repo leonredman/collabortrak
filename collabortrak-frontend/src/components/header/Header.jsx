@@ -40,10 +40,15 @@ const Header = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
     try {
       // const response = await fetch("http://localhost:8080/api/logout", {
-      const response = await fetch(`${backendUrl}/api/logout`, {
-        method: "POST",
-        credentials: "include",
-      });
+      //const response = await fetch(`${backendUrl}/api/logout`, {
+      console.log("Attempting logout at forced HTTPS URL");
+      const response = await fetch(
+        "https://collabortrak-production.up.railway.app/api/logout",
+        {
+          method: "POST",
+          credentials: "include",
+        }
+      );
 
       console.log("Fetch response:", response);
 
