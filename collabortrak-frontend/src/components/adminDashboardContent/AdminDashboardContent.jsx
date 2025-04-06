@@ -24,6 +24,8 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
     // Fetch the logged-in user’s name
     setUserName(localStorage.getItem("userName") || "Admin");
 
+    // Disable all fetching for now to test
+    /*
     if (!isAuthenticated) {
       console.log("User not authenticated, skipping fetch...");
       return;
@@ -46,6 +48,7 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
         setTickets(data);
       })
       .catch((error) => console.error("Error fetching tickets:", error));
+      */
   }, [isAuthenticated]);
 
   const countByStatus = (status) =>
