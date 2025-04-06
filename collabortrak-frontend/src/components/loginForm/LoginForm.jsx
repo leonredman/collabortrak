@@ -56,17 +56,19 @@ const LoginForm = () => {
     try {
       // env variable files set for local dev and prod enviro.. Vite will do automatically
       //const response = await fetch("http://localhost:8080/api/login", {
+
       const response = await fetch(`${backendUrl}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
+
         body: payload.toString(),
         credentials: "include",
       });
 
       if (response.ok) {
-        console.log("Login successful");
+        console.log("Front end message - Login successful");
         const data = await response.json();
         const userRole = data.role;
 
@@ -156,7 +158,7 @@ const LoginForm = () => {
           className="ui form"
           onSubmit={handleSubmit}
           method="POST"
-          action="http://localhost:8080/api/login"
+          // action="http://localhost:8080/api/login"  fetch overide this action dont need it
           id="login-form"
         >
           <div className="field">

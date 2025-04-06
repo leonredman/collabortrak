@@ -14,10 +14,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.util.List;
 
-import static org.springframework.security.config.Customizer.withDefaults;
+//import static org.springframework.security.config.Customizer.withDefaults;  - removed
 
 @Configuration
 @EnableWebSecurity
@@ -38,7 +39,17 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(withDefaults())
+                .cors(cors -> cors.configurationSource(request -> {
+                    var config = new org.springframework.web.cors.CorsConfiguration();
+                    config.setAllowCredentials(true);
+                    config.addAllowedOrigin("http://localhost:5173");
+                    config.addAllowedOrigin("https://collabortrak.vercel.app");
+                    config.addAllowedOrigin("https://collabortrak-production.up.railway.app");
+                    config.addAllowedHeader("*");
+                    config.addAllowedMethod("*");
+                    return config;
+                }))
+
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/login", "/login-success", "/login-failure").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/customers/**").hasAnyRole("ADMIN", "MANAGER", "WEBSITE_SPECIALIST", "DEVELOPER", "QA_AGENT")
@@ -52,14 +63,19 @@ public class SecurityConfig {
                         .successHandler((request, response, authentication) -> {
                             response.setStatus(HttpStatus.OK.value());
                             response.setContentType("application/json");
-                            response.getWriter().write("{\"message\": \"Login successful\"}");
-                        })
 
+                            String username = authentication.getName();
+                            String role = authentication.getAuthorities().toString();
+
+                            response.getWriter().write("{\"message\": \"Back End Login successful\", \"username\": \"" + username + "\", \"role\": \"" + role + "\"}");
+
+                          //  response.getWriter().write("{\"message\": \"Back End Login successful\"}");
+                        })
                         .failureHandler((request, response, exception) -> {
                             response.setStatus(HttpStatus.UNAUTHORIZED.value());
                             response.setContentType("application/json");
                             response.getWriter().write("{\"message\": \"Invalid username or password.\"}");
-                            response.getWriter().flush(); // Make sure the response is sent
+                       //     response.getWriter().flush(); // Make sure the response is sent removed
                         })
                         .permitAll()
                 )
