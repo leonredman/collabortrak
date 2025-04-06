@@ -11,6 +11,8 @@ const roleIcons = {
   ROLE_WEBSITE_SPECIALIST: "/webSpecialistIcon.png",
 };
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 const Header = () => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState("Guest");
@@ -38,7 +40,8 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/logout", {
+      // const response = await fetch("http://localhost:8080/api/logout", {
+      const response = await fetch(`${backendUrl}/api/logout`, {
         method: "POST",
         credentials: "include",
       });
