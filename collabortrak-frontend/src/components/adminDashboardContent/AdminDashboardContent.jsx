@@ -26,8 +26,10 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
     }
 
     console.log("Fetching ticketData from API!");
+    const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
 
-    fetch("http://localhost:8080/api/tickets", {
+    //fetch("http://localhost:8080/api/tickets", {
+    fetch(`${backendUrl}/api/tickets`, {
       method: "GET",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
