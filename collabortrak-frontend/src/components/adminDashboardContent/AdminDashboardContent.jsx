@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import NewTicketsList from "./NewTicketsList";
 // import TicketsInProgressList from "./TicketsInProgressList";
 // import TicketsInQAList from "./TicketsInQAList";
+import FetchTest from "../fetchTest/FetchTest";
 
 import "./AdminDashboardContent.css"; // custom styles
 
@@ -124,6 +125,7 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
           <div className="ui red segment">
             <h3>Open Tickets</h3>
             <NewTicketsList />
+            <FetchTest />
           </div>
         </div>
         {/*
