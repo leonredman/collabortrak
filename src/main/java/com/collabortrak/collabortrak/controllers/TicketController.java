@@ -207,16 +207,24 @@ public class TicketController {
 
     // Get all Tickets with DTO
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @CrossOrigin(origins = {
-            "http://localhost:5173",
-            "https://collabortrak.vercel.app",
-            "https://collabortrak-production.up.railway.app"
-    }, allowCredentials = "true")
-    public ResponseEntity<List<TicketDTO>> getAllTickets() {
+//    @CrossOrigin(origins = {
+//            "http://localhost:5173",
+//            "https://collabortrak.vercel.app",
+//            "https://collabortrak-production.up.railway.app"
+//    }, allowCredentials = "true")
+    public ResponseEntity<List<TicketDTO>> getAllTickets(@RequestHeader(value = "Origin", required = false) String origin) {
         try {
             List<Ticket> tickets = ticketRepository.findAll();
             List<TicketDTO> ticketDTOs = tickets.stream().map(TicketDTO::new).collect(Collectors.toList());
-            return ResponseEntity.ok().body(ticketDTOs);
+
+            // Dynamically allow origin based on request
+            ResponseEntity.BodyBuilder responseBuilder = ResponseEntity.ok();
+
+            if ("http://localhost:5173".equals(origin) || "https://collabortrak.vercel.app".equals(origin) || "https://collabortrak-production.up.railway.app".equals(origin)) {
+                responseBuilder.header("Access-Control-Allow-Origin", origin);
+                responseBuilder.header("Access-Control-Allow-Credentials", "true");
+            }
+            return ResponseEntity.ok(ticketDTOs);
         } catch (Exception e) {
             System.out.println("Error fetching tickets: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
