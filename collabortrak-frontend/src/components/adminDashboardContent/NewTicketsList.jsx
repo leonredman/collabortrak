@@ -13,10 +13,7 @@ const NewTicketsList = () => {
     fetch(`${backendUrl}/api/tickets`, {
       method: "GET",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     })
       .then((res) => res.json())
       .then((data) => {
