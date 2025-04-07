@@ -5,6 +5,7 @@ import com.collabortrak.collabortrak.entities.*;
 import com.collabortrak.collabortrak.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -197,18 +198,30 @@ public class TicketController {
         return ResponseEntity.ok(savedTicket);
     }
 
+    // Original Get all Tickets with DTO
+//    @GetMapping
+//    public List<TicketDTO> getAllTickets() {
+//        List<Ticket> tickets = ticketRepository.findAll();
+//        return tickets.stream().map(TicketDTO::new).collect(Collectors.toList());
+//    }
+
     // Get all Tickets with DTO
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin(origins = {
+            "http://localhost:5173",
+            "https://collabortrak.vercel.app",
+            "https://collabortrak-production.up.railway.app"
+    }, allowCredentials = "true")
     public ResponseEntity<List<TicketDTO>> getAllTickets() {
-        List<Ticket> tickets = ticketRepository.findAll();
-        List<TicketDTO> ticketDTOs = tickets.stream().map(TicketDTO::new).collect(Collectors.toList());
-       // return tickets.stream().map(TicketDTO::new).collect(Collectors.toList());
-        return ResponseEntity.ok()
-                .header("Content-Type", "application/json")
-                .body(ticketDTOs);
-
+        try {
+            List<Ticket> tickets = ticketRepository.findAll();
+            List<TicketDTO> ticketDTOs = tickets.stream().map(TicketDTO::new).collect(Collectors.toList());
+            return ResponseEntity.ok().body(ticketDTOs);
+        } catch (Exception e) {
+            System.out.println("Error fetching tickets: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
-
 
     // Get ticket by ID
     @GetMapping("/{id}")
