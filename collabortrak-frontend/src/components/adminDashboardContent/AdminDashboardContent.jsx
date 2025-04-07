@@ -16,11 +16,12 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
   const [userName, setUserName] = useState("");
 
   useEffect(() => {
-    console.log(
-      "AdminDashboardContent Rendered! isAuthenticated:",
-      isAuthenticated
-    );
-    /*
+    const fetchTickets = async () => {
+      console.log(
+        "AdminDashboardContent Rendered! isAuthenticated:",
+        isAuthenticated
+      );
+      /*
     // Fetch the logged-in user’s name
     setUserName(localStorage.getItem("userName") || "Admin");
 
@@ -29,24 +30,49 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
       return;
     }
 */
-    console.log("Fetching ticketData from API!");
+      console.log("Fetching ticketData from API!");
 
-    //fetch("http://localhost:8080/api/tickets", {
-    fetch(`${backendUrl}/api/tickets`, {
-      method: "GET",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-    })
-      .then((res) => {
-        console.log("Fetch Response Received:", res);
-        return res.json();
-      })
-      .then((data) => {
+      try {
+        const response = await fetch(`${backendUrl}/api/tickets`, {
+          method: "GET",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+        });
+
+        console.log("Fetch Response Received:", response);
+
+        if (!response.ok) {
+          console.error(
+            "Server returned an error:",
+            response.status,
+            response.statusText
+          );
+          throw new Error(
+            `HTTP Error ${response.status}: ${response.statusText}`
+          );
+        }
+
+        const data = await response.json();
         console.log("Tickets fetched successfully:", data);
         setTickets(data);
-      })
-      .catch((error) => console.error("Error fetching tickets:", error));
+      } catch (error) {
+        console.error("Error fetching tickets:", error.message);
+      }
+    };
+
+    fetchTickets();
   }, [isAuthenticated]);
+
+  // .then((res) => {
+  //   console.log("Fetch Response Received:", res);
+  //   return res.json();
+  // })
+  // .then((data) => {
+  //   console.log("Tickets fetched successfully:", data);
+  //   setTickets(data);
+  // })
+  //     .catch((error) => console.error("Error fetching tickets:", error));
+  // }, [isAuthenticated]);
 
   // const countByStatus = (status) =>
   //   tickets.filter((ticket) => ticket.status === status).length;
