@@ -58,6 +58,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/login", "/login-success", "/login-failure").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/customers/**").hasAnyRole("ADMIN", "MANAGER", "WEBSITE_SPECIALIST", "DEVELOPER", "QA_AGENT")
+                        .requestMatchers(HttpMethod.GET, "/api/tickets").hasAnyRole("ADMIN", "MANAGER", "WEBSITE_SPECIALIST", "DEVELOPER", "QA_AGENT")
                         .requestMatchers(HttpMethod.POST, "/api/customers").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/customers/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/customers/**").hasRole("ADMIN")
