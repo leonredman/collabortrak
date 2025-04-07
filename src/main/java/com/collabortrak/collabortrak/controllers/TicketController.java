@@ -212,22 +212,23 @@ public class TicketController {
 //            "https://collabortrak.vercel.app",
 //            "https://collabortrak-production.up.railway.app"
 //    }, allowCredentials = "true")
-    public ResponseEntity<List<TicketDTO>> getAllTickets(@RequestHeader(value = "Origin", required = false) String origin) {
+    public ResponseEntity<?> getAllTickets(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("{\"message\": \"User is not authenticated.\"}");
+        }
+
         try {
             List<Ticket> tickets = ticketRepository.findAll();
             List<TicketDTO> ticketDTOs = tickets.stream().map(TicketDTO::new).collect(Collectors.toList());
 
-            // Dynamically allow origin based on request
-            ResponseEntity.BodyBuilder responseBuilder = ResponseEntity.ok();
-
-            if ("http://localhost:5173".equals(origin) || "https://collabortrak.vercel.app".equals(origin) || "https://collabortrak-production.up.railway.app".equals(origin)) {
-                responseBuilder.header("Access-Control-Allow-Origin", origin);
-                responseBuilder.header("Access-Control-Allow-Credentials", "true");
-            }
-            return ResponseEntity.ok(ticketDTOs);
+            return ResponseEntity.ok()
+                    .header("Content-Type", "application/json")
+                    .body(ticketDTOs);
         } catch (Exception e) {
             System.out.println("Error fetching tickets: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("{\"message\": \"Internal Server Error\"}");
         }
     }
 
