@@ -6,6 +6,8 @@ import TicketsInReadyList from "../widgets/TicketsInReadyList";
 import DevDashboardChart from "./DevDashboardChart";
 import "./DevDashboardContent.css";
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
+
 const DevDashboardContent = () => {
   const [userName, setUserName] = useState("");
   const [tickets, setTickets] = useState([]);
@@ -13,7 +15,7 @@ const DevDashboardContent = () => {
   useEffect(() => {
     setUserName(localStorage.getItem("userName") || "Developer");
 
-    fetch("http://localhost:8080/api/tickets", {
+    fetch(`${backendUrl}/api//tickets`, {
       method: "GET",
       credentials: "include",
       headers: { "Content-Type": "application/json" },

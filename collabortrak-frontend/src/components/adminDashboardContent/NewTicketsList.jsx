@@ -9,7 +9,6 @@ const NewTicketsList = () => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
 
   useEffect(() => {
-    //  fetch("http://localhost:8080/api/tickets", {
     fetch(`${backendUrl}/api/tickets`, {
       method: "GET",
       credentials: "include",

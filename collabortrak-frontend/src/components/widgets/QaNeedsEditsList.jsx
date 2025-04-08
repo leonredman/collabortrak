@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
+
 const QaNeedsEditsList = () => {
   const [tickets, setTickets] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const ticketsPerPage = 3; // Display 3 tickets per page
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/tickets", {
+    fetch(`${backendUrl}/api/tickets`, {
       method: "GET",
       credentials: "include",
       headers: { "Content-Type": "application/json" },

@@ -15,9 +15,11 @@ const StoryForm = () => {
   const [assignedEmployeeId, setAssignedEmployeeId] = useState(null);
   const navigate = useNavigate();
 
+  const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
+
   useEffect(() => {
     // Fetch epics
-    fetch("http://localhost:8080/api/epics", {
+    fetch(`${backendUrl}/api/epics`, {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -28,7 +30,7 @@ const StoryForm = () => {
       .catch((err) => console.error("Failed to fetch epics:", err));
 
     // Fetch employees
-    fetch("http://localhost:8080/api/employees", {
+    fetch(`${backendUrl}/api/employees`, {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -70,7 +72,7 @@ const StoryForm = () => {
     console.log("Payload:", payload);
 
     try {
-      const res = await fetch("http://localhost:8080/api/stories/with-ticket", {
+      const res = await fetch(`${backendUrl}/api/stories/with-ticket`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -151,7 +153,7 @@ const StoryForm = () => {
                 const epic = epics.find((ep) => ep.id === parseInt(id));
                 setSelectedEpic(epic);
                 if (epic?.customer?.id) {
-                  console.log("Setting Customer ID:", epic.customer.id); // 👈 This didn’t show
+                  console.log("Setting Customer ID:", epic.customer.id);
                   setCustomerId(epic.customer.id);
                 } else {
                   console.warn("Customer ID missing from selected epic");

@@ -9,14 +9,10 @@ const TicketsInQAList = () => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
 
   useEffect(() => {
-    // fetch("http://localhost:8080/api/tickets", {
     fetch(`${backendUrl}/api/tickets`, {
       method: "GET",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     })
       .then((res) => res.json())
       .then((data) => {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./LoginForm.css";
 
 const demoCredentials = {
@@ -29,15 +29,9 @@ const LoginForm = () => {
     e.preventDefault();
     setError(""); // Clear previous errors
 
-    // const form = e.target;
-
-    //const formData = new FormData(form);
-    //const payload = new URLSearchParams(formData);
-
     const trimmedUsername = username.trim();
     const trimmedPassword = password.trim();
 
-    // Basic validation
     if (!/^[a-zA-Z0-9]+$/.test(trimmedUsername)) {
       setError("Username must be alphanumeric with no spaces.");
       return;
@@ -54,80 +48,75 @@ const LoginForm = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
 
     try {
-      // use env variable files set for local dev and prod enviro.. Vite will do it instead of:
-      //const response = await fetch("http://localhost:8080/api/login", {
-
       const response = await fetch(`${backendUrl}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
-
         body: payload.toString(),
         credentials: "include",
       });
 
       if (response.ok) {
         console.log("Front end message - Login successful");
-        const data = await response.json();
-        const userRole = data.role;
 
-        // Use hardcoded credentials to determine username and profile image
-        let userName = "Guest";
-        let userProfilePic = "/default-avatar.png";
+        try {
+          const data = await response.json();
+          console.log("Response Data:", data);
+          const userRole = data.role;
 
-        if (userRole.includes("ROLE_ADMIN")) {
-          userName = "Admin";
-          userProfilePic = "/adminIcon.jpg";
-        } else if (userRole.includes("ROLE_MANAGER")) {
-          userName = "Manager";
-          userProfilePic = "/managerIcon.png";
-        } else if (userRole.includes("ROLE_DEVELOPER")) {
-          userName = "Developer";
-          userProfilePic = "/developerIcon.png";
-        } else if (userRole.includes("ROLE_QA_AGENT")) {
-          userName = "QA Agent";
-          userProfilePic = "/QAIcon.png";
-        } else if (userRole.includes("ROLE_WEBSITE_SPECIALIST")) {
-          userName = "Web Specialist";
-          userProfilePic = "/webSpecialistIcon.png";
-        }
+          // Use hardcoded credentials to determine username and profile image
+          let userName = "Guest";
+          let userProfilePic = "/default-avatar.png";
 
-        // Store user details in local storage
-        localStorage.setItem("userRole", userRole);
+          if (userRole.includes("ROLE_ADMIN")) {
+            userName = "Admin";
+            userProfilePic = "/adminIcon.jpg";
+          } else if (userRole.includes("ROLE_MANAGER")) {
+            userName = "Manager";
+            userProfilePic = "/managerIcon.png";
+          } else if (userRole.includes("ROLE_DEVELOPER")) {
+            userName = "Developer";
+            userProfilePic = "/developerIcon.png";
+          } else if (userRole.includes("ROLE_QA_AGENT")) {
+            userName = "QA Agent";
+            userProfilePic = "/QAIcon.png";
+          } else if (userRole.includes("ROLE_WEBSITE_SPECIALIST")) {
+            userName = "Web Specialist";
+            userProfilePic = "/webSpecialistIcon.png";
+          }
 
-        localStorage.setItem("isAuthenticated", "true");
+          // Store user details in local storage
+          localStorage.setItem("userRole", userRole);
+          localStorage.setItem("isAuthenticated", "true");
+          localStorage.setItem("userName", userName);
+          localStorage.setItem("userProfilePic", userProfilePic);
+          localStorage.setItem("userId", data.id); // Store User ID
 
-        localStorage.setItem("userName", userName);
-
-        localStorage.setItem("userProfilePic", userProfilePic);
-
-        localStorage.setItem("userId", data.id); // Store User ID
-
-        // Redirect based on role
-        switch (userRole) {
-          case "[ROLE_ADMIN]":
-            navigate("/admin-dashboard");
-            break;
-          case "[ROLE_MANAGER]":
+          // Redirect user based on role
+          if (userRole.includes("ROLE_ADMIN")) navigate("/admin-dashboard");
+          else if (userRole.includes("ROLE_MANAGER"))
             navigate("/manager-dashboard");
-            break;
-          case "[ROLE_DEVELOPER]":
+          else if (userRole.includes("ROLE_DEVELOPER"))
             navigate("/developer-dashboard");
-            break;
-          case "[ROLE_QA_AGENT]":
+          else if (userRole.includes("ROLE_QA_AGENT"))
             navigate("/qa-dashboard");
-            break;
-          case "[ROLE_WEBSITE_SPECIALIST]":
+          else if (userRole.includes("ROLE_WEBSITE_SPECIALIST"))
             navigate("/website-specialist-dashboard");
-            break;
-          default:
-            navigate("/dashboard");
+          else navigate("/dashboard");
+        } catch (error) {
+          console.error("Failed to parse JSON response:", error.message);
+          setError("Invalid response format. Please try again.");
         }
       } else {
-        const errorData = await response.json();
-        console.error("Login failed:", errorData.message);
-        setError(errorData.message || "Invalid username or password.");
+        try {
+          const errorData = await response.json();
+          console.error("Login failed:", errorData.message);
+          setError(errorData.message || "Invalid username or password.");
+        } catch (error) {
+          console.error("Error parsing error response:", error.message);
+          setError("An unknown error occurred. Please try again.");
+        }
       }
     } catch (error) {
       console.error("Network error:", error.message);
@@ -139,7 +128,6 @@ const LoginForm = () => {
     const { username, password } = demoCredentials[role];
     setUsername(username);
     setPassword(password);
-    // Automatically submit the form
     document.getElementById("login-form").requestSubmit();
   };
 
@@ -184,10 +172,6 @@ const LoginForm = () => {
             />
           </div>
 
-          <div className="field">
-            <input type="checkbox" name="remember" /> Remember me
-          </div>
-
           <button type="submit" className="ui primary button">
             Submit
           </button>
@@ -205,18 +189,6 @@ const LoginForm = () => {
               <span> {role.charAt(0).toUpperCase() + role.slice(1)}</span>
             </button>
           ))}
-        </div>
-
-        <div style={{ marginTop: "20px" }}>
-          <Link to="/AccountRegister" className="item">
-            Register as a new User
-          </Link>
-        </div>
-
-        <div style={{ marginTop: "10px" }}>
-          <Link to="/ResetPassword" className="item">
-            Forgot your Password?
-          </Link>
         </div>
       </div>
     </div>

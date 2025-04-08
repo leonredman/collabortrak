@@ -2,6 +2,8 @@ import "chart.js/auto";
 import React, { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
+
 const WSDashboardChart = () => {
   const [ticketCounts, setTicketCounts] = useState({
     open: 0,
@@ -10,7 +12,7 @@ const WSDashboardChart = () => {
   });
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/tickets", {
+    fetch(`${backendUrl}/api/tickets`, {
       method: "GET",
       credentials: "include",
       headers: {

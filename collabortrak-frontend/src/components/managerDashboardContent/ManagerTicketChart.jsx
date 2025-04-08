@@ -2,9 +2,9 @@ import "chart.js/auto";
 import React, { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 
-const ManagerTicketChart = ({
-  apiUrl = "http://localhost:8080/api/tickets",
-}) => {
+const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
+
+const ManagerTicketChart = ({ apiUrl = `${backendUrl}/api/tickets` }) => {
   const [ticketCounts, setTicketCounts] = useState({
     READY: 0,
     BUILD_IN_PROGRESS: 0,

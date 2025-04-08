@@ -6,6 +6,8 @@ import TicketsReadyForQAList from "../widgets/TicketsReadyForQAList";
 
 import "./QADashboardContent.css";
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
+
 const QADashboardContent = () => {
   const [userName, setUserName] = useState("");
   const [tickets, setTickets] = useState([]);
@@ -13,7 +15,7 @@ const QADashboardContent = () => {
   useEffect(() => {
     setUserName(localStorage.getItem("userName") || "QA Agent");
 
-    fetch("http://localhost:8080/api/tickets", {
+    fetch(`${backendUrl}/api/tickets`, {
       method: "GET",
       credentials: "include",
       headers: { "Content-Type": "application/json" },

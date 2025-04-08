@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Button, Input, List, Modal } from "semantic-ui-react";
 import "./SearchBarWithFilters.css";
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
+
 const SearchBarWithFilters = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -36,7 +38,7 @@ const SearchBarWithFilters = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/tickets/search?title=${searchQuery}`,
+        `${backendUrl}/api/tickets/search?title=${searchQuery}`,
         {
           method: "GET",
           headers: {

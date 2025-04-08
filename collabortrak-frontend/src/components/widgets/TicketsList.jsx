@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
+
 const TicketsList = ({ title, status, category, assignedTo }) => {
   const [tickets, setTickets] = useState([]);
 
   useEffect(() => {
     const fetchTickets = async () => {
       try {
-        let url = "http://localhost:8080/api/tickets";
+        let url = `${backendUrl}/api/tickets`;
 
         const userId = localStorage.getItem("userId"); // Get logged-in user's ID
 

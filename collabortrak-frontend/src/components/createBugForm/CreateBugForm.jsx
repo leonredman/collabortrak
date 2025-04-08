@@ -14,10 +14,11 @@ const CreateBugForm = () => {
   const [employees, setEmployees] = useState([]);
   const [assignedEmployeeId, setAssignedEmployeeId] = useState(null);
   const navigate = useNavigate();
+  const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
 
   useEffect(() => {
     // Fetch epics
-    fetch("http://localhost:8080/api/epics", {
+    fetch(`${backendUrl}/api/epics`, {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -28,7 +29,7 @@ const CreateBugForm = () => {
       .catch((err) => console.error("Failed to fetch epics:", err));
 
     // Fetch employees
-    fetch("http://localhost:8080/api/employees", {
+    fetch(`${backendUrl}/api/employees`, {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -70,7 +71,7 @@ const CreateBugForm = () => {
     console.log("Payload:", payload);
 
     try {
-      const res = await fetch("http://localhost:8080/api/bugs/with-ticket", {
+      const res = await fetch(`${backendUrl}api/bugs/with-ticket`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

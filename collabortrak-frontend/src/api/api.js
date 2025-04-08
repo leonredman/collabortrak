@@ -1,7 +1,9 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL:
+    import.meta.env.VITE_BACKEND_URL ||
+    "https://collabortrak-production.up.railway.app/api",
 });
 
 // Automatically add authentication headers if available

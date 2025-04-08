@@ -24,12 +24,12 @@ public class AuthController {
                     .body("{\"message\": \"User not authenticated\"}");
         }
 
-        String username = authentication.getName(); // Get the authenticated username
+        String username = authentication.getName();
         String role = authentication.getAuthorities().toString();
 
         return ResponseEntity.ok("{\"message\": \"Login successful\", \"username\": \"" + username + "\", \"role\": \"" + role + "\"}");
-
     }
+
 
     @GetMapping("/login-failure")
     public ResponseEntity<String> loginFailure() {

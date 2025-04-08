@@ -4,6 +4,8 @@ import { Button } from "semantic-ui-react";
 import DashboardLayout from "../components/dashboardLayout/DashboardLayout";
 import TicketsTable from "../components/tables/TicketsTable";
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
+
 const ReportsPage = () => {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,7 +20,7 @@ const ReportsPage = () => {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:8080/api/tickets", {
+      const response = await fetch(`${backendUrl}/api/tickets`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

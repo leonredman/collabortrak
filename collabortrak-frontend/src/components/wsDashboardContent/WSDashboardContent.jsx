@@ -6,6 +6,8 @@ import WSDashboardChart from "./WSDashboardChart";
 
 import "./WSDashboardContent.css";
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
+
 const WSDashboardContent = () => {
   const [userName, setUserName] = useState("");
   const [tickets, setTickets] = useState([]);
@@ -13,7 +15,7 @@ const WSDashboardContent = () => {
   useEffect(() => {
     setUserName(localStorage.getItem("userName") || "Website Specialist");
 
-    fetch("http://localhost:8080/api/tickets", {
+    fetch(`${backendUrl}/api/tickets`, {
       method: "GET",
       credentials: "include",
       headers: { "Content-Type": "application/json" },

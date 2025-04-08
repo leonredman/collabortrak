@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
+
 const TicketForm = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -37,7 +39,7 @@ const TicketForm = () => {
     console.log(" useEffect in TicketForm triggered!"); // Logs when API calls start
 
     // fetch customers
-    fetch("http://localhost:8080/api/customers", {
+    fetch(`${backendUrl}/api/customers`, {
       method: "GET",
       credentials: "include",
       headers: {
@@ -62,7 +64,7 @@ const TicketForm = () => {
       .catch((err) => console.error("Customer API failed:", err));
 
     // fetch  Employees
-    fetch("http://localhost:8080/api/employees", {
+    fetch(`${backendUrl}/api/employees`, {
       method: "GET",
       credentials: "include",
       headers: {
@@ -77,7 +79,7 @@ const TicketForm = () => {
       .catch((err) => console.error("Employee API failed:", err));
 
     // fetch tickets for epic drop down filters
-    fetch("http://localhost:8080/api/tickets", {
+    fetch(`${backendUrl}/api/tickets`, {
       method: "GET",
       credentials: "include",
       headers: {
@@ -132,7 +134,7 @@ const TicketForm = () => {
     ); // Debug log
 
     try {
-      const response = await fetch("http://localhost:8080/api/tickets", {
+      const response = await fetch(`${backendUrl}/api/tickets`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

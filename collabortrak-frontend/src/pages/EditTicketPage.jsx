@@ -11,6 +11,8 @@ import {
 } from "semantic-ui-react";
 import DashboardLayout from "../components/dashboardLayout/DashboardLayout";
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
+
 const EditTicketPage = () => {
   const { ticketId } = useParams();
   const navigate = useNavigate();
@@ -33,7 +35,7 @@ const EditTicketPage = () => {
 
   useEffect(() => {
     // fetch the ticket
-    fetch(`http://localhost:8080/api/tickets/${ticketId}`, {
+    fetch(`${backendUrl}/api/tickets/${ticketId}`, {
       method: "GET",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -58,12 +60,9 @@ const EditTicketPage = () => {
 
         // If it's an EPIC, fetch linked tickets
         if (data.ticketType === "EPIC") {
-          fetch(
-            `http://localhost:8080/api/tickets/epic/${ticketId}/linked-tickets`,
-            {
-              credentials: "include",
-            }
-          )
+          fetch(`${backendUrl}/api/tickets/epic/${ticketId}/linked-tickets`, {
+            credentials: "include",
+          })
             .then((res) => res.json())
             .then((linked) => {
               setLinkedTickets(linked);
@@ -76,7 +75,7 @@ const EditTicketPage = () => {
       });
 
     // fetch the employees
-    fetch("http://localhost:8080/api/employees", {
+    fetch(`${backendUrl}/api/employees`, {
       method: "GET",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -118,7 +117,7 @@ const EditTicketPage = () => {
           : { id: parseInt(formData.assignedEmployeeId) },
     };
 
-    fetch(`http://localhost:8080/api/tickets/${ticketId}`, {
+    fetch(`${backendUrl}/api/tickets/${ticketId}`, {
       method: "PUT",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
@@ -160,7 +159,7 @@ const EditTicketPage = () => {
   const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to delete this ticket?")) return;
 
-    const res = await fetch(`http://localhost:8080/api/tickets/${ticketId}`, {
+    const res = await fetch(`${backendUrl}/api/tickets/${ticketId}`, {
       method: "DELETE",
       credentials: "include",
     });

@@ -15,6 +15,7 @@ const CreateCustomerForm = () => {
 
   const [message, setMessage] = useState(null);
   const [isSuccess, setIsSuccess] = useState(false);
+  const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,7 +35,7 @@ const CreateCustomerForm = () => {
     );
 
     try {
-      const response = await fetch("http://localhost:8080/api/customers", {
+      const response = await fetch(`${backendUrl}/api/customers`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

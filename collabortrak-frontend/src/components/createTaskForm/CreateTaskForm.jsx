@@ -11,18 +11,19 @@ const CreateTaskForm = () => {
   const [assignedEmployeeId, setAssignedEmployeeId] = useState("");
   const [customers, setCustomers] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/customers", {
+    fetch(`${backendUrl}/api/customers`, {
       credentials: "include",
     })
       .then((res) => res.json())
       .then((data) => setCustomers(data))
       .catch((err) => console.error("Failed to fetch customers:", err));
 
-    fetch("http://localhost:8080/api/employees", {
+    fetch(`${backendUrl}/api/employees`, {
       credentials: "include",
     })
       .then((res) => res.json())
@@ -47,7 +48,7 @@ const CreateTaskForm = () => {
     };
 
     try {
-      const res = await fetch("http://localhost:8080/api/tasks/with-ticket", {
+      const res = await fetch(`${backendUrl}/apitasks/with-ticket`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

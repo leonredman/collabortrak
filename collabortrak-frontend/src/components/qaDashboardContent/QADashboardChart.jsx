@@ -2,6 +2,8 @@ import "chart.js/auto";
 import React, { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
+
 const QADashboardChart = () => {
   const [qaCounts, setQaCounts] = useState({
     READY_FOR_QA: 0,
@@ -11,7 +13,7 @@ const QADashboardChart = () => {
   });
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/tickets", {
+    fetch(`${backendUrl}/api/tickets`, {
       method: "GET",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
