@@ -1,11 +1,7 @@
 package com.collabortrak.collabortrak.config;
 
-import java.util.List;
-
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,23 +10,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-
-import com.collabortrak.collabortrak.entities.RoleType;
-import com.collabortrak.collabortrak.entities.User;
-import com.collabortrak.collabortrak.repositories.UserRepository;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-    @Bean
-    public UserDetailsService userDetailsService(UserRepository userRepository) {
-        return username -> userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -40,81 +25,46 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+
+                .cors(cors -> cors.disable()) // Disable CORS completely for now
                 .cors().and()
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login", "/login-success", "/login-failure").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/tickets").hasAnyRole("ADMIN", "MANAGER", "WEBSITE_SPECIALIST", "DEVELOPER", "QA_AGENT")
-                        .requestMatchers(HttpMethod.POST, "/api/customers").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+                        .requestMatchers("/api/login", "/login-success", "/login-failure").permitAll()  // Only allow login to be publicly accessible
+                        .anyRequest().authenticated()  // All other requests require authentication
                 )
                 .formLogin(form -> form
                         .loginProcessingUrl("/api/login")
                         .successHandler((request, response, authentication) -> {
                             response.setStatus(HttpStatus.OK.value());
                             response.setContentType("application/json");
-
-                            String username = authentication.getName();
-                            String role = authentication.getAuthorities().toString();
-
-                            response.getWriter().write("{\"message\": \"Back End Login successful\", \"username\": \"" + username + "\", \"role\": \"" + role + "\"}");
+                            response.getWriter().write("{\"message\": \"Login successful\"}");
                         })
                         .failureHandler((request, response, exception) -> {
                             response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                            response.setContentType("application/json");
-                            response.getWriter().write("{\"message\": \"Invalid username or password.\"}");
+                            response.getWriter().write("{\"message\": \"Login failed\"}");
                         })
                         .permitAll()
                 )
-                .logout(logout -> logout
-                        .logoutUrl("/api/logout")
-                        .invalidateHttpSession(true)
-                        .clearAuthentication(true)
-                        .logoutSuccessHandler((request, response, authentication) -> {
-                            response.setStatus(HttpStatus.OK.value());
-                            response.setContentType("application/json");
-                            response.getWriter().write("{\"message\": \"Logout successful\"}");
-                        })
-                        .permitAll()
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 );
 
         return http.build();
     }
 
     @Bean
-    public CorsFilter corsFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-
-        config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:5173");
-        config.addAllowedOrigin("https://collabortrak.vercel.app");
-        config.addAllowedOrigin("https://collabortrak-production.up.railway.app");
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
-        config.addExposedHeader("Access-Control-Allow-Origin");
-        config.addExposedHeader("Set-Cookie");
-
-        source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
-    }
-
-    @Bean
-    public CommandLineRunner createDemoUsers(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        return args -> {
-            if (userRepository.count() == 0) {
-                List<User> demoUsers = List.of(
-                        new User("admin", passwordEncoder.encode("admin123"), RoleType.ADMIN),
-                        new User("manager", passwordEncoder.encode("manager123"), RoleType.MANAGER),
-                        new User("dev", passwordEncoder.encode("dev123"), RoleType.DEVELOPER),
-                        new User("qa", passwordEncoder.encode("qa123"), RoleType.QA_AGENT),
-                        new User("web", passwordEncoder.encode("web123"), RoleType.WEBSITE_SPECIALIST)
-                );
-                userRepository.saveAll(demoUsers);
-                System.out.println("Demo users added with hashed passwords completed!");
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/api/**")
+                        .allowedOrigins("https://collabortrak-production.up.railway.app")
+                        .allowedOrigins("https://collabortrak.vercel.app")
+                        .allowedOrigins("http://localhost:5173")
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedHeaders("*")
+                        .allowCredentials(true)
+                        .exposedHeaders("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials");
             }
         };
     }
