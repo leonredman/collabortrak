@@ -40,6 +40,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .requiresChannel(channel -> channel
+                        .anyRequest().requiresSecure() // Forces HTTPS
+                )
                 .csrf(csrf -> csrf.disable())
                 .cors().and()
                 .sessionManagement(session -> session
@@ -47,7 +50,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/login", "/api/login-success", "/api/login-failure").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/tickets").hasAnyRole("ADMIN", "MANAGER", "WEBSITE_SPECIALIST", "DEVELOPER", "QA_AGENT")
+                        .requestMatchers("/api/tickets/**").permitAll() // <-- Permit all requests to /api/tickets
                         .requestMatchers(HttpMethod.POST, "/api/customers").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
@@ -114,9 +117,9 @@ public class SecurityConfig {
                         new User("web", passwordEncoder.encode("web123"), RoleType.WEBSITE_SPECIALIST)
                 );
                 userRepository.saveAll(demoUsers);
-                System.out.println(" Demo users added with hashed passwords completed!");
+                System.out.println("Demo users added with hashed passwords completed!");
             } else {
-                System.out.println(" Existing users found in the database. Skipping demo user creation.");
+                System.out.println("Existing users found in the database. Skipping demo user creation.");
             }
         };
     }
