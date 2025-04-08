@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import FetchTest from "../fetchTest/FetchTest";
-const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
+//import FetchTest from "../fetchTest/FetchTest";
+//const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
+const backendUrl = "https://collabortrak-production.up.railway.app";
+
 console.log("Backend URL being used:", backendUrl);
 
 const AdminDashboardContent = () => {
@@ -48,7 +50,7 @@ const AdminDashboardContent = () => {
       <h2>Admin Dashboard</h2>
       <p>This is a minimal test to see if the fetch request works.</p>
       {error && <p style={{ color: "red" }}>Error: {error}</p>}
-      <FetchTest tickets={tickets} />
+      {/*<FetchTest tickets={tickets} /> */}
     </div>
   );
 };
