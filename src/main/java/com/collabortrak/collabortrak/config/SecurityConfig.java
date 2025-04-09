@@ -2,7 +2,9 @@ package com.collabortrak.collabortrak.config;
 
 import java.util.List;
 
+import org.apache.tomcat.util.http.Rfc6265CookieProcessor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.web.embedded.tomcat.TomcatContextCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -143,6 +145,15 @@ public class SecurityConfig {
             } else {
                 System.out.println("Existing users found in the database. Skipping demo user creation.");
             }
+        };
+    }
+    // fix cross site errors on mobile Safari/chrome ios
+    @Bean
+    public TomcatContextCustomizer cookieProcessorCustomizer() {
+        return context -> {
+            Rfc6265CookieProcessor processor = new Rfc6265CookieProcessor();
+            processor.setSameSiteCookies("None");
+            context.setCookieProcessor(processor);
         };
     }
 }
