@@ -63,6 +63,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/customers").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
+                // Bug fix for safari
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"message\": \"Unauthorized or session expired\"}");
+                        })
+                )
                 .formLogin(form -> form
                         .loginProcessingUrl("/api/login")
 
