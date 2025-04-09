@@ -21,6 +21,7 @@ import org.springframework.web.filter.CorsFilter;
 import com.collabortrak.collabortrak.entities.RoleType;
 import com.collabortrak.collabortrak.entities.User;
 import com.collabortrak.collabortrak.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 
 @Configuration
 @EnableWebSecurity
@@ -37,13 +38,20 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Value("${security.require-https:false}")
+    private boolean requireHttps;
+
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        // toggle forces https on login redirect for prod/disables for dev
+        if (requireHttps) {
+            http.requiresChannel(channel -> channel.anyRequest().requiresSecure());
+        }
+
         http
-                // Note forces https on login redirect w/application.properties code. - we disable this for dev /toggle on for prod
-                .requiresChannel(channel -> channel
-                        .anyRequest().requiresSecure() // Forces HTTPS
-                )
+
                 .csrf(csrf -> csrf.disable())
                 .cors().and()
                 .sessionManagement(session -> session
