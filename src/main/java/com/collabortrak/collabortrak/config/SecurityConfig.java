@@ -40,10 +40,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Note forces https on login redirect w/app.prop - we disable this for dev but need it in prod so will add back
-               // .requiresChannel(channel -> channel
-                //        .anyRequest().requiresSecure() // Forces HTTPS
-               // )
+                // Note forces https on login redirect w/application.properties code. - we disable this for dev /toggle on for prod
+                .requiresChannel(channel -> channel
+                        .anyRequest().requiresSecure() // Forces HTTPS
+                )
                 .csrf(csrf -> csrf.disable())
                 .cors().and()
                 .sessionManagement(session -> session
