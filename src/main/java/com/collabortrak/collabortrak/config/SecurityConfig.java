@@ -40,7 +40,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                //.requiresChannel(channel -> channel
+                // Note forces https on login redirect w/app.prop - we disable this for dev but need it in prod so will add back
+               // .requiresChannel(channel -> channel
                 //        .anyRequest().requiresSecure() // Forces HTTPS
                // )
                 .csrf(csrf -> csrf.disable())
@@ -56,7 +57,12 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginProcessingUrl("/api/login")
+
                         .successHandler((request, response, authentication) -> {
+                            request.getSession(); // This ensures a session exists
+                            System.out.println("Login success: " + authentication.getName());
+                            System.out.println("Session ID: " + request.getSession().getId());
+
                             response.setStatus(HttpStatus.OK.value());
                             response.setContentType("application/json");
 
