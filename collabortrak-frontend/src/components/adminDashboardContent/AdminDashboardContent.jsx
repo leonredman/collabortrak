@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 //import FetchTest from "../fetchTest/FetchTest";
-//const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
-const backendUrl = "https://collabortrak-production.up.railway.app";
+const backendUrl = import.meta.env.VITE_BACKEND_URL; // import env vars
+//const backendUrl = "https://collabortrak-production.up.railway.app";
 
 console.log("Backend URL being used:", backendUrl);
 
