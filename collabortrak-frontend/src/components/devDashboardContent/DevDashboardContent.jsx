@@ -15,7 +15,7 @@ const DevDashboardContent = () => {
   useEffect(() => {
     setUserName(localStorage.getItem("userName") || "Developer");
 
-    fetch(`${backendUrl}/api//tickets`, {
+    fetch(`${backendUrl}/api/tickets`, {
       method: "GET",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
