@@ -48,8 +48,10 @@ const ReportsPage = () => {
       key: "assignedEmployee",
       label: "Assigned Employee",
       render: (row) =>
-        row.assignedEmployee
-          ? `${row.assignedEmployee.firstName} ${row.assignedEmployee.lastName}`
+        row.assignedEmployeeFirstName || row.assignedEmployeeLastName
+          ? `${row.assignedEmployeeFirstName || ""} ${
+              row.assignedEmployeeLastName || ""
+            }`.trim()
           : "Unassigned",
     },
     { key: "ticketType", label: "Ticket Type" },
