@@ -90,8 +90,8 @@ const AdminDashboardContent = ({ isAuthenticated }) => {
         </div>
         <div className="column">
           <div className="ui green segment">
-            <h3>Resolved</h3>
-            <p className="dashboard-value">{countByStatus("RESOLVED")}</p>
+            <h3>Published</h3>
+            <p className="dashboard-value">{countByStatus("PUBLISHED")}</p>
           </div>
         </div>
       </div>
