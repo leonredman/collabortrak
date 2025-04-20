@@ -1,29 +1,122 @@
-<strong>**DO NOT DISTRIBUTE OR PUBLICLY POST SOLUTIONS TO THESE LABS. MAKE ALL FORKS OF THIS REPOSITORY WITH SOLUTION CODE PRIVATE. PLEASE REFER TO THE STUDENT CODE OF CONDUCT AND ETHICAL EXPECTATIONS FOR COLLEGE OF INFORMATION TECHNOLOGY STUDENTS FOR SPECIFICS. **</strong>
 
-# WESTERN GOVERNORS UNIVERSITY 
-## D424 – SOFTWARE ENGINEERING CAPSTONE
-Welcome to Software Engineering Capstone! This is an opportunity for students to develop full stack software engineering documentation and applications. They will execute documentation, unit testing, revision of software applications, and deploy software applications with scripts and containers on a cloud platform.
+# CollaborTrak
+## B.S., SOFTWARE ENGINEERING CAPSTONE
+CollaborTrak MVP is a full-stack project management simple issue tracking app built with developers and creative teams in mind. It was modeled on the Jira workflow of my previous role as a website builder at GoDaddy - WDS. It supports role-based dashboards, ticket workflows, and basic search and reporting for teams that need structure without getting overwhelmed.
 
-FOR SPECIFIC TASK INSTRUCTIONS AND REQUIREMENTS FOR THIS ASSESSMENT, PLEASE REFER TO THE COURSE PAGE.
-BASIC INSTRUCTIONS
-For this assessment, you will deploy your developed full stack software product to a web service of your choice.
+This is my capstone project for my Software Engineering degree — built to show I can handle both backend and frontend development, plus deployment and simple authentication.
 
 
-## SUPPLEMENTAL RESOURCES  
-1.	How to clone a project to IntelliJ using Git?
+## Tech Stack
 
-> Ensure that you have Git installed on your system and that IntelliJ is installed using [Toolbox](https://www.jetbrains.com/toolbox-app/). Make sure that you are using version 2022.3.2. Once this has been confirmed, click the clone button and use the 'IntelliJ IDEA (HTTPS)' button. This will open IntelliJ with a prompt to clone the proejct. Save it in a safe location for the directory and press clone. IntelliJ will prompt you for your credentials. Enter in your WGU Credentials and the project will be cloned onto your local machine.  
+- **Frontend:** React + Vite + Semantic UI
+- **Backend:** Spring Boot + Spring Security (session-based auth)
+- **Database:** MySQL (hosted on Railway)
+- **Hosting:**
+    - Frontend: Vercel
+    - Backend: Railway
+- **Other:** JPA, Role-based access, REST API, CORS config
 
-2. How to create a branch and start Development?
+## Features
 
-- GitLab method
-> Press the '+' button located near your branch name. In the dropdown list, press the 'New branch' button. This will allow you to create a name for your branch. Once the branch has been named, you can select 'Create Branch' to push the branch to your repository.
+- Login system with role-based routing (Admin, Manager, Developer, QA Agent, Website Specialist)
+- Create and manage tickets: Epics, Stories, Tasks, Bugs
+- Linked tickets (e.g., Stories tied to Epics, Bugs tied to Stories)
+- Status workflows tailored by role
+- Admin dashboard with ticket stats
+- QA dashboard with ticket status widgets
+- Search and reports page for viewing tickets across roles
 
-- IntelliJ method
-> In IntelliJ, Go to the 'Git' button on the top toolbar. Select the new branch option and create a name for the branch. Make sure checkout branch is selected and press create. You can now add a commit message and push the new branch to the local repo.
+## Demo Logins
 
-## SUPPORT
-If you need additional support, please navigate to the course page and reach out to your course instructor.
+Use these credentials to test the app:
 
-## FUTURE USE
-Take this opportunity to create or add to a simple resume portfolio to highlight and showcase your work for future use in career search, experience, and education!
+| Role               | Username | Password   |
+|--------------------|----------|------------|
+| Admin              | admin    | admin123   |
+| Manager            | manager  | manager123 |
+| Developer          | dev      | dev123     |
+| QA Agent           | qa       | qa123      |
+| Website Specialist | web      | web123     |
+
+Each role has a unique dashboard and permissions.
+
+## Running It Locally
+
+### Prerequisites
+
+- Java 17+
+- Node.js 18+
+- MySQL running locally or through a service like MAMP
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/leonredman/collabortrak.git
+cd collabortrak
+```
+
+### 2. Set Up the Backend
+
+- Navigate to the backend directory:
+
+```bash
+cd collabortrak
+```
+
+- Create or update `application-local.properties` with the following settings:
+
+```properties
+server.port=8080
+server.servlet.session.cookie.secure=false
+server.servlet.session.cookie.same-site=Lax
+spring.datasource.url=jdbc:mysql://localhost:8889/collabortrak_dbase
+spring.datasource.username=root
+spring.datasource.password=root
+```
+
+- Start the Spring Boot backend:
+
+```bash
+./mvnw spring-boot:run
+```
+
+### 3. Set Up the Frontend
+
+- Navigate to the frontend directory:
+
+```bash
+cd ../collabortrak-frontend
+```
+
+- Create a `.env` file in the root of the frontend folder:
+
+```env
+VITE_BACKEND_URL=http://localhost:8080
+```
+
+- Install dependencies and start the development server:
+
+```bash
+npm install
+npm run dev
+```
+
+## Deployment
+
+- Frontend: vercel.com [https://collabortrak.vercel.app](https://collabortrak.vercel.app)
+- Backend: railway.com https://collabortrak-production.up.railway.app/
+
+These are configured to work together over HTTPS using session cookies.
+
+## Known Limitations
+
+- Safari (especially versions 15–18) may block session cookies due to strict cross-origin policies. The app works reliably in Chrome and Firefox.
+- Local development uses relaxed cookie settings to allow testing across ports.
+- Demo user passwords do not follow browser best practices for length etc.
+
+## Future Improvements
+
+- Add more unit and integration tests
+- JWT-based authentication to avoid browser cookie issues
+- File upload, ticket history/logging, email notifications and ticket commenting 
+- Expanded reporting and filter options
