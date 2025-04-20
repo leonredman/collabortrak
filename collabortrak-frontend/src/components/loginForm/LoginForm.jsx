@@ -94,17 +94,16 @@ const LoginForm = () => {
           localStorage.setItem("userId", data.id); // Store User ID
 
           // Redirect user based on role
-          if (userRole.includes("ROLE_ADMIN"))
-            setTimeout(() => navigate("/admin-dashboard"), 300);
+          if (userRole.includes("ROLE_ADMIN")) navigate("/admin-dashboard");
           else if (userRole.includes("ROLE_MANAGER"))
-            setTimeout(() => navigate("/manager-dashboard"), 300);
+            navigate("/manager-dashboard");
           else if (userRole.includes("ROLE_DEVELOPER"))
-            setTimeout(() => navigate("/developer-dashboard"), 300);
+            navigate("/developer-dashboard");
           else if (userRole.includes("ROLE_QA_AGENT"))
-            setTimeout(() => navigate("/qa-dashboard"), 300);
+            navigate("/qa-dashboard");
           else if (userRole.includes("ROLE_WEBSITE_SPECIALIST"))
-            setTimeout(() => navigate("/website-specialist-dashboard"), 300);
-          else setTimeout(() => navigate("/dashboard"), 300);
+            navigate("/website-specialist-dashboard");
+          else navigate("/dashboard");
         } catch (error) {
           console.error("Failed to parse JSON response:", error.message);
           setError("Invalid response format. Please try again.");
