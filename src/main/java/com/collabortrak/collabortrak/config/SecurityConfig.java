@@ -124,6 +124,7 @@ public class SecurityConfig {
         config.addAllowedMethod("*");
         config.addExposedHeader("Access-Control-Allow-Origin");
         config.addExposedHeader("Set-Cookie");
+        config.setAllowCredentials(true);  // this added to fix safari bug not setting cookies
 
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
