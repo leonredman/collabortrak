@@ -30,13 +30,13 @@ This is my capstone project for my Software Engineering degree — built to show
 
 Use these credentials to test the app:
 
-| Role               | Username | Password   |
-|--------------------|----------|------------|
-| Admin              | admin    | admin123   |
-| Manager            | manager  | manager123 |
-| Developer          | dev      | dev123     |
-| QA Agent           | qa       | qa123      |
-| Website Specialist | web      | web123     |
+| Role               | Username | Password               |
+|--------------------|----------|------------------------|
+| Admin              | admin    | adminSecure2025        |
+| Manager            | manager  | manageradminSecure2025 |
+| Developer          | dev      | devadminSecure2025     |
+| QA Agent           | qa       | qaadminSecure2025      |
+| Website Specialist | web      | webadminSecure2025     |
 
 Each role has a unique dashboard and permissions.
 

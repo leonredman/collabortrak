@@ -135,11 +135,11 @@ public class SecurityConfig {
         return args -> {
             if (userRepository.count() == 0) { // Only create demo users if the table is empty
                 List<User> demoUsers = List.of(
-                        new User("admin", passwordEncoder.encode("admin123"), RoleType.ADMIN),
-                        new User("manager", passwordEncoder.encode("manager123"), RoleType.MANAGER),
-                        new User("dev", passwordEncoder.encode("dev123"), RoleType.DEVELOPER),
-                        new User("qa", passwordEncoder.encode("qa123"), RoleType.QA_AGENT),
-                        new User("web", passwordEncoder.encode("web123"), RoleType.WEBSITE_SPECIALIST)
+                        new User("admin", passwordEncoder.encode("adminSecure2025"), RoleType.ADMIN),
+                        new User("manager", passwordEncoder.encode("managerSecure2025"), RoleType.MANAGER),
+                        new User("dev", passwordEncoder.encode("devSecure2025"), RoleType.DEVELOPER),
+                        new User("qa", passwordEncoder.encode("qaSecure2025"), RoleType.QA_AGENT),
+                        new User("web", passwordEncoder.encode("webSecure2025"), RoleType.WEBSITE_SPECIALIST)
                 );
                 userRepository.saveAll(demoUsers);
                 System.out.println("Demo users added with hashed passwords completed!");

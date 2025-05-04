@@ -3,19 +3,27 @@ import { useNavigate } from "react-router-dom";
 import "./LoginForm.css";
 
 const demoCredentials = {
-  admin: { username: "admin", password: "admin123", icon: "/adminIcon.jpg" },
+  admin: {
+    username: "admin",
+    password: "adminSecure2025",
+    icon: "/adminIcon.jpg",
+  },
   manager: {
     username: "manager",
-    password: "manager123",
+    password: "managerSecure2025",
     icon: "/managerIcon.png",
   },
   developer: {
     username: "dev",
-    password: "dev123",
+    password: "devSecure2025",
     icon: "/developerIcon.png",
   },
-  qa: { username: "qa", password: "qa123", icon: "/QAIcon.png" },
-  web: { username: "web", password: "web123", icon: "/webSpecialistIcon.png" },
+  qa: { username: "qa", password: "qaSecure2025", icon: "/QAIcon.png" },
+  web: {
+    username: "web",
+    password: "webSecure2025",
+    icon: "/webSpecialistIcon.png",
+  },
 };
 
 const LoginForm = () => {
